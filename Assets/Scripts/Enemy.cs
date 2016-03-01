@@ -124,6 +124,7 @@ public class Enemy : MonoBehaviour
         PlayAudio(hitAudio);
     }
     //slicno kao i za prethodni metod
+	//testiranje ljubomir da vidim da li radi
     public void Slowdown(float factor, float time)
     {
         speedFactor = factor;
