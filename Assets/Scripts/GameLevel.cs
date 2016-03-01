@@ -4,8 +4,7 @@ using System.Collections;
 
 public class GameLevel : MonoBehaviour {
 
-	//jos uvijek ne postoje klase EnemyWave i Path
-	//kada se postave - maknuti komentare sa naredna dva reda
+
 	EnemyWave[] enemyWaves; //niz enemyWaveova - svaki sledeci bi trebalo da bude jaci
 	Path[] paths; //niz mogucih putanja kuda se mogu kretati enemyji
 
