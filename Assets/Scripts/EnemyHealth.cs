@@ -20,7 +20,7 @@ public class EnemyHealth : MonoBehaviour {
 	}
 	
 	void Update () {
-		Vector3 tmpHealthBar = gameObject.transform.localScale;
+		Vector3 tmpHealthBar = gameObject.transform.localScale; // ovo ce nam trebati da bi iznad svakog neprijatelja vizuelno mogli da vidimo trenutni HP
 		tmpHealthBar.x = currentHealth / maxHealth * healthBar;
 		gameObject.transform.localScale = tmpHealthBar;	
 	}

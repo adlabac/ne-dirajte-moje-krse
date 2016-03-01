@@ -2,6 +2,7 @@
 using System.Collections;
 
 //Osnovni:
+//Start() - Pokupimo komponentu AudioSource iz Unity-a  koja je zakacena za projektil i stavimo na projektil jos nije eksplodirao 
 //Update() - definisanje ponasanja projektila za svaki frame
 //UpdatePosition() - azuriranje pozicije projektila
 //PlayAudio(AudioClip projectileAudio) - pokretanje odgovarajuceg zvuka
@@ -16,13 +17,11 @@ using System.Collections;
 
 //Potrebni dodatni komentari: 
 //Metod Start() - treba li za sad ovdje jos sta dodati
-//Pogledati komentar od Linija 60 - Linije 66
+//Pogledati komentar od Linija 59 - Linije 65
 //Metod Update() - u samom metodu sam i opisao sta treba sve da se definise prije izvrsavanja koda u ovom metodu, da li je potrebno jos nesto
 //Metod Explode() - mozda se moze pojednostaviti, detaljno procitati komentare koje sam naveo u ovoj funkciji
-//Linije 123,138,154 da li treba vratiti 0 jer se ovaj metod poziva samo kada je enemy u dometu, a ovaj dio else se 
-//Metod FireProjectile() - sta bi ovdje mogao dodati
-//Da li fireRate atribut koristiti u ovoj klasi ili u klasi Hero?
-//Sta bi jos trebao da dodam?
+//Metod FireProjectile() - treba li se jos sta dodati kod ovog metoda
+//Sta bi jos trebalo dodati?
 
 public class Projectile : MonoBehaviour {
     GameObject target; //neprijatelj ka kom treba da bude ispaljen projektil
@@ -63,12 +62,12 @@ public class Projectile : MonoBehaviour {
         //GetDamage(float distance),GetSlowdown(float distance), GetSlowdownDuration(float distance) koje su public jer im se pristupa iz drugih klasa   
         //Ove metode ce odrediti u ovom koraku vrijednosti parametara za metode koje su definisane u klasi Enemy:
         //public TakeDamage(float value)
-        //public slowDown(float factor, float time)
-        if (notExplode)
+        //public Slowdown(float factor, float time)
+        if (notExplode) //provjera da li je projektil vec ekplodirao,jer ako jeste nema smisla raditi ista sa njim
         {
-            if (Vector3.Distance(transform.position, targetPosition) < speed * Time.deltaTime)
+            if (Vector3.Distance(transform.position, targetPosition) < speed * Time.deltaTime)//uslov kojim se provjerava da li se desio sudar izmedju projektila i neprijatelja(target)
             {
-                Explode();//ovaj metod ce se pozvati kada se sudare projektil i enemy
+                Explode();
                 
             }
             else
@@ -95,7 +94,7 @@ public class Projectile : MonoBehaviour {
         PlayAudio(impactAudio);
         gameObject.GetComponent<Renderer>().enabled = false;//treba da sakrije prikaz projektila jer isti treba da nestane pri sudaru, ali ne i da bude unisten
         notExplode = false;//znaci projektil jeste eksplodirao, pa Update() vise nista ne radi
-        Destroy(gameObject,1.5f);//projektil bude unisten posle 1.5sec, odlozeno unistenje projektila da bi se cuo zvuk pri udaru
+        Destroy(gameObject,1.5f);//projektil bude unisten posle 1.5sec(ovo vrijeme podlozno modifikaciji), odlozeno unistenje projektila da bi se cuo zvuk pri udaru
         //kada bi se gameObject(tekuci projektil) odmah pri sudaru unistio, unistio bi i komponentu za zvuk, pa bi se zvuk pri udaru projektila odmah prekinuo ! 
     }
 
@@ -105,8 +104,8 @@ public class Projectile : MonoBehaviour {
         audioSource.Play();
     }
 
-    //Ove tri metode bi pripremile vrijednosti parametara za metode TakeDamage i SlowDown
-    //Parametar float distance treba biti odredjen u klasi Hero, kada neprijatelj bude izabran pomocu metoda ChooseEnemy(List<Enemy> enemies)
+    //Ove tri metode bi pripremile vrijednosti parametara za metode TakeDamage i Slowdown
+    //Parametar float distance treba biti odredjen u klasi Hero, kada neprijatelj bude izabran pomocu metode ChooseEnemy(List<Enemy> enemies)
 
     //definisanje damage-a
     public float GetDamage(float distance)
@@ -162,7 +161,7 @@ public class Projectile : MonoBehaviour {
     //Ovaj metod treba jos obraditi
     public void FireProjectile(GameObject enemy, Vector3 enemyPosition) {
         PlayAudio(shotAudio);
-        GameObject newProjectile = Instantiate(model) as GameObject;
+        GameObject newProjectile = Instantiate(model) as GameObject;//u Unity hijerarhiji treba dodati projektil
         target = enemy;
         targetPosition = enemyPosition; 
     }

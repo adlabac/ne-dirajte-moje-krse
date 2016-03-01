@@ -23,12 +23,14 @@ public class EnemyWave : MonoBehaviour
 	 */
 	void Start () 
 	{
-		cnt.Length = spawnTime.Length;
+        //prije je bilo cnt.Length = spawnTime.Length;
+        //pretpostavljam da je neko ko je imao ovu klasu htio da uradi ovo:
+		cnt = new int[spawnTime.Length - 1];
 
 		for (int i = 0; i < spawnDelay.Length; i++) 
 		{
 			cnt [i] = 0;
-			if (i = 0)
+			if (i == 0) 
 				spawnTime [0] = spawnDelay [0];
 			else if (i > 0)
 				spawnTime [i] = spawnTime [i - 1] + spawnDelay [i];
