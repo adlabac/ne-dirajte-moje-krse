@@ -11,13 +11,15 @@ using System.Collections;
 //RotationToWaypoint() - rotiranje neprijatelja ka waypointu, nisam bas siguran da li ispravno radi, treba malo dodatnog testiranja
 //GetDistanceFromRocks() - trenutno rastojanje izmedju neprijatelja i kamenja
 //TakeDamage(float value) - metod kojim treba smanjiti HP Enemy-u u zavisnosti od value(tj. damage-a projektila)
-//Slowdown(float factor, float time) - metod kojim se definise koliko treba smanjiti brzinu Enemy-a i koliko to usporenje treba da traje  
+//Slowdown(float factor, float time) - metod kojim se definise koliko treba smanjiti brzinu Enemy-a i koliko to usporenje treba da traje
+//SetEnemyParams() - podesavanje pocetnih vrijednosti za atribute Enemy-a 
 
 //Komentari:
-//Linije 74-75 (to mozda ne treba odraditi u ovoj klasi), slicno za Linije 104-105
+//Linije 76-77 (to mozda ne treba odraditi u ovoj klasi), slicno za Linije 105-106
 //Metod RotationToWaypoint() - dodatno testiranje
 //Metod UpdatePostion() - provjeriti ponasanje ovog metoda kada je putanja kosa
 //Metodi TakeDamage i Slowdown - jos stvari treba odraditi kod ovih metoda
+//Kreirati u Unity hijerarhiji objekat koji sadrzi sve Enemy-e koji se nalaze na mapi
 //Sta bi jos trebalo dodati?
 public class Enemy : MonoBehaviour
 {

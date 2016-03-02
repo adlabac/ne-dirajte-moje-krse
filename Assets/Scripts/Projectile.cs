@@ -17,14 +17,15 @@ using System.Collections;
 
 //Potrebni dodatni komentari: 
 //Metod Start() - treba li za sad ovdje jos sta dodati
-//Pogledati komentar od Linija 59 - Linije 65
+//Pogledati komentar od Linija 60 - Linije 66
 //Metod Update() - u samom metodu sam i opisao sta treba sve da se definise prije izvrsavanja koda u ovom metodu, da li je potrebno jos nesto
 //Metod Explode() - mozda se moze pojednostaviti, detaljno procitati komentare koje sam naveo u ovoj funkciji
 //Metod FireProjectile() - treba li se jos sta dodati kod ovog metoda
+//Kreirati u Unity hijerarhiji objekat koji sadrzi sve Projektile koji se nalaze na mapi radi bolje preglednosti hijerarhije
 //Sta bi jos trebalo dodati?
 
 public class Projectile : MonoBehaviour {
-    GameObject target; //neprijatelj ka kom treba da bude ispaljen projektil
+    Enemy target; //neprijatelj ka kom treba da bude ispaljen projektil
     Vector3 targetPosition; // pozicija neprijatelja
     public GameObject model;//prefab projektila
 
@@ -158,8 +159,8 @@ public class Projectile : MonoBehaviour {
     //ovaj metod se poziva kada se izabere target pomocu metoda Enemy ChooseTarget (List<Enemy> enemies) koji treba da bude definisan u klasi Hero
     //i treba ga pozvati u klasi Hero,pa je zato public
 
-    //Ovaj metod treba jos obraditi
-    public void FireProjectile(GameObject enemy, Vector3 enemyPosition) {
+    //Ovaj metod treba jos doradjivati
+    public void FireProjectile(Enemy enemy, Vector3 enemyPosition) {
         PlayAudio(shotAudio);
         GameObject newProjectile = Instantiate(model) as GameObject;//u Unity hijerarhiji treba dodati projektil
         target = enemy;
