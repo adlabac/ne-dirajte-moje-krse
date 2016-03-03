@@ -52,8 +52,7 @@ public class GameLevel : MonoBehaviour {
 		//u ovom dijelu bi trebalo inicijalizovati broj kamenja u odnosu na pocetni totalStones
 		stones = GameObject.Find ("Stones");
 		//u ovom dijelu bi trebalo inicijalizovati broj novcica u odnosu na pocetni startingCoins
-		stones = GameObject.Find ("Coins");
-
+		coins = GameObject.Find ("Coins");
 		//prvi naredni red je zakomentarisan, jer nemamo niz
 		//totalWaves = enemyWaves.Length;
 		waveNumber = 1;

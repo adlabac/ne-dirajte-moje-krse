@@ -12,7 +12,7 @@ using System.Collections;
 //GetDamage(float distance) - odredjuje damage na osnovu rastojanja projektila od neprijatelja
 //GetSlowdown(float distance) - modifikuje se brzina neprijatelja na osnovu rastojanja projektila od neprijatelja
 //GetSlowdownDuration(float distance) - definise se koliko usporenje traje na osnovu rastojanja izmedju suprostavljenih strana
-//FireProjectile(GameObject enemy, Vector3 enemyPosition) - ovdje odredimo vrijednosti parametara projektila
+//FireProjectile(Enemy enemy, Vector3 enemyPosition) - ovdje definisemo metu projektila
 
 
 //Potrebni dodatni komentari: 
@@ -43,7 +43,7 @@ public class Projectile : MonoBehaviour {
 
     public float speed = 10f;//brzina kretanja projektila
     //za razliciti tipove oruzija ce biti razlicita brzina
-
+    public float distanceFromHero;
     public AudioClip shotAudio;
     public AudioClip impactAudio;
     public AudioSource audioSource;
@@ -92,6 +92,8 @@ public class Projectile : MonoBehaviour {
     //kad se sudare projektil i neprijatelj
     void Explode() {
         //Debug.Log("explode");
+        target.TakeDamage(GetDamage(distanceFromHero));//distanceFromHero podesili pri pozivu funkcije FireProjectile unutar klase Hero
+        target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));
         PlayAudio(impactAudio);
         gameObject.GetComponent<Renderer>().enabled = false;//treba da sakrije prikaz projektila jer isti treba da nestane pri sudaru, ali ne i da bude unisten
         notExplode = false;//znaci projektil jeste eksplodirao, pa Update() vise nista ne radi
@@ -106,7 +108,6 @@ public class Projectile : MonoBehaviour {
     }
 
     //Ove tri metode bi pripremile vrijednosti parametara za metode TakeDamage i Slowdown
-    //Parametar float distance treba biti odredjen u klasi Hero, kada neprijatelj bude izabran pomocu metode ChooseEnemy(List<Enemy> enemies)
 
     //definisanje damage-a
     public float GetDamage(float distance)
@@ -162,9 +163,11 @@ public class Projectile : MonoBehaviour {
     //Ovaj metod treba jos doradjivati
     public void FireProjectile(Enemy enemy, Vector3 enemyPosition) {
         PlayAudio(shotAudio);
-        GameObject newProjectile = Instantiate(model) as GameObject;//u Unity hijerarhiji treba dodati projektil
+        //GameObject newProjectile = Instantiate(model) as GameObject;//u Unity hijerarhiji treba dodati projektil, ova linija problematicna
+        //Ovo instanciranje treba obaviti u trenutku ispaljivanja projektila od strane Heroja(znaci u klasi Hero), a ne u ovoj klasi
         target = enemy;
-        targetPosition = enemyPosition; 
+        targetPosition = enemyPosition;
+        distanceFromHero = Vector3.Distance(enemyPosition, transform.position);//kada se pozove ovaj metod, odredice rastojanje izmedju Heroja i Enemy-a
     }
 
 }

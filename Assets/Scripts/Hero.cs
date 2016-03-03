@@ -37,7 +37,7 @@ public class Hero : MonoBehaviour
     Level[] levels;//niz levela za heroja
     List<Enemy> enemies; //Svi neprijatelji u dometu
     float shootTimer;
-
+    private GameObject projectileParent;//ovdje se cuvaju svi projektili koji se spawnuju
     public AudioSource audioSource;
     public AudioClip spawnAudio;
     public AudioClip enemySpottedAudio;
@@ -45,11 +45,19 @@ public class Hero : MonoBehaviour
     //Inicijalizacija
     void Start()
     {
+        enemies = null;//u pocetku nema neprijatelja koje enemy moze da dohvati
+        levels = new Level[levels.Length-1];
+        //Kasnije ce biti azurirano
         audioSource = GetComponent<AudioSource>();
         PlayAudio(spawnAudio);
-        //Kasnije ce biti azurirano
+        projectileParent = GameObject.Find("Projectiles");
+        if (projectileParent == null)//ako u hijerarhiji nema GameObject-a Projectiles, kreiraj ga
+        {
+            //ovdje kreiramo GameObject sa nazivom Projectiles i to je projectileParent
+            projectileParent = new GameObject("Projectiles");
+        }
         //Na osnovu trenutnog upgrade levela heroja, odredjujemo fireRate i pozivamo na svakih fireRate sekundi metod za ispaljivanje projektila
-        InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
+        InvokeRepeating("Shoot", 0.0F,GetLevel().fireRate);
     }
 
     //Update se vrsi jednom po frejmu
@@ -67,7 +75,7 @@ public class Hero : MonoBehaviour
     {
         return levels[levels.Length - 1];
     }
-
+    //Potrebna dodatna analiza ovog metoda
     void SetLevel(int levelIndex)
     {
         for (int i = 0; i < levels.Length; i++)
@@ -115,8 +123,11 @@ public class Hero : MonoBehaviour
     {
         if (enemies.Count > 0) //ako ima neprijatelja u dometu Heroja
         {
-            Projectile projectile = this.GetLevel().projectile;//kreiramo projektil koji trebamo da ispalimo ka neprijatelju koji je najblizi kamenju
-            projectile.FireProjectile(ChooseTarget(), ChooseTarget().transform.position);    
+            //u newProjectile se cuva clone objekta projectile
+            GameObject newProjectile = Instantiate(this.GetLevel().projectile.model) as GameObject;//kreiramo projektil koji trebamo da ispalimo ka neprijatelju koji je najblizi kamenju
+            //parent od newProjectile je projectileParent  
+            newProjectile.transform.parent = projectileParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije
+            newProjectile.AddComponent<Projectile>().FireProjectile(ChooseTarget(), ChooseTarget().transform.position);//kako je newProjectile GameObject, moram da mu dodam komponentu Projectile da bi mogla da se pozove metoda FireProjectile
         }
     }
 

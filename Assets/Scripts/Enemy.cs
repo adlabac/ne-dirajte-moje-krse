@@ -15,7 +15,7 @@ using System.Collections;
 //SetEnemyParams() - podesavanje pocetnih vrijednosti za atribute Enemy-a 
 
 //Komentari:
-//Linije 76-77 (to mozda ne treba odraditi u ovoj klasi), slicno za Linije 105-106
+//Linije 76 (to mozda ne treba odraditi ovako), slicno za Linije 105-106
 //Metod RotationToWaypoint() - dodatno testiranje
 //Metod UpdatePostion() - provjeriti ponasanje ovog metoda kada je putanja kosa
 //Metodi TakeDamage i Slowdown - jos stvari treba odraditi kod ovih metoda
@@ -33,23 +33,23 @@ public class Enemy : MonoBehaviour
     int pathIndex = 0;//pathIndex je indeks Patha iz klase GameLevel, neka je to za sad jedan put sa indeksom 0.
     int waypoint = 0;//tacka na pathu do koje se Enemy krece pravolinijski
 
-
     public AudioClip hitAudio;
     public AudioClip stealAudio;//zvuk kad Enemy dodje do kamena
     public AudioClip dyingAudio;
 
     //Promjenljive koje sam dodao u odnosu na GDD
-    float slowdownTime;//vrijeme koliko traje usporenje
+    //float slowdownTime;//vrijeme koliko traje usporenje, posle maci komentar, za sad ne radi kako treba
     Path[] path;//ovo sam dodao radi testiranja, tj. da bi uzeo niz waypoint-a za put, za sad posmatramo kao da imamo samo jedan tip puta
     bool alive;//da li je neprijatelj umro, ovo mora postojati zbog odlozenog unistenja objekta - ovim sprecavama da se Update() izvsava i nakon umiranja Enemy-a
     public AudioSource audioSource;//tu se mijenjaju AudioClip-ovi(pomocu metoda PlayAudio(AudioClip clip) u zavisnosti od situacije
     private Animator anim;//za Die animaciju
     public GameObject model;//izgled neprijatelja
-    int reward; // nagrada kada projektil unisti Enemy-a
-
     void Start()
     {
+        path = new Path[11];//ovdje treba ucitate sve putave koji postoje(jos ne postoje,pa ce ovo biti kasnije zavrseno), a onda izaberem odgovarajuci pomocu pathIndex-a na osnovu GameLevela
+        //U zavisnosti od GameLevela biram index puta !
         //treba podesiti i tip neprijatelja , naknadno ce biti odradjeno
+        SetEnemyParams();
         anim = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         alive = true;
@@ -73,8 +73,7 @@ public class Enemy : MonoBehaviour
     //u slucaju umiranja neprijatelja
     void Death()
     {
-        //pri umiranju neprijatelja treba povecati coins, npr.
-        //coins += reward;
+        ScoreManager.AddCoins(type.reward);//pri umiranju neprijatelja treba povecati coins
         alive = false;
         anim.SetTrigger("Die");//za animaciju triger
         PlayAudio(dyingAudio);
@@ -104,7 +103,7 @@ public class Enemy : MonoBehaviour
                 if (waypoint == path[pathIndex].wayPoints.Count - 1) //ako Enemy stigne do zadnjeg waypoint-a(to je kamenje)
                 { 
                     //od ukupnog broja kamenja oduzmemo onoliko kamenja koliko neprijatelj moze da ponese,a onda unistimo neprijatelja,npr. nesto ovako
-                    //totalStones -= amountOfStonesEnemyTake;
+                    ScoreManager.RemoveStones(Random.Range(type.minStones, type.maxStones + 1));//[min,max) zato sam stavio +1
                     Destroy(gameObject);
                     alive = false;
                     break; // moramo prekinuti izvrsavanje petlje jer Enemy vise nije ziv
@@ -129,7 +128,11 @@ public class Enemy : MonoBehaviour
     public void Slowdown(float factor, float time)
     {
         speedFactor = factor;
-        slowdownTime = time;
+        //slowdownTime = time; //naknadno maci komentar
+        //Ovaj dio koda vjerovatno treba pomjeriti negdje drugdje, a sam koncept mozda izmijeniti koristeci yield, to jos ne znam kako funkcionise
+        //Mozda onaj ko je radio EnemyWave(vidio sam da je koristio yield) pokusa ovo da rijesi
+        speed -= speedFactor;//Napomena: Kad prodje time speed treba vratiti na default, to jos nije odradjeno
+        
     }
 
     void PlayAudio(AudioClip clip)
@@ -143,7 +146,7 @@ public class Enemy : MonoBehaviour
         health = type.initialHealth;
         speed = type.defaultSpeed;
         speedFactor = type.slowdownFactor;
-        reward = type.reward;
+        type = GetComponent<EnemyTypes>().GetByName("NazivNeprijatelja");//moguce da ce trebati u unity-u za Enemy dodati i komponentu EnemyTypes 
     }
 
 }

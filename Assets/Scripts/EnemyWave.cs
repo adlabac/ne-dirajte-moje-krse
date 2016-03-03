@@ -9,10 +9,12 @@ public class EnemyWave : MonoBehaviour
 	public float[] spawnDelay;
 	public float[] spawnInterval;
 
-	private EnemyType[] enemyTypes;
-	private float[] spawnTime;  //niz koji sadrzi posle kog vremena treba da se spawnuju neprijatelji
+	private EnemyType[] enemyTypes = null;
+	private float[] spawnTime = null;  //niz koji sadrzi posle kog vremena treba da se spawnuju neprijatelji
 	private float timer;		//broji vrijeme
 	private int[] cnt;
+
+    private GameObject enemyParent;
 
 	/*
 	 * Postavljamo niz koji sadrzi sve 0 koje predstavljaju da EnemyType na toj poziciji u svom nizu nije krenuo sa Spawnovanjem
@@ -23,6 +25,12 @@ public class EnemyWave : MonoBehaviour
 	 */
 	void Start () 
 	{
+        enemyParent = GameObject.Find("Enemies");
+        if (enemyParent == null)//ako u hijerarhiji nema GameObject-a Enemies, kreiraj ga
+        {
+            //ovdje kreiramo GameObject sa nazivom Enemies i to je enemyParent
+            enemyParent = new GameObject("Enemies");
+        }
         //prije je bilo cnt.Length = spawnTime.Length;
         //pretpostavljam da je neko ko je imao ovu klasu htio da uradi ovo:
 		cnt = new int[spawnTime.Length - 1];
@@ -85,12 +93,17 @@ public class EnemyWave : MonoBehaviour
 	 * treba da se Spawnuje, koji je interval po kojima trebaju da se Spawnuju neprijatelji, kao i njihova putanja koja im je dodijeljena
 	 * za njihovo kretanje
 	 */
+    //Komentar za onog ko je kreirao ovaj metod: Trebalo bi da se spawn-uju neprijatlji, a ne njihovi tipovi
 	IEnumerator SpawnEnemy(EnemyType enemyType, int count, float spawnInterval, Path path)
 	{
-		int cnt = 0;
+        //Razmisliti i ovom pristupu kreiranja neprijatelja !
+        /*GameObject newEnemy = Instantiate(enemyType.model) as GameObject;
+        newEnemy.transform.parent = enemyParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije,smjestamo sve neprijatelje u Enemies GameObject
+		*/
+        int cnt = 0;
 		while(cnt <= count)
 		{
-			Instantiate(enemyType.model, path.wayPoints[0], Quaternion.identity);
+            Instantiate(enemyType.model,path.wayPoints[0], Quaternion.identity);
 			cnt++;
 			yield return new WaitForSeconds(spawnInterval);
 		}

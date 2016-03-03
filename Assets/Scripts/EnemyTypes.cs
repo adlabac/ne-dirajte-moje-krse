@@ -39,7 +39,7 @@ public class EnemyTypes : MonoBehaviour {
 	}
 
     //Vraca element tipa EnemyType kojeg zovemo samo po imenu
-    EnemyType GetByName(string name)
+    public EnemyType GetByName(string name)
     {
         return enemyType.Find(x => x.name == name);
     }
