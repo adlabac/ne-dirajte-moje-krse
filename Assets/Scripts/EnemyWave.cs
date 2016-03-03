@@ -24,7 +24,7 @@ public class EnemyWave : MonoBehaviour
 	void Start () 
 	{
 		cnt.Length = spawnTime.Length;
-		timer = 0f;			//inicijalizacija tajmera na pocetku
+
 		for (int i = 0; i < spawnDelay.Length; i++) 
 		{
 			cnt [i] = 0;
