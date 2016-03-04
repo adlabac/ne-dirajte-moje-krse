@@ -15,7 +15,7 @@ using System.Collections;
 public class EnemyType : MonoBehaviour {
 
     
-    public string name;          //Naziv neprijatelja
+    public new string name;          //Naziv neprijatelja
     public GameObject model;     //Kreirati model ? Konstruktor??? Geteri i seteri?
     public float defaultSpeed;   //Defaultna brzina      
     public float initialHealth;  //Pocetni helti
