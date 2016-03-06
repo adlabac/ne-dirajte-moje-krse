@@ -5,18 +5,19 @@ using System.Collections;
 public class GameLevel : MonoBehaviour {
 
 
+
+	public GameObject heroPrefab;
+	private GameObject hero;
+
+	public static int rowNum = 10; //broj redova matrice levela
+	public static int colNum = 18; //broj kolona matrice levela
+	public static int totalStones; //ukupni broj kamenja na nivou
+	public static int startingCoins; //ukupan broj coina na pocetku
+	public static int waveNumber; //promjenljiva u koju ucitavamo redni broj talasa neprijatelja
+
 	EnemyWave[] enemyWaves; //niz enemyWaveova - svaki sledeci bi trebalo da bude jaci
 	Path[] paths; //niz mogucih putanja kuda se mogu kretati enemyji
 
-	public int totalStones; //ukupni broj kamenja na nivou
-	public int startingCoins; //ukupan broj coina na pocetku
-	public int totalWaves; //!!!! NISAM SIGURAN DA OVO JE OVO POTREBNO
-	//broj protivnickih napada mozemo izvuci iz duzine niza enemyWaves
-
-	public int waveNumber; //promjenljiva u koju ucitavamo redni broj talasa neprijatelja
-
-	public GameObject spotPrefab; //prefab za colider za polje na nivou
-	private GameObject spot;
 
 	//promjenljiva u kojoj je ucitana matrica 10 x 18 sa nulama i jedinicama koje oznacavaju da li se na polju
 	//moze postaviti tower - detaljnije objasnjenje u Start()
@@ -37,7 +38,7 @@ public class GameLevel : MonoBehaviour {
 	//procedura za inicijalizaciju matrice nivoa
 	void LoadMatrix(){
 		//inicijalizacija se vrsi direktno pri deklaraciji
-		//ali ubuduce, ovu proceduru mozemo koristiti za ucitavanje
+		//ali ubuduce, ovu proceduru mozemo koristiti za ucitavanje iz baze ili fajla
 	}
 
 
@@ -51,8 +52,10 @@ public class GameLevel : MonoBehaviour {
 		//oba ova dijela idu preko ScoreManagera
 		//u ovom dijelu bi trebalo inicijalizovati broj kamenja u odnosu na pocetni totalStones
 		stones = GameObject.Find ("Stones");
+		totalStones = 20; //citati iz fajla/baze
 		//u ovom dijelu bi trebalo inicijalizovati broj novcica u odnosu na pocetni startingCoins
 		coins = GameObject.Find ("Coins");
+		startingCoins = 100; //citati iz fajla/baze
 		//prvi naredni red je zakomentarisan, jer nemamo niz
 		//totalWaves = enemyWaves.Length;
 		waveNumber = 1;
@@ -68,21 +71,13 @@ public class GameLevel : MonoBehaviour {
 		LoadMatrix(); // prvo ucitavamo matricu
 
 
-		//Debug.Log(stones.name);
 
 
-		//petlja za crtanje colidera na dostpunim poljima
-		//kad saznamo rezoluciju igracemo se sa brojkama ispod
-		//umjesto ovog dijela, imamo jedan veliki collider i placeTower ce ici preko pozicije
-		/*
-		for (int i = 0; i < fieldAvailable.GetLength(0); i++) {
-			for (int j = 0; j < fieldAvailable.GetLength(1); j++) {
-				if (fieldAvailable [i,j] == 1) { //samo ako je jedinica
-					Instantiate (spotPrefab, new Vector3 (-8.26F + j * 0.97F, 4.36F - i * 0.97F, 0), Quaternion.identity);
-				}
-			}
-		}
-		*/
+
+		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+
+
+
 	}
 
 
@@ -110,3 +105,101 @@ public class GameLevel : MonoBehaviour {
 		else return true;
 	}
 }
+
+
+
+
+
+
+/*
+
+using UnityEngine;
+using System.Collections;
+
+public class PlaceTower : MonoBehaviour {
+
+
+
+
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+
+	//funkcija koja provjerava da li na polju vec postoji tower
+	private bool canPlaceTower(int i, int j) {
+		return GameLevel.IsAvailable (i, j);
+	}
+
+
+	//procedura koja obradjuje dogadjaj klikom na polje na kojem
+	//je podeseno da se mogu postavljati toweri u toku levela
+	void OnMouseUp () {
+
+		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+
+		//imamo tacnu poziciju clicka/toucha tj. dodira sa backgroundom
+		RaycastHit2D hit = Physics2D.Raycast (ray.origin, ray.direction, Mathf.Infinity);
+		//ako je doslo do hita sa backgroundom
+		if (hit) {
+			//1.ispitati da li moze da se postavi tower i ako moze postaviti - OK
+			//2.postaviti ga tacno u odredjenom kvadraticu - OK
+			//3.update filedAvailable - OK
+			//4.hijerarhija
+
+			//trazimo sirinu i visinu pozadinske slike
+			GameObject bckgImage = GameObject.Find ("Background");
+			float levelWidth = bckgImage.GetComponent<SpriteRenderer> ().bounds.size.x;
+			float levelHeight = bckgImage.GetComponent<SpriteRenderer> ().bounds.size.y;
+
+			//sad cemo da napravimo vektor kojim postavljamo koordinate sistema 
+			//u donji lijevi ugao, a ne u centru ekrana
+			Vector2 coord = new Vector2 (levelWidth/2, levelHeight/2); //vektor za dodavanje
+			Vector2 hitPoint = hit.point + coord; //tacka dodira u novom koordinatnom sistemu
+
+			//sada racunamo vrstu i kolonu (da bi radili sa matricom)
+			int row = GameLevel.GetMatrixRows(); //broj vrsta
+			int col = GameLevel.GetMatrixCols(); //broj kolona
+			int rowClicked = Mathf.FloorToInt(hitPoint.y / levelHeight * row); //broj vrste - klik
+			int colClicked = Mathf.FloorToInt(hitPoint.x / levelWidth * col); //broj kolone - klik
+
+			//racunamo sirinu i visinu polja - ne mora biti uvijek sirina=visina (sada jeste)
+			float fieldHeight = levelHeight / row;
+			float fieldWidth = levelWidth / col;
+
+
+			//Debug.Log (rowClicked + " " + colClicked + " " +
+			//GameLevel.GetMatrixCols);
+		
+			//prvo ispitujemo je li polje available
+			if (canPlaceTower (rowClicked, colClicked)) {
+				Vector2 placePoint = new Vector2 (colClicked * fieldHeight + fieldHeight/2,  
+					rowClicked * fieldWidth + fieldWidth/2); //pravimo pocetnu tacku u nasem koord sistemu
+				placePoint -= coord; //oduzimamo vektor da bi dobili prave koordinate
+				//postavljamo tower na mjestu unutar odgovoarajuceg kvadratica
+				tower = (GameObject)Instantiate(towerPrefab, placePoint , Quaternion.identity);
+				GameObject fieldManager = GameObject.Find ("FieldManager");
+				tower.transform.parent = fieldManager.transform;
+				GameLevel.SetField (rowClicked, colClicked, 0); //update matrice
+			}
+
+		}
+
+
+
+
+	}
+}
+
+
+
+
+
+
+
+*/
