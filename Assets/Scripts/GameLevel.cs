@@ -70,6 +70,7 @@ public class GameLevel : MonoBehaviour {
 
 		//Debug.Log(stones.name);
 
+
 		//petlja za crtanje colidera na dostpunim poljima
 		//kad saznamo rezoluciju igracemo se sa brojkama ispod
 		//umjesto ovog dijela, imamo jedan veliki collider i placeTower ce ici preko pozicije
