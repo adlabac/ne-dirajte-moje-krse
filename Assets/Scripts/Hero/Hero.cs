@@ -92,17 +92,11 @@ public class Hero : MonoBehaviour
 		else{
 			//nadji sve heroje
 			heroes = GameObject.FindGameObjectsWithTag ("Heroes");
-
-			Debug.Log (heroes.GetLength(0));
 			//svakom ugasi radius - bice samo jedan ustvari
 			foreach (GameObject hero in heroes)
 				hero.transform.Find ("HeroRadius").gameObject.active = false;
 			visibleRadius.active=true;
-
 		}
-
-
-		//visibleRadius.active = !visibleRadius.active;
 	}
 
 
