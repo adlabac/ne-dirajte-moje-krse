@@ -14,15 +14,12 @@ using System.Collections;
 //Slowdown(float factor, float time) - metod kojim se definise koliko treba smanjiti brzinu Enemy-a i koliko to usporenje treba da traje
 //SetEnemyParams() - podesavanje pocetnih vrijednosti za atribute Enemy-a 
 
-//Komentari:
-//Metod SetEnemyParams() nedovrsen zbog nedostatka konkretnih tipova neprijatelja
-
 public class Enemy : MonoBehaviour
 {
     EnemyType type;//tip neprijatelja
     public float health = 100f;//HP neprijatelja, ovo treba dodatno razmotriti, postoji i klasa EnemyHealth, ovaj atribut u ovom obliku vjerovatno treba maci
     Vector3 position;//trenutna pozicija neprijatelja
-    public float speed = 3f;//brzina kretanja neprijatelja na osnovu tipa
+    public float speed;//brzina kretanja neprijatelja na osnovu tipa
     float speedFactor;//faktor koji utice na usporenje
     int pathIndex = 0;//pathIndex je indeks Patha iz klase GameLevel
     int waypoint = 0;//tacka na pathu do koje se Enemy krece pravolinijski
@@ -43,17 +40,16 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        path = FindObjectOfType<GameLevel>().paths[pathIndex];
         //U zavisnosti od GameLevela biram index puta !
-        //treba ispravno podesiti i tip neprijatelja , naknadno ce biti odradjeno
-        //SetEnemyParams();
+        path = FindObjectOfType<GameLevel>().paths[pathIndex];
+        //Napomena: U EnemyWave se dodijeli type neprijatelju i komponenta EnemyType !
+        SetEnemyParams();
         anim = GetComponent<Animator>();
         audioSourceEnemy = this.GetComponent<AudioSource>();
         alive = true;
         canSteal = true;
         isSlowedDown = false;
     }
-
     void Update()
     {
         if (alive && canSteal)
@@ -86,12 +82,10 @@ public class Enemy : MonoBehaviour
     //u slucaju umiranja neprijatelja
     void Death()
     {
-        //ScoreManager.AddCoins(type.reward);//pri umiranju neprijatelja treba povecati coins,kad budu definisani tipovi neprijatelja ovaj komenar maci
-        ScoreManager.AddCoins(50);
+        ScoreManager.AddCoins(type.reward);//pri umiranju neprijatelja treba povecati coins
         alive = false;
         canSteal = false;
         //anim.SetTrigger("Die");//za animaciju triger
-        Debug.Log("DeathSound");
         PlayAudio(dyingAudio);
         gameObject.GetComponent<Renderer>().enabled = false;
         Destroy(gameObject, 2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
@@ -123,15 +117,12 @@ public class Enemy : MonoBehaviour
                 if (waypoint == path.wayPoints.Count - 1) //ako Enemy stigne do zadnjeg waypoint-a(to je kamenje)
                 {
                     //od ukupnog broja kamenja oduzmemo onoliko kamenja koliko neprijatelj moze da ponese,a onda unistimo neprijatelja
-                    //ScoreManager.RemoveStones(Random.Range(type.minStones, type.maxStones + 1));//[min,max) zato sam stavio +1a
-                    ScoreManager.RemoveStones(Random.Range(1, 4 + 1));
-                    Debug.Log("StealStone");
+                    ScoreManager.RemoveStones(Random.Range(type.minStones, type.maxStones + 1));//[min,max) zato sam stavio +1
                     PlayAudio(stealAudio);
                     Destroy(gameObject,2f);//drugi arg. podesavamo u zavisno od trajanja zvuka stealAudio
                     canSteal = false;
                     alive = false;
                     gameObject.GetComponent<Renderer>().enabled = false;//Enemy mora da nestane 
-                     
                 }
                 if (alive) { //da izmjegnemo error
                     waypoint++;//neprijatelj se krece ka novom waypoint-u
@@ -150,12 +141,10 @@ public class Enemy : MonoBehaviour
     //Odrediti float value pomocu metoda GetDamage(float distance) kada Hero izabere neprijatelja, a pozvati ovaj metod kada se sudare neprijatelj i projektil
     public void TakeDamage(float value)
     {
-        
         if (alive) {
             health -= value;
             PlayAudio(hitAudio);
-        }
-        
+        } 
     }
     //slicno kao i za prethodni metod
     public void Slowdown(float factor, float time)
@@ -174,15 +163,12 @@ public class Enemy : MonoBehaviour
             audioSourceEnemy.clip = clip;
             audioSourceEnemy.Play();
         }
-        
     }
-
-    //Ovaj metod mozda treba prevesti u konstruktor
     void SetEnemyParams() {
+        type = GetComponent<EnemyType>();
         health = type.initialHealth;
         speed = type.defaultSpeed;
         speedFactor = type.slowdownFactor;
-        type = GetComponent<EnemyTypes>().GetByName("NazivNeprijatelja");//moguce da ce trebati u unity-u za Enemy dodati i komponentu EnemyTypes 
     }
 
 }
