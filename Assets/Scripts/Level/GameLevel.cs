@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 
 public class GameLevel : MonoBehaviour {
 
@@ -10,7 +10,7 @@ public class GameLevel : MonoBehaviour {
 	public static int waveNumber; //promjenljiva u koju ucitavamo redni broj talasa neprijatelja
 
 	EnemyWave[] enemyWaves; //niz enemyWaveova - svaki sledeci bi trebalo da bude jaci
-	Path[] paths; //niz mogucih putanja kuda se mogu kretati enemyji
+    public List<Path> paths; //niz mogucih putanja kuda se mogu kretati enemyji
 
 
 	//promjenljiva u kojoj je ucitana matrica 10 x 18 sa nulama i jedinicama koje oznacavaju da li se na polju

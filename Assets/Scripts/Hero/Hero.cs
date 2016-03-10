@@ -41,15 +41,10 @@ public class Hero : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip spawnAudio;
     public AudioClip enemySpottedAudio;
-	public static int heroPrice = 50; //cijena towera
-	public static int heroPriceU1;
-	public static int heroPriceU2;
-	public static int heroPriceU3;
-
+    public static int heroPrice = 50;
     //Inicijalizacija
     void Start()
     {
-		/*
         enemies = null;//u pocetku nema neprijatelja koje enemy moze da dohvati
         //levels = new Level[levels.Length-1];
         //Kasnije ce biti azurirano
@@ -62,36 +57,32 @@ public class Hero : MonoBehaviour
             projectileParent = new GameObject("Projectiles");
         }
         //Na osnovu trenutnog upgrade levela heroja, odredjujemo fireRate i pozivamo na svakih fireRate sekundi metod za ispaljivanje projektila
-        //InvokeRepeating("Shoot", 0.0F,GetLevel().fireRate);
-        */
+        //InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
     }
 
     //Update se vrsi jednom po frejmu
     void Update()
     {
         //Kasnije ce biti azurirano
+        if (enemies != null)
+        {
+            Rotation();
+        }
+        
     }
 
-    /*
-	Level GetLevel()
+    Level GetLevel()
     {
         return levels[currentLevel];
     }
-
 
     Level GetMaxLevel()
     {
         return levels[levels.Length - 1];
     }
-   
-
-
-
-
     //Potrebna dodatna analiza ovog metoda
     void SetLevel(int levelIndex)
     {
-		/*
         for (int i = 0; i < levels.Length; i++)
         {
             if (levels[levelIndex].model != null)
@@ -106,7 +97,6 @@ public class Hero : MonoBehaviour
                 }
             }
         }
-
     }
 
     //Napomena: Svaki heroj ima coolider koji predstavlja domet(poluprecnik) u kom on moze da ispali projektil
@@ -130,13 +120,12 @@ public class Hero : MonoBehaviour
     void PlayAudio(AudioClip clip)
     {
         //Debug.Log("sound");
-        //audioSource.clip = clip;
-        //audioSource.Play();
+        audioSource.clip = clip;
+        audioSource.Play();
     }
 
     void Shoot()
     {
-		/*
         if (enemies.Count > 0) //ako ima neprijatelja u dometu Heroja
         {
             //u newProjectile se cuva clone objekta projectile
@@ -145,11 +134,9 @@ public class Hero : MonoBehaviour
             newProjectile.transform.parent = projectileParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije
             newProjectile.AddComponent<Projectile>().FireProjectile(ChooseTarget(), ChooseTarget().transform.position);//kako je newProjectile GameObject, moram da mu dodam komponentu Projectile da bi mogla da se pozove metoda FireProjectile
         }
-
     }
 
     Enemy ChooseTarget () { 
-		/*
         //izaberemo onog neprijatelja iz liste neprijatelja koji je najblize cilju (kamenju)
         Enemy nearestEnemy = null;
         float minDistance = Mathf.Infinity;
@@ -161,13 +148,23 @@ public class Hero : MonoBehaviour
                 minDistance = dist;
             }
         }
+        //target = nearestEnemy;
         return nearestEnemy;
-		
     }
-*/
+    public int GetPrice()
+    {
+        return heroPrice;
+    }
 
-	public int GetPrice(){
-		return heroPrice;
-	}
+    void Rotation()
+    {
+        
+        Vector3 moveDirection = gameObject.transform.position - ChooseTarget().transform.position;
+        if (moveDirection != Vector3.zero)
+        {
+            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
+    }
 
 }

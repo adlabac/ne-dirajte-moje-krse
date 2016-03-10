@@ -41,7 +41,7 @@ public class Projectile : MonoBehaviour {
     public float minSlowdownDuration;//procjena na osnovu radiusa
     public float maxSlowdownDuration;
 
-    public float speed = 10f;//brzina kretanja projektila
+    public float speed = 4f;//brzina kretanja projektila
     //za razliciti tipove oruzija ce biti razlicita brzina
     public float distanceFromHero;
     public AudioClip shotAudio;
@@ -54,6 +54,8 @@ public class Projectile : MonoBehaviour {
 	void Start () {
         audioSource = GetComponent<AudioSource>();
         notExplode = true;
+        target = FindObjectOfType<Enemy>();//za sad ovako radi testiranja, u Hero ce se birati target
+        targetPosition = target.transform.position;
 	}
 
 	void Update () {
@@ -69,7 +71,6 @@ public class Projectile : MonoBehaviour {
             if (Vector3.Distance(transform.position, targetPosition) < speed * Time.deltaTime)//uslov kojim se provjerava da li se desio sudar izmedju projektila i neprijatelja(target)
             {
                 Explode();
-                
             }
             else
             {
@@ -86,14 +87,15 @@ public class Projectile : MonoBehaviour {
     //Za pomjeranje projektila ka meti
     void UpdatePosition() {
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
-        //MoveTowards(bullet,target,speed) metod-kretanje projektila ka meti brzinom speed
     }
 
     //kad se sudare projektil i neprijatelj
     void Explode() {
         //Debug.Log("explode");
-        target.TakeDamage(GetDamage(distanceFromHero));//distanceFromHero podesili pri pozivu funkcije FireProjectile unutar klase Hero
-        target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));
+        /*target.TakeDamage(GetDamage(distanceFromHero));//distanceFromHero podesili pri pozivu funkcije FireProjectile unutar klase Hero
+        target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));*/
+        target.TakeDamage(30f);//samo radi testoranja
+        target.Slowdown(2f, 3f);
         PlayAudio(impactAudio);
         gameObject.GetComponent<Renderer>().enabled = false;//treba da sakrije prikaz projektila jer isti treba da nestane pri sudaru, ali ne i da bude unisten
         notExplode = false;//znaci projektil jeste eksplodirao, pa Update() vise nista ne radi

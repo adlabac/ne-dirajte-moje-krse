@@ -15,21 +15,16 @@ using System.Collections;
 //SetEnemyParams() - podesavanje pocetnih vrijednosti za atribute Enemy-a 
 
 //Komentari:
-//Linije 91 (to mozda ne treba odraditi ovako), slicno za Linije 121-122
-//Metod RotationToWaypoint() - dodatno testiranje
-//Metod UpdatePostion() - provjeriti ponasanje ovog metoda kada je putanja kosa
-//Metodi TakeDamage i Slowdown - otvoreni za modifikaciju
-//Sta bi jos trebalo dodati, a sta nije dobro?
+//Metod SetEnemyParams() nedovrsen zbog nedostatka konkretnih tipova neprijatelja
+
 public class Enemy : MonoBehaviour
 {
     EnemyType type;//tip neprijatelja
-    public float health;//HP neprijatelja, ovo treba dodatno razmotriti, postoji i klasa EnemyHealth, ovaj atribut u ovom obliku vjerovatno treba maci
+    public float health = 100f;//HP neprijatelja, ovo treba dodatno razmotriti, postoji i klasa EnemyHealth, ovaj atribut u ovom obliku vjerovatno treba maci
     Vector3 position;//trenutna pozicija neprijatelja
-
-    public float speed;//brzina kretanja neprijatelja na osnovu tipa
+    public float speed = 3f;//brzina kretanja neprijatelja na osnovu tipa
     float speedFactor;//faktor koji utice na usporenje
-
-    int pathIndex = 0;//pathIndex je indeks Patha iz klase GameLevel, neka je to za sad jedan put sa indeksom 0.
+    int pathIndex = 0;//pathIndex je indeks Patha iz klase GameLevel
     int waypoint = 0;//tacka na pathu do koje se Enemy krece pravolinijski
 
     public AudioClip hitAudio;
@@ -38,19 +33,20 @@ public class Enemy : MonoBehaviour
 
     //Promjenljive koje sam dodao u odnosu na GDD
     float slowdownTime;//vrijeme koliko traje usporenje
-    Path[] path;//ovo sam dodao radi testiranja, tj. da bi uzeo niz waypoint-a za put, za sad posmatramo kao da imamo samo jedan tip puta
+    Path path;//ovo sam dodao radi testiranja, tj. da bi uzeo niz waypoint-a za put, za sad posmatramo kao da imamo samo jedan tip puta
     bool alive;//da li je neprijatelj umro, ovo mora postojati zbog odlozenog unistenja objekta - ovim sprecavama da se Update() izvsava i nakon umiranja Enemy-a
     public AudioSource audioSource;//tu se mijenjaju AudioClip-ovi(pomocu metoda PlayAudio(AudioClip clip) u zavisnosti od situacije
     private Animator anim;//za Die animaciju
     public GameObject model;//izgled neprijatelja
     bool isSlowedDown;//da li je Enemy usporen
     bool canSteal; //da li Enemy moze da pokupi kamen
+
     void Start()
     {
-        path = new Path[11];//ovdje treba ucitate sve putave koji postoje(jos ne postoje,pa ce ovo biti kasnije zavrseno), a onda izaberem odgovarajuci pomocu pathIndex-a na osnovu GameLevela
+        path = FindObjectOfType<GameLevel>().paths[pathIndex];
         //U zavisnosti od GameLevela biram index puta !
         //treba ispravno podesiti i tip neprijatelja , naknadno ce biti odradjeno
-        SetEnemyParams();
+        //SetEnemyParams();
         anim = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         alive = true;
@@ -69,17 +65,19 @@ public class Enemy : MonoBehaviour
             else {
                 if (isSlowedDown)
                 {
+                    //Debug.Log(slowdownTime);
                     if (slowdownTime <= 0) //ako vise nije usporen
                     {
                         isSlowedDown = false;
-                        speed = type.defaultSpeed;//ako nije usporen moramo mu vratiti default speed
+                        //speed = type.defaultSpeed;//ako nije usporen moramo mu vratiti default speed
+                        speed = 3f;//vrati se na pocetnu brzinu
                     }
                     else
                     {
                         slowdownTime -= Time.deltaTime;//ovdje podesavamo koliko ce dugo biti usporavan
                     }
                 }
-                float distanceFromWayPoint = Vector3.Distance(transform.position, path[pathIndex].wayPoints[waypoint]);//rastojanje neprijatelja od waypoint-a ka kom se krece
+                float distanceFromWayPoint = Vector3.Distance(transform.position, path.wayPoints[waypoint]);//rastojanje neprijatelja od waypoint-a ka kom se krece
                 UpdatePosition(distanceFromWayPoint);
             }
         }
@@ -88,43 +86,55 @@ public class Enemy : MonoBehaviour
     //u slucaju umiranja neprijatelja
     void Death()
     {
-        ScoreManager.AddCoins(type.reward);//pri umiranju neprijatelja treba povecati coins
+        //ScoreManager.AddCoins(type.reward);//pri umiranju neprijatelja treba povecati coins,kad budu definisani tipovi neprijatelja ovaj komenar maci
+        ScoreManager.AddCoins(50);
         alive = false;
         canSteal = false;
-        anim.SetTrigger("Die");//za animaciju triger
+        //anim.SetTrigger("Die");//za animaciju triger
+
         PlayAudio(dyingAudio);
+        gameObject.GetComponent<Renderer>().enabled = false;
         Destroy(gameObject, 2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
         //odlozeno unistenje da bi se animacija i zvuk izvrsili do kraja
     }
+    //Rotacija ka waypoint-u
     void RotationToWaypoint()
     {
-        float rotationSpeed = 2f;//brzina rotiranja
-        transform.position = Vector3.RotateTowards(transform.position, path[pathIndex].wayPoints[waypoint], rotationSpeed * Time.deltaTime, 0.0f);//testiranje za razne vrijednosti 3. i 4. parametra
+        Vector3 moveDirection = gameObject.transform.position - path.wayPoints[waypoint];
+        if (moveDirection != Vector3.zero)
+        {
+            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
     }
 
     void UpdatePosition(float distance)
     {
         Vector3 newPosition;
         float presao;
-        while (distance > 0)
+        if (distance > 0)
         {
-            newPosition = Vector3.MoveTowards(transform.position, path[pathIndex].wayPoints[waypoint], speed * Time.deltaTime);//koliko se Enemy pomjeri od trenutne do sledece pozicije ka waypointu
+            newPosition = Vector3.MoveTowards(transform.position, path.wayPoints[waypoint], speed*Time.deltaTime);//koliko se Enemy pomjeri od trenutne do sledece pozicije ka waypointu
             presao = Vector3.Distance(transform.position, newPosition);//koliko je presao od pocetne pozicije pa do nove pozicije
             distance -= presao;//distanca do waypointa se smanjuje
             transform.position = newPosition;//tek onda pomjerimo Enemy-a
             if (distance <= 0)//provjerimo da li je stigao do waypointa
             {
-                waypoint++;//neprijatelj se krece ka novom waypoint-u
-                RotationToWaypoint();//rotiramo neprijatelja ka tom novom waypointu
-                if (waypoint == path[pathIndex].wayPoints.Count - 1) //ako Enemy stigne do zadnjeg waypoint-a(to je kamenje)
-                { 
-                    //od ukupnog broja kamenja oduzmemo onoliko kamenja koliko neprijatelj moze da ponese,a onda unistimo neprijatelja,npr. nesto ovako
-                    ScoreManager.RemoveStones(Random.Range(type.minStones, type.maxStones + 1));//[min,max) zato sam stavio +1
+                if (waypoint == path.wayPoints.Count - 1) //ako Enemy stigne do zadnjeg waypoint-a(to je kamenje)
+                {
+                    //od ukupnog broja kamenja oduzmemo onoliko kamenja koliko neprijatelj moze da ponese,a onda unistimo neprijatelja
+                    //ScoreManager.RemoveStones(Random.Range(type.minStones, type.maxStones + 1));//[min,max) zato sam stavio +1a
+                    ScoreManager.RemoveStones(Random.Range(1, 4 + 1));
                     PlayAudio(stealAudio);
                     Destroy(gameObject,2f);//drugi arg. podesavamo u zavisno od trajanja zvuka stealAudio
                     canSteal = false;
                     alive = false;
-                    break; // moramo prekinuti izvrsavanje petlje jer Enemy vise nije ziv
+                    gameObject.GetComponent<Renderer>().enabled = false;//Enemy mora da nestane 
+                     
+                }
+                if (alive) { //da izmjegnemo error
+                    waypoint++;//neprijatelj se krece ka novom waypoint-u
+                    RotationToWaypoint();//rotiramo neprijatelja ka tom novom waypointu
                 }
             }
         }
@@ -133,8 +143,8 @@ public class Enemy : MonoBehaviour
     //ovaj metod treba da se pozove u klasi Hero pri odabiranju neprijatelja ka kom treba ispaliti projektil
     public float GetDistanceFromRocks()
     {
-        int lastWaypoint = path[pathIndex].wayPoints.Count - 1;
-        return Vector3.Distance(transform.position, path[pathIndex].wayPoints[lastWaypoint]);//rastojanje neprijatelja od zadnjeg waypointa koji predstavlja kamenje
+        int lastWaypoint = path.wayPoints.Count - 1;
+        return Vector3.Distance(transform.position, path.wayPoints[lastWaypoint]);//rastojanje neprijatelja od zadnjeg waypointa koji predstavlja kamenje
     }
     //Odrediti float value pomocu metoda GetDamage(float distance) kada Hero izabere neprijatelja, a pozvati ovaj metod kada se sudare neprijatelj i projektil
     public void TakeDamage(float value)
