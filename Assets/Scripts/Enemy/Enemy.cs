@@ -35,7 +35,7 @@ public class Enemy : MonoBehaviour
     float slowdownTime;//vrijeme koliko traje usporenje
     Path path;//ovo sam dodao radi testiranja, tj. da bi uzeo niz waypoint-a za put, za sad posmatramo kao da imamo samo jedan tip puta
     bool alive;//da li je neprijatelj umro, ovo mora postojati zbog odlozenog unistenja objekta - ovim sprecavama da se Update() izvsava i nakon umiranja Enemy-a
-    public AudioSource audioSource;//tu se mijenjaju AudioClip-ovi(pomocu metoda PlayAudio(AudioClip clip) u zavisnosti od situacije
+    private AudioSource audioSourceEnemy;//tu se mijenjaju AudioClip-ovi(pomocu metoda PlayAudio(AudioClip clip) u zavisnosti od situacije
     private Animator anim;//za Die animaciju
     public GameObject model;//izgled neprijatelja
     bool isSlowedDown;//da li je Enemy usporen
@@ -48,7 +48,7 @@ public class Enemy : MonoBehaviour
         //treba ispravno podesiti i tip neprijatelja , naknadno ce biti odradjeno
         //SetEnemyParams();
         anim = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
+        audioSourceEnemy = this.GetComponent<AudioSource>();
         alive = true;
         canSteal = true;
         isSlowedDown = false;
@@ -91,7 +91,7 @@ public class Enemy : MonoBehaviour
         alive = false;
         canSteal = false;
         //anim.SetTrigger("Die");//za animaciju triger
-
+        Debug.Log("DeathSound");
         PlayAudio(dyingAudio);
         gameObject.GetComponent<Renderer>().enabled = false;
         Destroy(gameObject, 2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
@@ -125,6 +125,7 @@ public class Enemy : MonoBehaviour
                     //od ukupnog broja kamenja oduzmemo onoliko kamenja koliko neprijatelj moze da ponese,a onda unistimo neprijatelja
                     //ScoreManager.RemoveStones(Random.Range(type.minStones, type.maxStones + 1));//[min,max) zato sam stavio +1a
                     ScoreManager.RemoveStones(Random.Range(1, 4 + 1));
+                    Debug.Log("StealStone");
                     PlayAudio(stealAudio);
                     Destroy(gameObject,2f);//drugi arg. podesavamo u zavisno od trajanja zvuka stealAudio
                     canSteal = false;
@@ -149,8 +150,12 @@ public class Enemy : MonoBehaviour
     //Odrediti float value pomocu metoda GetDamage(float distance) kada Hero izabere neprijatelja, a pozvati ovaj metod kada se sudare neprijatelj i projektil
     public void TakeDamage(float value)
     {
-        health -= value;
-        PlayAudio(hitAudio);
+        
+        if (alive) {
+            health -= value;
+            PlayAudio(hitAudio);
+        }
+        
     }
     //slicno kao i za prethodni metod
     public void Slowdown(float factor, float time)
@@ -165,8 +170,11 @@ public class Enemy : MonoBehaviour
 
     void PlayAudio(AudioClip clip)
     {
-        audioSource.clip = clip;
-        audioSource.Play();
+        if (audioSourceEnemy != null) {
+            audioSourceEnemy.clip = clip;
+            audioSourceEnemy.Play();
+        }
+        
     }
 
     //Ovaj metod mozda treba prevesti u konstruktor
