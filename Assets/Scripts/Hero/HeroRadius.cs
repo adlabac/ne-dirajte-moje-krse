@@ -16,4 +16,11 @@ public class HeroRadius : MonoBehaviour {
 	void OnMouseUp (){
 		transform.gameObject.active = false;
 	}
+
+
+	void OnTriggerEnter2D(Collider2D other){
+		Debug.Log("Collide");
+	}
+
+
 }
