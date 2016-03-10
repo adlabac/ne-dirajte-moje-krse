@@ -39,19 +39,23 @@ public class GameLevel : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		GameObject stones;
-		GameObject coins;
+
 
 		LoadMatrix(); // prvo ucitavamo matricu
 
 		//************** 1. INICIJALIZACIJA ZA SCORE MANAGER ********************
 		//oba ova dijela idu preko ScoreManagera
+
 		//u ovom dijelu bi trebalo inicijalizovati broj kamenja u odnosu na pocetni totalStones
-		stones = GameObject.Find ("Stones");
 		totalStones = 20; //citati iz fajla/baze
+		ScoreManager.SetStones(totalStones);
+
+
 		//u ovom dijelu bi trebalo inicijalizovati broj novcica u odnosu na pocetni startingCoins
-		coins = GameObject.Find ("Coins");
-		startingCoins = 100; //citati iz fajla/baze
+		startingCoins = 180; //citati iz fajla/baze
+		ScoreManager.SetCoins(startingCoins);
+
+
 		//prvi naredni red je zakomentarisan, jer nemamo niz
 		//totalWaves = enemyWaves.Length;
 		waveNumber = 1;

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+
+
 public class ScoreManager : MonoBehaviour
 {
 	private static ScoreManager instance;
@@ -9,6 +11,20 @@ public class ScoreManager : MonoBehaviour
 	private static int coins=0;
 	private static int stonesRemaining=0;
 	private static int enemyWave=0;
+
+	public Text stonesText;
+	public Text coinsText;
+
+	void Start(){
+		stonesText = GameObject.Find ("StonesText").GetComponent<Text>();
+		coinsText = GameObject.Find ("CoinsText").GetComponent<Text> ();
+	}
+
+	void Update(){
+		stonesText.text = stonesRemaining.ToString();
+		coinsText.text = coins.ToString ();
+	}
+
 
 	public static void SetStones(int stonesToBeSet)
 	{
