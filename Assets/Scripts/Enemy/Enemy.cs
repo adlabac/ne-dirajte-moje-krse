@@ -91,7 +91,7 @@ public class Enemy : MonoBehaviour
         alive = false;
         canSteal = false;
         //anim.SetTrigger("Die");//za animaciju triger
-        Debug.Log("DeathSound");
+        //Debug.Log("DeathSound");
         PlayAudio(dyingAudio);
         gameObject.GetComponent<Renderer>().enabled = false;
         Destroy(gameObject, 2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
