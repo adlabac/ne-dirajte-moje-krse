@@ -42,7 +42,7 @@ public class Hero : MonoBehaviour
     public AudioClip spawnAudio;
     public AudioClip enemySpottedAudio;
     public static int heroPrice = 50;
-	public int radius = 3;
+	public int radius=1;
     //Inicijalizacija
     void Start()
     {
@@ -78,10 +78,31 @@ public class Hero : MonoBehaviour
     }
 
 
-
+	//klik na heroja - moguce je vidjeti njegov radius	
 	void OnMouseUp (){
-		Debug.Log ("Click");
-		//GetComponent<CircleCollider2D> ().bounds
+		//trazimo child od kliknutog heroja
+		GameObject visibleRadius = transform.Find ("HeroRadius").gameObject;
+		GameObject[] heroes;
+
+
+		//ako se vidi radijus, onda se samo ugasi
+		if (visibleRadius.active==true)
+				visibleRadius.active=false;
+		//ako se ne vidi, bitno je da se svim drugima ugasi i da se ovdje upali
+		else{
+			//nadji sve heroje
+			heroes = GameObject.FindGameObjectsWithTag ("Heroes");
+
+			Debug.Log (heroes.GetLength(0));
+			//svakom ugasi radius - bice samo jedan ustvari
+			foreach (GameObject hero in heroes)
+				hero.transform.Find ("HeroRadius").gameObject.active = false;
+			visibleRadius.active=true;
+
+		}
+
+
+		//visibleRadius.active = !visibleRadius.active;
 	}
 
 
