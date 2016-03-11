@@ -140,6 +140,7 @@ public class Hero : MonoBehaviour
 	//Napomena: Svaki heroj ima coolider koji predstavlja domet(poluprecnik) u kom on moze da ispali projektil
 	void OnTriggerEnter2D(Collider2D other) // ovo other je objekat koji ima kolider i nalazi se u dometu kolidera Heroja
 	{
+		/*
 		//Debug.Log ("Colider");
 		if (other.CompareTag("Enemy"))//ako objekat other ima Tag sa nazivom Enemy(Unity-u za Enemy treba postaviti da ima tag Enemy)
 		{
@@ -149,11 +150,12 @@ public class Hero : MonoBehaviour
 			}
 			enemies.Add(other.gameObject.GetComponent<Enemy>());//dodamo u listu enemies neprijatelja koji je usao u domet heroja
 		}
+		*/
 	}
 
 	void OnTriggerExit2D(Collider2D other)
 	{
-		enemies.Remove(other.gameObject.GetComponent<Enemy>());//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
+		//enemies.Remove(other.gameObject.GetComponent<Enemy>());//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
 	}
 
 	void PlayAudio(AudioClip clip)
