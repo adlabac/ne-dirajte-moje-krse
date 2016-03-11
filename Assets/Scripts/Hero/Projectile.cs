@@ -89,11 +89,14 @@ public class Projectile : MonoBehaviour {
 
     //kad se sudare projektil i neprijatelj
     void Explode() {
-        //Debug.Log("explode");
-        /*target.TakeDamage(GetDamage(distanceFromHero));//distanceFromHero podesili pri pozivu funkcije FireProjectile unutar klase Hero
+        //Bice izmijenjeno kad omogucimo da heroj ispaljuje projektile
+        /*Debug.Log("explode");
+        target.TakeDamage(GetDamage(distanceFromHero));//distanceFromHero podesili pri pozivu funkcije FireProjectile unutar klase Hero
         target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));*/
-        target.TakeDamage(30f);//samo radi testoranja
-        target.Slowdown(2f, 3f);
+        target.TakeDamage(30f);
+        if (target != null) { //ovo samo privremeno ovdje stoji,bice uklonjeno kad pocne heroj da ispaljuje projektile
+            target.Slowdown(target.GetComponent<EnemyType>().slowdownFactor, 3f);
+        }
         PlayAudio(impactAudio);
         gameObject.GetComponent<Renderer>().enabled = false;//treba da sakrije prikaz projektila jer isti treba da nestane pri sudaru, ali ne i da bude unisten
         notExplode = false;//znaci projektil jeste eksplodirao, pa Update() vise nista ne radi
@@ -102,9 +105,11 @@ public class Projectile : MonoBehaviour {
     }
 
     void PlayAudio(AudioClip projectileAudio) {
-        //Debug.Log("sound");
-        audioSource.clip = projectileAudio;
-        audioSource.Play();
+        if (audioSource != null)
+        {
+            audioSource.clip = projectileAudio;
+            audioSource.Play();
+        }
     }
 
     //Ove tri metode bi pripremile vrijednosti parametara za metode TakeDamage i Slowdown
