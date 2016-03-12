@@ -98,7 +98,7 @@ public class Enemy : MonoBehaviour
     //Rotacija ka waypoint-u
     void RotationToWaypoint()
     {
-        Debug.Log("Rotacija");
+        //Debug.Log("Rotacija");
         Vector3 moveDirection = gameObject.transform.position - path.wayPoints[waypoint];
         if (moveDirection != Vector3.zero)
         {
