@@ -26,15 +26,14 @@ public class EnemyWave : MonoBehaviour
 	 */
 	void Start () 
 	{
+        /*
         enemyParent = GameObject.Find("Enemies");
         if (enemyParent == null)//ako u hijerarhiji nema GameObject-a Enemies, kreiraj ga
         {
             //ovdje kreiramo GameObject sa nazivom Enemies i to je enemyParent
             enemyParent = new GameObject("Enemies");
-        }
-        //prije je bilo cnt.Length = spawnTime.Length;
-        //pretpostavljam da je neko ko je imao ovu klasu htio da uradi ovo:
-        
+        } */
+
         cnt = new int[spawnDelay.Length];
         spawnTime = new float[spawnDelay.Length];
         timer = 0;
@@ -48,7 +47,7 @@ public class EnemyWave : MonoBehaviour
 				spawnTime [i] = spawnTime [i - 1] + spawnDelay [i];
 		}
 
-		AssignEnemyTypes(enemyTypes, enemyTypeNames); //ne znam da li je trebalo u startu da se dodijele atributi nizu enemyTypes preko imena
+		//AssignEnemyTypes(enemyTypes, enemyTypeNames); //ne znam da li je trebalo u startu da se dodijele atributi nizu enemyTypes preko imena
 	}
 	/*
 	 * U Update postavljamo timer koji mjeri vrijeme predjeno
@@ -103,7 +102,6 @@ public class EnemyWave : MonoBehaviour
     
 	IEnumerator SpawnEnemy(EnemyType enemyType, int count, float spawnInterval, Path path)
 	{
-
         int cnt = 0;
 		while(cnt < count)
 		{

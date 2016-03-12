@@ -42,13 +42,13 @@ public class Enemy : MonoBehaviour
     {
         //U zavisnosti od GameLevela biram index puta !
         path = FindObjectOfType<GameLevel>().paths[pathIndex];
-        //Napomena: U EnemyWave se dodijeli type neprijatelju i komponenta EnemyType !
         SetEnemyParams();
         anim = GetComponent<Animator>();
         audioSourceEnemy = this.GetComponent<AudioSource>();
         alive = true;
         canSteal = true;
         isSlowedDown = false;
+        RotationToWaypoint();
     }
     void Update()
     {
@@ -65,8 +65,8 @@ public class Enemy : MonoBehaviour
                     if (slowdownTime <= 0) //ako vise nije usporen
                     {
                         isSlowedDown = false;
-                        //speed = type.defaultSpeed;//ako nije usporen moramo mu vratiti default speed
-                        speed = 3f;//vrati se na pocetnu brzinu
+                        speed = type.defaultSpeed;//ako nije usporen moramo mu vratiti default speed
+                        //speed = 3f;//vrati se na pocetnu brzinu
                     }
                     else
                     {
@@ -87,18 +87,31 @@ public class Enemy : MonoBehaviour
         canSteal = false;
         //anim.SetTrigger("Die");//za animaciju triger
         PlayAudio(dyingAudio);
+        foreach (Transform child in gameObject.transform)//ovo sam morao da dodam zbog mozgonje
+        {
+            Destroy(child.gameObject);
+        }
         gameObject.GetComponent<Renderer>().enabled = false;
-        
         Destroy(gameObject, 2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
         //odlozeno unistenje da bi se animacija i zvuk izvrsili do kraja
     }
     //Rotacija ka waypoint-u
     void RotationToWaypoint()
     {
+        Debug.Log("Rotacija");
         Vector3 moveDirection = gameObject.transform.position - path.wayPoints[waypoint];
         if (moveDirection != Vector3.zero)
         {
-            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + 90f; //Zbog mozgonje sam ovo promijenio. Nikola
+            float angle;
+            //Ovo if samo privremeno postoji
+            if (type.name == "Bot1")
+            {
+                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + 90f;//Zbog mozgonje sam ovo promijenio. Nikola
+            }
+            else {
+                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg; 
+            }
+            
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
@@ -123,11 +136,16 @@ public class Enemy : MonoBehaviour
                     Destroy(gameObject,2f);//drugi arg. podesavamo u zavisno od trajanja zvuka stealAudio
                     canSteal = false;
                     alive = false;
+                    foreach (Transform child in gameObject.transform)//ovo sam morao da dodam zbog mozgonje
+                    {
+                        Destroy(child.gameObject);
+                    }
                     gameObject.GetComponent<Renderer>().enabled = false;//Enemy mora da nestane 
                 }
                 if (alive) { //da izmjegnemo error
                     waypoint++;//neprijatelj se krece ka novom waypoint-u
                     RotationToWaypoint();//rotiramo neprijatelja ka tom novom waypointu
+                    
                 }
             }
         }
