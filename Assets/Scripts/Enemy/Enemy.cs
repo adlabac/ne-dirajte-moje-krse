@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour
     public float speed;//brzina kretanja neprijatelja na osnovu tipa
     float speedFactor;//faktor koji utice na usporenje
     int pathIndex = 0;//pathIndex je indeks Patha iz klase GameLevel
-    int waypoint = 0;//tacka na pathu do koje se Enemy krece pravolinijski
+    int waypoint = 1;//tacka na pathu do koje se Enemy krece pravolinijski
 
     public AudioClip hitAudio;
     public AudioClip stealAudio;//zvuk kad Enemy dodje do kamena
@@ -88,6 +88,7 @@ public class Enemy : MonoBehaviour
         //anim.SetTrigger("Die");//za animaciju triger
         PlayAudio(dyingAudio);
         gameObject.GetComponent<Renderer>().enabled = false;
+        
         Destroy(gameObject, 2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
         //odlozeno unistenje da bi se animacija i zvuk izvrsili do kraja
     }
