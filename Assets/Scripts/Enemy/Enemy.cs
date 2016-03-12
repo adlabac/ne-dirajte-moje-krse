@@ -97,7 +97,7 @@ public class Enemy : MonoBehaviour
         Vector3 moveDirection = gameObject.transform.position - path.wayPoints[waypoint];
         if (moveDirection != Vector3.zero)
         {
-            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + 90f; //Zbog mozgonje sam ovo promijenio. Nikola
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
