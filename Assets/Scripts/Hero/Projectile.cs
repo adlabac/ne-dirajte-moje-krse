@@ -16,13 +16,10 @@ using System.Collections;
 
 
 //Potrebni dodatni komentari: 
-//Metod Start() - treba li za sad ovdje jos sta dodati
-//Pogledati komentar od Linija 60 - Linije 66
 //Metod Update() - u samom metodu sam i opisao sta treba sve da se definise prije izvrsavanja koda u ovom metodu, da li je potrebno jos nesto
 //Metod Explode() - mozda se moze pojednostaviti, detaljno procitati komentare koje sam naveo u ovoj funkciji
 //Metod FireProjectile() - treba li se jos sta dodati kod ovog metoda
 //Kreirati u Unity hijerarhiji objekat koji sadrzi sve Projektile koji se nalaze na mapi radi bolje preglednosti hijerarhije
-//Sta bi jos trebalo dodati?
 
 public class Projectile : MonoBehaviour {
     Enemy target; //neprijatelj ka kom treba da bude ispaljen projektil
@@ -46,13 +43,13 @@ public class Projectile : MonoBehaviour {
     public float distanceFromHero;
     public AudioClip shotAudio;
     public AudioClip impactAudio;
-    public AudioSource audioSource;
+    private AudioSource audioSource;
     bool notExplode;//samo za metod Explode(),koristi se da se zvuk impactAudio ne bi aktivirao vise puta ako aktiviramo odlozeno unisavanje projektila, 
     //treba razmotriti postojanje ove promjenljive,vjerovatno postoji laksi nacin da se rijesi ovaj problem
 
     //inicijalizacija
 	void Start () {
-        audioSource = GetComponent<AudioSource>();
+        audioSource = this.GetComponent<AudioSource>();
         notExplode = true;
         target = FindObjectOfType<Enemy>();//za sad ovako radi testiranja, u Hero ce se birati target
         targetPosition = target.transform.position;
@@ -79,6 +76,7 @@ public class Projectile : MonoBehaviour {
                 {
                     //Debug.Log(targetPosition);
                     targetPosition = target.transform.position;//pratimo poziciju neprijatelja,treba nam za UpdatePosition() metod
+                    RotationToTarget();
                 }
             }
         }        
@@ -91,11 +89,14 @@ public class Projectile : MonoBehaviour {
 
     //kad se sudare projektil i neprijatelj
     void Explode() {
-        //Debug.Log("explode");
-        /*target.TakeDamage(GetDamage(distanceFromHero));//distanceFromHero podesili pri pozivu funkcije FireProjectile unutar klase Hero
+        //Bice izmijenjeno kad omogucimo da heroj ispaljuje projektile
+        /*Debug.Log("explode");
+        target.TakeDamage(GetDamage(distanceFromHero));//distanceFromHero podesili pri pozivu funkcije FireProjectile unutar klase Hero
         target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));*/
-        target.TakeDamage(30f);//samo radi testoranja
-        target.Slowdown(2f, 3f);
+        target.TakeDamage(30f);
+        if (target != null) { //ovo samo privremeno ovdje stoji,bice uklonjeno kad pocne heroj da ispaljuje projektile
+            target.Slowdown(target.GetComponent<EnemyType>().slowdownFactor, 3f);
+        }
         PlayAudio(impactAudio);
         gameObject.GetComponent<Renderer>().enabled = false;//treba da sakrije prikaz projektila jer isti treba da nestane pri sudaru, ali ne i da bude unisten
         notExplode = false;//znaci projektil jeste eksplodirao, pa Update() vise nista ne radi
@@ -104,9 +105,11 @@ public class Projectile : MonoBehaviour {
     }
 
     void PlayAudio(AudioClip projectileAudio) {
-        //Debug.Log("sound");
-        audioSource.clip = projectileAudio;
-        audioSource.Play();
+        if (audioSource != null)
+        {
+            audioSource.clip = projectileAudio;
+            audioSource.Play();
+        }
     }
 
     //Ove tri metode bi pripremile vrijednosti parametara za metode TakeDamage i Slowdown
@@ -171,5 +174,11 @@ public class Projectile : MonoBehaviour {
         targetPosition = enemyPosition;
         distanceFromHero = Vector3.Distance(enemyPosition, transform.position);//kada se pozove ovaj metod, odredice rastojanje izmedju Heroja i Enemy-a
     }
-
+    void RotationToTarget()
+    {
+        Vector3 targetDir = target.transform.position - transform.position;
+        float step = speed * Time.deltaTime;
+        Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0F);
+        transform.rotation = Quaternion.LookRotation(newDir);
+    }
 }

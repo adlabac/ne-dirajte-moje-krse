@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class EnemyWave : MonoBehaviour 
 {
@@ -9,10 +10,10 @@ public class EnemyWave : MonoBehaviour
 	public float[] spawnDelay;
 	public float[] spawnInterval;
 
-	private EnemyType[] enemyTypes = null;
-	private float[] spawnTime = null;  //niz koji sadrzi posle kog vremena treba da se spawnuju neprijatelji
+	public EnemyType[] enemyTypes;
+	private float[] spawnTime;  //niz koji sadrzi posle kog vremena treba da se spawnuju neprijatelji
 	private float timer;		//broji vrijeme
-	private int[] cnt;
+	private int[] cnt; 
 
     private GameObject enemyParent;
 
@@ -25,16 +26,18 @@ public class EnemyWave : MonoBehaviour
 	 */
 	void Start () 
 	{
+        /*
         enemyParent = GameObject.Find("Enemies");
         if (enemyParent == null)//ako u hijerarhiji nema GameObject-a Enemies, kreiraj ga
         {
             //ovdje kreiramo GameObject sa nazivom Enemies i to je enemyParent
             enemyParent = new GameObject("Enemies");
-        }
-        //prije je bilo cnt.Length = spawnTime.Length;
-        //pretpostavljam da je neko ko je imao ovu klasu htio da uradi ovo:
-		cnt = new int[spawnTime.Length - 1];
+        } */
 
+        cnt = new int[spawnDelay.Length];
+        spawnTime = new float[spawnDelay.Length];
+        timer = 0;
+        
 		for (int i = 0; i < spawnDelay.Length; i++) 
 		{
 			cnt [i] = 0;
@@ -44,7 +47,7 @@ public class EnemyWave : MonoBehaviour
 				spawnTime [i] = spawnTime [i - 1] + spawnDelay [i];
 		}
 
-		//AssignEnemyTypes(enemyTypes, enemyTypeNames)  			ne znam da li je trebalo u startu da se dodijele atributi nizu enemyTypes preko imena
+		//AssignEnemyTypes(enemyTypes, enemyTypeNames); //ne znam da li je trebalo u startu da se dodijele atributi nizu enemyTypes preko imena
 	}
 	/*
 	 * U Update postavljamo timer koji mjeri vrijeme predjeno
@@ -70,40 +73,40 @@ public class EnemyWave : MonoBehaviour
 		}
 	}
 
-	/*	Na osnovu niza enemyTypeNames treba dodijeliti vrijednosti atributima enemyTypes upotrebom metode GetByName
-	public void AssignEnemyTypes(EnemyType[] enemyTypes, string[] enemyTypeNames)
+	/*	Na osnovu niza enemyTypeNames treba dodijeliti vrijednosti atributima enemyTypes upotrebom metode GetByName*/
+
+    public void AssignEnemyTypes(EnemyType[] enemyTypes, string[] enemyTypeNames)
 	{
+        
 		for (int i = 0; i < enemyTypeNames.Length; i++) 
 		{
-			enemyTypes [i] = EnemyTypes.GetByName (enemyTypeNames[i]);  //Ovdje bi vjerovatno trebao da se napravi konstruktor SetEnemyType
-			//ili
-			enemyTypes [i].name = EnemyTypes.GetByName (enemyTypeNames[i]).name;
-			enemyTypes [i].defaultSpeed = EnemyTypes.GetByName (enemyTypeNames[i]).defaultSpeed;
-			enemyTypes [i].initialHealth = EnemyTypes.GetByName (enemyTypeNames[i]).initialHealth;
-			enemyTypes [i].slowdownFactor = EnemyTypes.GetByName (enemyTypeNames[i]).slowdownFactor;
-			enemyTypes [i].reward = EnemyTypes.GetByName (enemyTypeNames[i]).reward;
-			enemyTypes [i].minStones = EnemyTypes.GetByName (enemyTypeNames[i]).minStones;
-			enemyTypes [i].maxStones = EnemyTypes.GetByName (enemyTypeNames[i]).maxStones;
-			enemyTypes [i].model = Instantiate(EnemyTypes.GetByName (enemyTypeNames[i]).model) as GameObject;
+			//enemyTypes [i] = EnemyTypes.GetByName (enemyTypeNames[i]);  //Ovdje bi vjerovatno trebao da se napravi konstruktor SetEnemyType
+           
+			enemyTypes[i].name = FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).name;
+            enemyTypes[i].defaultSpeed = FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).defaultSpeed;
+            enemyTypes[i].initialHealth = FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).initialHealth;
+            enemyTypes[i].slowdownFactor = FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).slowdownFactor;
+            enemyTypes[i].reward = FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).reward;
+            enemyTypes[i].minStones = FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).minStones;
+            enemyTypes[i].maxStones = FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).maxStones;
+            //enemyTypes[i].model = Instantiate(FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).model) as GameObject;
+
 		}
 	}
-	*/
+	
 	/*
 	 * Postavlja se Coroutine za Spawnovanje neprijatelja kojem se kao parametri predaju tip neprijatelja, broj koliko takvih neprijatelja
 	 * treba da se Spawnuje, koji je interval po kojima trebaju da se Spawnuju neprijatelji, kao i njihova putanja koja im je dodijeljena
 	 * za njihovo kretanje
 	 */
-    //Komentar za onog ko je kreirao ovaj metod: Trebalo bi da se spawn-uju neprijatlji, a ne njihovi tipovi
+    
 	IEnumerator SpawnEnemy(EnemyType enemyType, int count, float spawnInterval, Path path)
 	{
-        //Razmisliti i ovom pristupu kreiranja neprijatelja !
-        /*GameObject newEnemy = Instantiate(enemyType.model) as GameObject;
-        newEnemy.transform.parent = enemyParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije,smjestamo sve neprijatelje u Enemies GameObject
-		*/
         int cnt = 0;
-		while(cnt <= count)
+		while(cnt < count)
 		{
-            Instantiate(enemyType.model,path.wayPoints[0], Quaternion.identity);
+            GameObject enemy = Instantiate(enemyType, path.wayPoints[0], Quaternion.identity) as GameObject;
+            //enemy.transform.parent = enemyParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije,smjestamo sve neprijatelje u Enemies GameObject
 			cnt++;
 			yield return new WaitForSeconds(spawnInterval);
 		}
