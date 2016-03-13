@@ -3,17 +3,28 @@ using UnityEngine.UI;
 using System.Collections;
 
 
-
 public class ScoreManager : MonoBehaviour
 {
 	private static ScoreManager instance;
 	
 	private ScoreManager() {}
-
-
 	private static int coins=0;
 	private static int stonesRemaining=0;
 	private static int enemyWave=0;
+
+	public Text stonesText;
+	public Text coinsText;
+
+	void Start(){
+		stonesText = GameObject.Find ("StonesText").GetComponent<Text>();
+		coinsText = GameObject.Find ("CoinsText").GetComponent<Text> ();
+	}
+
+	void Update(){
+		stonesText.text = stonesRemaining.ToString();
+		coinsText.text = coins.ToString ();
+	}
+
 
 	public static void SetStones(int stonesToBeSet)
 	{
@@ -44,11 +55,11 @@ public class ScoreManager : MonoBehaviour
 		//dodajmo (moze i negativno) broj novcica na trenutnu vrijednost
 		coins += coinsToBeAdded;
 	}
-	
-	public static void AddStones(int stonesToBeAdded)
+
+    public static void RemoveStones(int stonesToRemove)
 	{
-		//dodajmo (moze i negativno) broj kamena na trenutnu vrijednost
-		stonesRemaining += stonesToBeAdded;
+        //cini mi se da je bolje da se smanjuje broj kamenja kad Enemy stigne do cilja, jasnije je
+		stonesRemaining -= stonesToRemove;
 	}
 	
 	public static void NextWave()
