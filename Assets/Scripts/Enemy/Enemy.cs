@@ -189,5 +189,6 @@ public class Enemy : MonoBehaviour
         speed = type.defaultSpeed;
         speedFactor = type.slowdownFactor;
     }
+   
 
 }
