@@ -35,26 +35,28 @@ public class Hero : MonoBehaviour
 {
     int currentLevel = 1;//trenutni level heroja
     Level[] levels;//niz levela za heroja
-    List<Enemy> enemies; //Svi neprijatelji u dometu
+    public List<Enemy> enemies; //Svi neprijatelji u dometu,neka je za sa public da bi vidjeli bira li heroj pravu metu i ulaze/izlaze li neprijatelji u korektnom redosledu
     float shootTimer;
     private GameObject projectileParent;//ovdje se cuvaju svi projektili koji se spawnuju
     public AudioSource audioSource;
     public AudioClip spawnAudio;
     public AudioClip enemySpottedAudio;
     public static int heroPrice = 50;
-	public int radius=1;
+    public float radius = 3f;//u inspektoru podesimo radijus
+    
     //Inicijalizacija
     void Start()
     {
-        enemies = null;//u pocetku nema neprijatelja koje enemy moze da dohvati
+        
+        enemies = new List<Enemy>();//u pocetku nema neprijatelja koje enemy moze da dohvati
         //levels = new Level[levels.Length-1];
         //Kasnije ce biti azurirano
         audioSource = GetComponent<AudioSource>();
         PlayAudio(spawnAudio);
-
+        
 		//podesavamo radius collidera
 		GetComponent<CircleCollider2D> ().radius = radius;
-
+         
 
         projectileParent = GameObject.Find("Projectiles");
         if (projectileParent == null)//ako u hijerarhiji nema GameObject-a Projectiles, kreiraj ga
@@ -69,8 +71,9 @@ public class Hero : MonoBehaviour
     //Update se vrsi jednom po frejmu
     void Update()
     {
+        
         //Kasnije ce biti azurirano
-        if (enemies != null)
+        if (enemies.Count != 0)
         {
             Rotation();
         }
@@ -116,7 +119,6 @@ public class Hero : MonoBehaviour
 				minDistance = dist;
 			}
 		}
-		//target = nearestEnemy;
 		return nearestEnemy;
 	}
 	public int GetPrice()
@@ -130,7 +132,7 @@ public class Hero : MonoBehaviour
 		Vector3 moveDirection = gameObject.transform.position - ChooseTarget().transform.position;
 		if (moveDirection != Vector3.zero)
 		{
-			float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+			float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + 90f;
 			transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 		}
 	}
@@ -140,37 +142,33 @@ public class Hero : MonoBehaviour
 	//Napomena: Svaki heroj ima coolider koji predstavlja domet(poluprecnik) u kom on moze da ispali projektil
 	void OnTriggerEnter2D(Collider2D other) // ovo other je objekat koji ima kolider i nalazi se u dometu kolidera Heroja
 	{
-		/*
+		
 		//Debug.Log ("Colider");
-		if (other.CompareTag("Enemy"))//ako objekat other ima Tag sa nazivom Enemy(Unity-u za Enemy treba postaviti da ima tag Enemy)
+		if (other.CompareTag("Enemies"))//ako objekat other ima Tag sa nazivom Enemy(Unity-u za Enemy treba postaviti da ima tag Enemy)
 		{
+
 			if (enemies.Count == 0) //Pustamo zvuk ako je lista neprijatelja prazna, tj. ulazi prvi neprijatelj u domet
 			{
 				PlayAudio(enemySpottedAudio);
 			}
-			enemies.Add(other.gameObject.GetComponent<Enemy>());//dodamo u listu enemies neprijatelja koji je usao u domet heroja
-		}
-		*/
+         
+            enemies.Add(other.gameObject.GetComponent<Enemy>());//dodamo u listu enemies neprijatelja koji je usao u domet heroja
+
+        }
+		
 	}
 
 	void OnTriggerExit2D(Collider2D other)
 	{
-		//enemies.Remove(other.gameObject.GetComponent<Enemy>());//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
-	}
+        enemies.Remove(other.gameObject.GetComponent<Enemy>());//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
+        
+    }
 
 	void PlayAudio(AudioClip clip)
 	{
 		audioSource.clip = clip;
 		audioSource.Play();
 	}
-
-
-
-
-
-
-
-
 
 
 
