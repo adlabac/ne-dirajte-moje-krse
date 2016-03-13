@@ -19,7 +19,7 @@ public class HeroRadius : MonoBehaviour {
 
 
 	void OnTriggerEnter2D(Collider2D other){
-		Debug.Log("Collide");
+		Debug.Log("Uslo je nesto");
 	}
 
 
