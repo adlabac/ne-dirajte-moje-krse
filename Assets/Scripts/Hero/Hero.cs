@@ -157,9 +157,12 @@ public class Hero : MonoBehaviour
 	void OnTriggerExit2D(Collider2D other)
 	{
         enemies.Remove(other.gameObject.GetComponent<Enemy>());//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
-        radiusColor = Color.green;
-        radiusColor.a = 0.4f;//providnost (od 0 - 1, 0 skroz pprovidna boja, 1 boja u punom sjaju)
-    }
+		if(enemies.Count == 0)//provjerava ima li vise neprijatelja unutar dometa heroja, ako nema vrati zelenu boju
+		{
+			radiusColor = Color.green;
+        	radiusColor.a = 0.4f;//providnost (od 0 - 1, 0 skroz pprovidna boja, 1 boja u punom sjaju)
+		}
+	}
 
 	void PlayAudio(AudioClip clip)
 	{
