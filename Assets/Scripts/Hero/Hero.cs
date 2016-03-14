@@ -27,12 +27,13 @@ public class Level : MonoBehaviour
 {
     public int cost;
     public GameObject model;
-    public Projectile projectile;
+    
     public float fireRate;
 }
 
 public class Hero : MonoBehaviour
 {
+    public Projectile projectile;
     int currentLevel = 1;//trenutni level heroja
     Level[] levels;//niz levela za heroja
     public List<Enemy> enemies; //Svi neprijatelji u dometu,neka je za sa public da bi vidjeli bira li heroj pravu metu i ulaze/izlaze li neprijatelji u korektnom redosledu
@@ -43,7 +44,8 @@ public class Hero : MonoBehaviour
     public AudioClip enemySpottedAudio;
     public static int heroPrice = 50;
     public float radius = 3f;//u inspektoru podesimo radijus
-    
+    public Color radiusColor;//inicijalna boja radijusa
+
     //Inicijalizacija
     void Start()
     {
@@ -66,6 +68,7 @@ public class Hero : MonoBehaviour
         }
         //Na osnovu trenutnog upgrade levela heroja, odredjujemo fireRate i pozivamo na svakih fireRate sekundi metod za ispaljivanje projektila
         //InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
+        //InvokeRepeating("Shoot", 0.0F, 0.4f);
     }
 
     //Update se vrsi jednom po frejmu
@@ -76,10 +79,10 @@ public class Hero : MonoBehaviour
         if (enemies.Count != 0)
         {
             Rotation();
+            //Shoot();
         }
         
     }
-
 
 	//klik na heroja - moguce je vidjeti njegov radius	
 	void OnMouseUp (){
@@ -103,10 +106,6 @@ public class Hero : MonoBehaviour
 	}
 
 
-
-
-
-
 	Enemy ChooseTarget () { 
 		//izaberemo onog neprijatelja iz liste neprijatelja koji je najblize cilju (kamenju)
 		Enemy nearestEnemy = null;
@@ -128,7 +127,6 @@ public class Hero : MonoBehaviour
 
 	void Rotation()
 	{
-
 		Vector3 moveDirection = gameObject.transform.position - ChooseTarget().transform.position;
 		if (moveDirection != Vector3.zero)
 		{
@@ -142,18 +140,16 @@ public class Hero : MonoBehaviour
 	//Napomena: Svaki heroj ima coolider koji predstavlja domet(poluprecnik) u kom on moze da ispali projektil
 	void OnTriggerEnter2D(Collider2D other) // ovo other je objekat koji ima kolider i nalazi se u dometu kolidera Heroja
 	{
-		
-		//Debug.Log ("Colider");
 		if (other.CompareTag("Enemies"))//ako objekat other ima Tag sa nazivom Enemy(Unity-u za Enemy treba postaviti da ima tag Enemy)
 		{
-
+            //napomena: vrijednosti za boje se krecu od 0 - 1,a ne od 0 - 255
+            radiusColor = Color.red;
+            radiusColor.a = 0.4f;//providnost (od 0 - 1, 0 skroz pprovidna boja, 1 boja u punom sjaju)
 			if (enemies.Count == 0) //Pustamo zvuk ako je lista neprijatelja prazna, tj. ulazi prvi neprijatelj u domet
 			{
 				PlayAudio(enemySpottedAudio);
 			}
-         
             enemies.Add(other.gameObject.GetComponent<Enemy>());//dodamo u listu enemies neprijatelja koji je usao u domet heroja
-
         }
 		
 	}
@@ -161,7 +157,8 @@ public class Hero : MonoBehaviour
 	void OnTriggerExit2D(Collider2D other)
 	{
         enemies.Remove(other.gameObject.GetComponent<Enemy>());//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
-        
+        radiusColor = Color.green;
+        radiusColor.a = 0.4f;//providnost (od 0 - 1, 0 skroz pprovidna boja, 1 boja u punom sjaju)
     }
 
 	void PlayAudio(AudioClip clip)
@@ -169,9 +166,6 @@ public class Hero : MonoBehaviour
 		audioSource.clip = clip;
 		audioSource.Play();
 	}
-
-
-
 
     Level GetLevel()
     {
@@ -201,19 +195,22 @@ public class Hero : MonoBehaviour
         }
     }
 
-
     void Shoot()
     {
         if (enemies.Count > 0) //ako ima neprijatelja u dometu Heroja
         {
             //u newProjectile se cuva clone objekta projectile
-            GameObject newProjectile = Instantiate(this.GetLevel().projectile.model) as GameObject;//kreiramo projektil koji trebamo da ispalimo ka neprijatelju koji je najblizi kamenju
-            //parent od newProjectile je projectileParent  
+            //GameObject newProjectile = Instantiate(this.GetLevel().projectile.model) as GameObject;//kreiramo projektil koji trebamo da ispalimo ka neprijatelju koji je najblizi kamenju
+            //parent od newProjectile je projectileParent 
+            GameObject newProjectile = Instantiate(projectile.model, transform.position, Quaternion.identity) as GameObject;
             newProjectile.transform.parent = projectileParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije
             newProjectile.AddComponent<Projectile>().FireProjectile(ChooseTarget(), ChooseTarget().transform.position);//kako je newProjectile GameObject, moram da mu dodam komponentu Projectile da bi mogla da se pozove metoda FireProjectile
         }
     }
 
-
+    void OnDrawGizmos() {
+        Gizmos.color = radiusColor;
+        Gizmos.DrawSphere(transform.position, radius);
+    }
 
 }

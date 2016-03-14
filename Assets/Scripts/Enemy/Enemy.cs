@@ -52,7 +52,7 @@ public class Enemy : MonoBehaviour
     }
     void Update()
     {
-        if (alive && canSteal)
+        if (alive && canSteal && this != null)
         {
             if (health <= 0) //kad neprijatelj treba da umre
             {

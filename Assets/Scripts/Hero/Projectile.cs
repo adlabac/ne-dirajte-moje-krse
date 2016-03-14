@@ -90,10 +90,9 @@ public class Projectile : MonoBehaviour {
     //kad se sudare projektil i neprijatelj
     void Explode() {
         //Bice izmijenjeno kad omogucimo da heroj ispaljuje projektile
-        /*Debug.Log("explode");
+        //Debug.Log("explode");
         target.TakeDamage(GetDamage(distanceFromHero));//distanceFromHero podesili pri pozivu funkcije FireProjectile unutar klase Hero
-        target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));*/
-        target.TakeDamage(30f);
+        target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));
         if (target != null) { //ovo samo privremeno ovdje stoji,bice uklonjeno kad pocne heroj da ispaljuje projektile
             target.Slowdown(target.GetComponent<EnemyType>().slowdownFactor, 3f);
         }
