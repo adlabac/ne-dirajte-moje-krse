@@ -155,7 +155,16 @@ public class Enemy : MonoBehaviour
     public float GetDistanceFromRocks()
     {
         int lastWaypoint = path.wayPoints.Count - 1;
-        return Vector3.Distance(transform.position, path.wayPoints[lastWaypoint]);//rastojanje neprijatelja od zadnjeg waypointa koji predstavlja kamenje
+        float distanceFromRocks = Vector3.Distance(transform.position,path.wayPoints[waypoint]);
+        int waypointIndex = waypoint ;
+        while (waypointIndex < lastWaypoint)
+        {
+            //Debug.Log(distanceFromRocks);
+            distanceFromRocks += Vector3.Distance(path.wayPoints[waypointIndex], path.wayPoints[waypointIndex + 1]);
+            waypointIndex++;
+        }
+        //Debug.Log(distanceFromRocks);
+        return distanceFromRocks;
     }
     //Odrediti float value pomocu metoda GetDamage(float distance) kada Hero izabere neprijatelja, a pozvati ovaj metod kada se sudare neprijatelj i projektil
     public void TakeDamage(float value)
