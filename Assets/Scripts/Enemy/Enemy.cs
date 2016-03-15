@@ -102,15 +102,7 @@ public class Enemy : MonoBehaviour
         if (moveDirection != Vector3.zero)
         {
             float angle;
-            //Ovo if samo privremeno postoji
-            if (type.name == "Bot")
-            {
-                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;//ova linija koda ce biti uklonjena kad maknemo neprijatelja Bot(rozi neprijatelj)
-            }
-            else {
-                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + +90f;
-            }
-            
+            angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg +90f;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
