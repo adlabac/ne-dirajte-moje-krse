@@ -59,7 +59,6 @@ public class Hero : MonoBehaviour
         //Ovo GetComponent<CircleCollider2D>().radius nije bas precizno
         //Jos nisam zakljucio zasto ali mozda jer je radijus kolajdera local space, a radius world space, pa nesto sa tim treba nastelovati
         GetComponent<CircleCollider2D>().radius = radius + Mathf.Max(transform.lossyScale.x, transform.lossyScale.y);
-        //GetComponent<CircleCollider2D>().radius = radius + GetComponent<Renderer>().bounds.size.x;
 
         projectileParent = GameObject.Find("Projectiles");
         if (projectileParent == null)//ako u hijerarhiji nema GameObject-a Projectiles, kreiraj ga
@@ -69,20 +68,18 @@ public class Hero : MonoBehaviour
         }
         //Na osnovu trenutnog upgrade levela heroja, odredjujemo fireRate i pozivamo na svakih fireRate sekundi metod za ispaljivanje projektila
         //InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
-        //InvokeRepeating("Shoot", 0.0F, 0.4f);
+        InvokeRepeating("Shoot", 0.0F, 0.4f);
     }
 
     //Update se vrsi jednom po frejmu
     void Update()
     {
-        
         //Kasnije ce biti azurirano
         if (enemies.Count != 0)
         {
             Rotation();
             //Shoot();
         }
-        
     }
 
 	//klik na heroja - moguce je vidjeti njegov radius	
@@ -90,7 +87,6 @@ public class Hero : MonoBehaviour
 		//trazimo child od kliknutog heroja
 		GameObject visibleRadius = transform.Find ("HeroRadius").gameObject;
 		GameObject[] heroes;
-
 
 		//ako se vidi radijus, onda se samo ugasi
 		if (visibleRadius.active==true)
@@ -105,7 +101,6 @@ public class Hero : MonoBehaviour
 			visibleRadius.active=true;
 		}
 	}
-
 
 	Enemy ChooseTarget () { 
 		//izaberemo onog neprijatelja iz liste neprijatelja koji je najblize cilju (kamenju)
@@ -136,15 +131,12 @@ public class Hero : MonoBehaviour
 		}
 	}
 
-
-
 	//Napomena: Svaki heroj ima coolider koji predstavlja domet(poluprecnik) u kom on moze da ispali projektil
 	void OnTriggerEnter2D(Collider2D other) // ovo other je objekat koji ima kolider i nalazi se u dometu kolidera Heroja
 	{
 		if (other.CompareTag("Enemies"))//ako objekat other ima Tag sa nazivom Enemy(Unity-u za Enemy treba postaviti da ima tag Enemy)
 		{
             radiusColor = Color.red;
-            //radiusColor.a = 0.4f;//providnost (od 0 - 1, 0 skroz pprovidna boja, 1 boja u punom sjaju)
 			if (enemies.Count == 0) //Pustamo zvuk ako je lista neprijatelja prazna, tj. ulazi prvi neprijatelj u domet
 			{
 				PlayAudio(enemySpottedAudio);
@@ -160,7 +152,6 @@ public class Hero : MonoBehaviour
 		if(enemies.Count == 0)//provjerava ima li vise neprijatelja unutar dometa heroja, ako nema vrati zelenu boju
 		{
 			radiusColor = Color.green;
-        	//radiusColor.a = 0.4f;//providnost (od 0 - 1, 0 skroz pprovidna boja, 1 boja u punom sjaju)
 		}
 	}
 
@@ -202,9 +193,6 @@ public class Hero : MonoBehaviour
     {
         if (enemies.Count > 0) //ako ima neprijatelja u dometu Heroja
         {
-            //u newProjectile se cuva clone objekta projectile
-            //GameObject newProjectile = Instantiate(this.GetLevel().projectile.model) as GameObject;//kreiramo projektil koji trebamo da ispalimo ka neprijatelju koji je najblizi kamenju
-            //parent od newProjectile je projectileParent 
             GameObject newProjectile = Instantiate(projectile.model, transform.position, Quaternion.identity) as GameObject;
             newProjectile.transform.parent = projectileParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije
             newProjectile.AddComponent<Projectile>().FireProjectile(ChooseTarget(), ChooseTarget().transform.position);//kako je newProjectile GameObject, moram da mu dodam komponentu Projectile da bi mogla da se pozove metoda FireProjectile

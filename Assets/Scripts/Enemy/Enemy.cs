@@ -98,7 +98,6 @@ public class Enemy : MonoBehaviour
     //Rotacija ka waypoint-u
     void RotationToWaypoint()
     {
-        //Debug.Log("Rotacija");
         Vector3 moveDirection = gameObject.transform.position - path.wayPoints[waypoint];
         if (moveDirection != Vector3.zero)
         {
@@ -106,10 +105,10 @@ public class Enemy : MonoBehaviour
             //Ovo if samo privremeno postoji
             if (type.name == "Bot")
             {
-                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;//ova linija koda ce biti uklonjena kad maknemo neprijatelja Bot(rozi neprijatelj)
             }
             else {
-                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + +90f;//Zbog mozgonje sam ovo promijenio. Nikola
+                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + +90f;
             }
             
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
@@ -155,15 +154,13 @@ public class Enemy : MonoBehaviour
     public float GetDistanceFromRocks()
     {
         int lastWaypoint = path.wayPoints.Count - 1;
-        float distanceFromRocks = Vector3.Distance(transform.position,path.wayPoints[waypoint]);
+        float distanceFromRocks = Vector3.Distance(transform.position,path.wayPoints[waypoint]);//rastojanje od tekuce pozicije neprijatelja do waypointa
         int waypointIndex = waypoint ;
-        while (waypointIndex < lastWaypoint)
+        while (waypointIndex < lastWaypoint) //sabereme rastojanja izmjedju svih preostalih waypointa
         {
-            //Debug.Log(distanceFromRocks);
             distanceFromRocks += Vector3.Distance(path.wayPoints[waypointIndex], path.wayPoints[waypointIndex + 1]);
             waypointIndex++;
         }
-        //Debug.Log(distanceFromRocks);
         return distanceFromRocks;
     }
     //Odrediti float value pomocu metoda GetDamage(float distance) kada Hero izabere neprijatelja, a pozvati ovaj metod kada se sudare neprijatelj i projektil

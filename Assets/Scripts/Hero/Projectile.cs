@@ -56,13 +56,7 @@ public class Projectile : MonoBehaviour {
 	}
 
 	void Update () {
-        //Prije ovog treba odabrati metu(target) koja je najbliza,a to se radi pomocu metode ChooseEnemy(lista_neprijatelja) u klasi Hero,
-        //a to ima smisla ako je neprijatelj u dometu projektila/heroja, tj. ako je distanca izmedju neprijatelja i heroja manja od maxRadius,
-        //onda se odredi rastojanje izmedju projektila i neprijatelja(mete), a nakon toga se se pozovu metode:
-        //GetDamage(float distance),GetSlowdown(float distance), GetSlowdownDuration(float distance) koje su public jer im se pristupa iz drugih klasa   
-        //Ove metode ce odrediti u ovom koraku vrijednosti parametara za metode koje su definisane u klasi Enemy:
-        //public TakeDamage(float value)
-        //public Slowdown(float factor, float time)
+
         if (notExplode) //provjera da li je projektil vec ekplodirao,jer ako jeste nema smisla raditi ista sa njim
         {
             if (Vector3.Distance(transform.position, targetPosition) < speed * Time.deltaTime)//uslov kojim se provjerava da li se desio sudar izmedju projektila i neprijatelja(target)
@@ -74,7 +68,6 @@ public class Projectile : MonoBehaviour {
                 UpdatePosition();//azuriramo poziciju projektila u odnosu na metu(target)
                 if (target != null) //ako postoji meta onda je prati,ovo target je u stvari Enemy koji je odabran metodom ChooseEnemy u klasi Hero
                 {
-                    //Debug.Log(targetPosition);
                     targetPosition = target.transform.position;//pratimo poziciju neprijatelja,treba nam za UpdatePosition() metod
                     RotationToTarget();
                 }
@@ -88,9 +81,8 @@ public class Projectile : MonoBehaviour {
     }
 
     //kad se sudare projektil i neprijatelj
+    //potrebne izmjene
     void Explode() {
-        //Bice izmijenjeno kad omogucimo da heroj ispaljuje projektile
-        //Debug.Log("explode");
         target.TakeDamage(GetDamage(distanceFromHero));//distanceFromHero podesili pri pozivu funkcije FireProjectile unutar klase Hero
         target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));
         if (target != null) { //ovo samo privremeno ovdje stoji,bice uklonjeno kad pocne heroj da ispaljuje projektile
@@ -110,8 +102,6 @@ public class Projectile : MonoBehaviour {
             audioSource.Play();
         }
     }
-
-    //Ove tri metode bi pripremile vrijednosti parametara za metode TakeDamage i Slowdown
 
     //definisanje damage-a
     public float GetDamage(float distance)
@@ -167,8 +157,6 @@ public class Projectile : MonoBehaviour {
     //Ovaj metod treba jos doradjivati
     public void FireProjectile(Enemy enemy, Vector3 enemyPosition) {
         PlayAudio(shotAudio);
-        //GameObject newProjectile = Instantiate(model) as GameObject;//u Unity hijerarhiji treba dodati projektil, ova linija problematicna
-        //Ovo instanciranje treba obaviti u trenutku ispaljivanja projektila od strane Heroja(znaci u klasi Hero), a ne u ovoj klasi
         target = enemy;
         targetPosition = enemyPosition;
         distanceFromHero = Vector3.Distance(enemyPosition, transform.position);//kada se pozove ovaj metod, odredice rastojanje izmedju Heroja i Enemy-a
