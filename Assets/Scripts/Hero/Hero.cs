@@ -18,7 +18,6 @@ using System.Collections.Generic;
 //Shoot() - ispaljivanje projektila ka meti
 
 //Komentari:
-//Da li Level da bude klasa,razmotriti.
 //U metodu Start() - potrebno analizirati InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
 //Metod SetLevel() - potrebna analiza
 //Kreirati u Unity hijerarhiji objekat koji sadrzi sve Heroje koji se nalaze na mapi
@@ -27,7 +26,7 @@ public class Level : MonoBehaviour
 {
     public int cost;
     public GameObject model;
-    
+    //public Projectile projectile;
     public float fireRate;
 }
 
@@ -43,7 +42,7 @@ public class Hero : MonoBehaviour
     public AudioClip spawnAudio;
     public AudioClip enemySpottedAudio;
     public static int heroPrice = 50;
-    public float radius = 3f;//u inspektoru podesimo radijus
+    public float radius;//u inspektoru podesimo radijus
     public Color radiusColor;//inicijalna boja radijusa
 
     //Inicijalizacija
@@ -57,8 +56,10 @@ public class Hero : MonoBehaviour
         PlayAudio(spawnAudio);
         
 		//podesavamo radius collidera
-		GetComponent<CircleCollider2D> ().radius = radius;
-         
+        //Ovo GetComponent<CircleCollider2D>().radius nije bas precizno
+        //Jos nisam zakljucio zasto ali mozda jer je radijus kolajdera local space, a radius world space, pa nesto sa tim treba nastelovati
+        GetComponent<CircleCollider2D>().radius = radius + Mathf.Max(transform.lossyScale.x, transform.lossyScale.y);
+        //GetComponent<CircleCollider2D>().radius = radius + GetComponent<Renderer>().bounds.size.x;
 
         projectileParent = GameObject.Find("Projectiles");
         if (projectileParent == null)//ako u hijerarhiji nema GameObject-a Projectiles, kreiraj ga
@@ -142,9 +143,8 @@ public class Hero : MonoBehaviour
 	{
 		if (other.CompareTag("Enemies"))//ako objekat other ima Tag sa nazivom Enemy(Unity-u za Enemy treba postaviti da ima tag Enemy)
 		{
-            //napomena: vrijednosti za boje se krecu od 0 - 1,a ne od 0 - 255
             radiusColor = Color.red;
-            radiusColor.a = 0.4f;//providnost (od 0 - 1, 0 skroz pprovidna boja, 1 boja u punom sjaju)
+            //radiusColor.a = 0.4f;//providnost (od 0 - 1, 0 skroz pprovidna boja, 1 boja u punom sjaju)
 			if (enemies.Count == 0) //Pustamo zvuk ako je lista neprijatelja prazna, tj. ulazi prvi neprijatelj u domet
 			{
 				PlayAudio(enemySpottedAudio);
@@ -160,7 +160,7 @@ public class Hero : MonoBehaviour
 		if(enemies.Count == 0)//provjerava ima li vise neprijatelja unutar dometa heroja, ako nema vrati zelenu boju
 		{
 			radiusColor = Color.green;
-        	radiusColor.a = 0.4f;//providnost (od 0 - 1, 0 skroz pprovidna boja, 1 boja u punom sjaju)
+        	//radiusColor.a = 0.4f;//providnost (od 0 - 1, 0 skroz pprovidna boja, 1 boja u punom sjaju)
 		}
 	}
 
@@ -213,7 +213,7 @@ public class Hero : MonoBehaviour
 
     void OnDrawGizmos() {
         Gizmos.color = radiusColor;
-        Gizmos.DrawSphere(transform.position, radius);
+        Gizmos.DrawWireSphere(transform.position , radius);
     }
 
 }

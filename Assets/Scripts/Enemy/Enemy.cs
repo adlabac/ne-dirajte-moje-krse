@@ -52,7 +52,7 @@ public class Enemy : MonoBehaviour
     }
     void Update()
     {
-        if (alive && canSteal && this != null)
+        if (alive && canSteal)
         {
             if (health <= 0) //kad neprijatelj treba da umre
             {
@@ -104,12 +104,12 @@ public class Enemy : MonoBehaviour
         {
             float angle;
             //Ovo if samo privremeno postoji
-            if (type.name == "Bot1")
+            if (type.name == "Bot")
             {
-                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + 90f;//Zbog mozgonje sam ovo promijenio. Nikola
+                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
             }
             else {
-                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg; 
+                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + +90f;//Zbog mozgonje sam ovo promijenio. Nikola
             }
             
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
