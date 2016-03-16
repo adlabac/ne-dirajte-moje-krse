@@ -51,8 +51,6 @@ public class Projectile : MonoBehaviour {
 	void Start () {
         audioSource = this.GetComponent<AudioSource>();
         notExplode = true;
-        target = FindObjectOfType<Enemy>();//za sad ovako radi testiranja, u Hero ce se birati target
-        targetPosition = target.transform.position;
 	}
 
 	void Update () {
@@ -65,11 +63,12 @@ public class Projectile : MonoBehaviour {
             }
             else
             {
-                UpdatePosition();//azuriramo poziciju projektila u odnosu na metu(target)
                 if (target != null) //ako postoji meta onda je prati,ovo target je u stvari Enemy koji je odabran metodom ChooseEnemy u klasi Hero
                 {
+                    
                     targetPosition = target.transform.position;//pratimo poziciju neprijatelja,treba nam za UpdatePosition() metod
                     RotationToTarget();
+                    UpdatePosition();//azuriramo poziciju projektila u odnosu na metu(target)
                 }
             }
         }        
@@ -158,7 +157,9 @@ public class Projectile : MonoBehaviour {
     public void FireProjectile(Enemy enemy, Vector3 enemyPosition) {
         PlayAudio(shotAudio);
         target = enemy;
+        //Debug.Log(target.transform.position);
         targetPosition = enemyPosition;
+        //Debug.Log(targetPosition);
         distanceFromHero = Vector3.Distance(enemyPosition, transform.position);//kada se pozove ovaj metod, odredice rastojanje izmedju Heroja i Enemy-a
     }
     void RotationToTarget()
