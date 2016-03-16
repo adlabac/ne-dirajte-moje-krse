@@ -38,7 +38,7 @@ public class Projectile : MonoBehaviour {
     public float minSlowdownDuration;//procjena na osnovu radiusa
     public float maxSlowdownDuration;
 
-    public float speed = 4f;//brzina kretanja projektila
+    public float speed = 10f;//brzina kretanja projektila
     //za razliciti tipove oruzija ce biti razlicita brzina
     public float distanceFromHero;
     public AudioClip shotAudio;
@@ -82,6 +82,7 @@ public class Projectile : MonoBehaviour {
     //kad se sudare projektil i neprijatelj
     //potrebne izmjene
     void Explode() {
+        //Debug.Log("Explode");
         target.TakeDamage(GetDamage(distanceFromHero));//distanceFromHero podesili pri pozivu funkcije FireProjectile unutar klase Hero
         target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));
         if (target != null) { //ovo samo privremeno ovdje stoji,bice uklonjeno kad pocne heroj da ispaljuje projektile

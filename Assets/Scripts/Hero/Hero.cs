@@ -68,7 +68,7 @@ public class Hero : MonoBehaviour
         }
         //Na osnovu trenutnog upgrade levela heroja, odredjujemo fireRate i pozivamo na svakih fireRate sekundi metod za ispaljivanje projektila
         //InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
-        InvokeRepeating("Shoot", 0.0F, 0.4f);
+        InvokeRepeating("Shoot", 0.0F, 0.2f);
     }
 
     //Update se vrsi jednom po frejmu
@@ -195,7 +195,7 @@ public class Hero : MonoBehaviour
         {
             GameObject newProjectile = Instantiate(projectile.model, transform.position, Quaternion.identity) as GameObject;
             newProjectile.transform.parent = projectileParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije
-            newProjectile.AddComponent<Projectile>().FireProjectile(ChooseTarget(), ChooseTarget().transform.position);//kako je newProjectile GameObject, moram da mu dodam komponentu Projectile da bi mogla da se pozove metoda FireProjectile
+            newProjectile.GetComponent<Projectile>().FireProjectile(ChooseTarget(), ChooseTarget().transform.position);//kako je newProjectile GameObject, moram da mu dodam komponentu Projectile da bi mogla da se pozove metoda FireProjectile
         }
     }
 
