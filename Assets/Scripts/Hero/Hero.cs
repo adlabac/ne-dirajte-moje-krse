@@ -108,11 +108,15 @@ public class Hero : MonoBehaviour
 		float minDistance = Mathf.Infinity;
 		foreach (Enemy enemy in enemies)
 		{
-			float dist = enemy.GetDistanceFromRocks();
-			if (dist < minDistance) {
-				nearestEnemy = enemy;
-				minDistance = dist;
-			}
+            if (enemy.tag == "Enemies") {
+                float dist = enemy.GetDistanceFromRocks();
+                if (dist < minDistance)
+                {
+                    nearestEnemy = enemy;
+                    minDistance = dist;
+                }
+            }
+			
 		}
 		return nearestEnemy;
 	}
@@ -123,12 +127,16 @@ public class Hero : MonoBehaviour
 
 	void Rotation()
 	{
-		Vector3 moveDirection = gameObject.transform.position - ChooseTarget().transform.position;
-		if (moveDirection != Vector3.zero)
-		{
-			float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + 90f;
-			transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-		}
+        if (ChooseTarget() != null) 
+        {
+            Vector3 moveDirection = gameObject.transform.position - ChooseTarget().transform.position;
+            if (moveDirection != Vector3.zero)
+            {
+                float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + 90f;
+                transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            }
+        }
+		
 	}
 
 	//Napomena: Svaki heroj ima coolider koji predstavlja domet(poluprecnik) u kom on moze da ispali projektil
@@ -149,11 +157,18 @@ public class Hero : MonoBehaviour
 	void OnTriggerExit2D(Collider2D other)
 	{
         enemies.Remove(other.gameObject.GetComponent<Enemy>());//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
-		if(enemies.Count == 0)//provjerava ima li vise neprijatelja unutar dometa heroja, ako nema vrati zelenu boju
+        if(enemies.Count == 0)//provjerava ima li vise neprijatelja unutar dometa heroja, ako nema vrati zelenu boju
 		{
 			radiusColor = Color.green;
 		}
+        
 	}
+
+    void OnTriggerStay2D(Collider2D other) {
+        if (other.gameObject.tag != "Enemies") {
+            enemies.Remove(other.gameObject.GetComponent<Enemy>());
+        }
+    }
 
 	void PlayAudio(AudioClip clip)
 	{

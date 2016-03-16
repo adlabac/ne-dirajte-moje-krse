@@ -82,6 +82,7 @@ public class Enemy : MonoBehaviour
     //u slucaju umiranja neprijatelja
     void Death()
     {
+        gameObject.tag = "Untagged";
         ScoreManager.AddCoins(type.reward);//pri umiranju neprijatelja treba povecati coins
         alive = false;
         canSteal = false;
@@ -92,8 +93,9 @@ public class Enemy : MonoBehaviour
             Destroy(child.gameObject);
         }
         gameObject.GetComponent<Renderer>().enabled = false;
-        Destroy(gameObject, 2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
+        Destroy(gameObject,2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
         //odlozeno unistenje da bi se animacija i zvuk izvrsili do kraja
+        
     }
     //Rotacija ka waypoint-u
     void RotationToWaypoint()
