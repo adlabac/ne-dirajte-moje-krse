@@ -66,7 +66,6 @@ public class Enemy : MonoBehaviour
                     {
                         isSlowedDown = false;
                         speed = type.defaultSpeed;//ako nije usporen moramo mu vratiti default speed
-                        //speed = 3f;//vrati se na pocetnu brzinu
                     }
                     else
                     {
