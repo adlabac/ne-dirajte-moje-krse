@@ -80,6 +80,8 @@ public class Hero : MonoBehaviour
             Rotation();
             //Shoot();
         }
+		if(enemies.Count == 0)
+			radiusColor = Color.green;
     }
 
 	//klik na heroja - moguce je vidjeti njegov radius	
@@ -157,10 +159,10 @@ public class Hero : MonoBehaviour
 	void OnTriggerExit2D(Collider2D other)
 	{
         enemies.Remove(other.gameObject.GetComponent<Enemy>());//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
-        if(enemies.Count == 0)//provjerava ima li vise neprijatelja unutar dometa heroja, ako nema vrati zelenu boju
+        /*if(enemies.Count == 0)//provjerava ima li vise neprijatelja unutar dometa heroja, ako nema vrati zelenu boju
 		{
 			radiusColor = Color.green;
-		}
+		}*/
         
 	}
 
@@ -208,10 +210,13 @@ public class Hero : MonoBehaviour
     {
         if (enemies.Count > 0) //ako ima neprijatelja u dometu Heroja
         {
-            GameObject newProjectile = Instantiate(projectile.model, transform.position, Quaternion.identity) as GameObject;
-            newProjectile.transform.parent = projectileParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije
-            newProjectile.GetComponent<Projectile>().FireProjectile(ChooseTarget(), ChooseTarget().transform.position);//kako je newProjectile GameObject, moram da mu dodam komponentu Projectile da bi mogla da se pozove metoda FireProjectile
-        }
+			if (ChooseTarget() != null)
+			{
+            	GameObject newProjectile = Instantiate(projectile.model, transform.position, Quaternion.identity) as GameObject;
+            	newProjectile.transform.parent = projectileParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije
+				newProjectile.GetComponent<Projectile>().FireProjectile(ChooseTarget(), ChooseTarget().transform.position);//kako je newProjectile GameObject, moram da mu dodam komponentu Projectile da bi mogla da se pozove metoda FireProjectile
+			}
+		}
     }
 
     void OnDrawGizmos() {
