@@ -56,7 +56,14 @@ public class Hero : MonoBehaviour
         PlayAudio(spawnAudio);
         
 		//podesavamo radius collidera
-        GetComponent<CircleCollider2D>().radius = radius / Mathf.Max(transform.lossyScale.x, transform.lossyScale.y);
+        if (Mathf.Max(transform.lossyScale.x, transform.lossyScale.y) != 0)
+        {
+            GetComponent<CircleCollider2D>().radius = radius / Mathf.Abs(Mathf.Max(transform.lossyScale.x, transform.lossyScale.y));
+        }
+        else {
+            GetComponent<CircleCollider2D>().radius = radius;
+        }
+
         projectileParent = GameObject.Find("Projectiles");
         if (projectileParent == null)//ako u hijerarhiji nema GameObject-a Projectiles, kreiraj ga
         {
