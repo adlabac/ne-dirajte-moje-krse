@@ -56,10 +56,7 @@ public class Hero : MonoBehaviour
         PlayAudio(spawnAudio);
         
 		//podesavamo radius collidera
-        //Ovo GetComponent<CircleCollider2D>().radius nije bas precizno
-        //Jos nisam zakljucio zasto ali mozda jer je radijus kolajdera local space, a radius world space, pa nesto sa tim treba nastelovati
-        GetComponent<CircleCollider2D>().radius = radius + Mathf.Max(transform.lossyScale.x, transform.lossyScale.y);
-
+        GetComponent<CircleCollider2D>().radius = radius / Mathf.Max(transform.lossyScale.x, transform.lossyScale.y);
         projectileParent = GameObject.Find("Projectiles");
         if (projectileParent == null)//ako u hijerarhiji nema GameObject-a Projectiles, kreiraj ga
         {
@@ -159,11 +156,6 @@ public class Hero : MonoBehaviour
 	void OnTriggerExit2D(Collider2D other)
 	{
         enemies.Remove(other.gameObject.GetComponent<Enemy>());//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
-        /*if(enemies.Count == 0)//provjerava ima li vise neprijatelja unutar dometa heroja, ako nema vrati zelenu boju
-		{
-			radiusColor = Color.green;
-		}*/
-        
 	}
 
     void OnTriggerStay2D(Collider2D other) {
