@@ -89,7 +89,7 @@ public class Projectile : MonoBehaviour {
         PlayAudio(impactAudio);
         gameObject.GetComponent<Renderer>().enabled = false;//treba da sakrije prikaz projektila jer isti treba da nestane pri sudaru, ali ne i da bude unisten
         notExplode = false;//znaci projektil jeste eksplodirao, pa Update() vise nista ne radi
-        Destroy(gameObject,1.5f);//projektil bude unisten posle 1.5sec(ovo vrijeme podlozno modifikaciji), odlozeno unistenje projektila da bi se cuo zvuk pri udaru
+        Destroy(gameObject);//nece da mi radi trail ako projectile nije odmah unisten. projektil bude unisten posle 1.5sec(ovo vrijeme podlozno modifikaciji), odlozeno unistenje projektila da bi se cuo zvuk pri udaru
         //kada bi se gameObject(tekuci projektil) odmah pri sudaru unistio, unistio bi i komponentu za zvuk, pa bi se zvuk pri udaru projektila odmah prekinuo ! 
     }
 
