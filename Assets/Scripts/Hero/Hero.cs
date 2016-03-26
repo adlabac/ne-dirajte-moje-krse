@@ -38,7 +38,7 @@ public class Hero : MonoBehaviour
     public List<Enemy> enemies; //Svi neprijatelji u dometu,neka je za sa public da bi vidjeli bira li heroj pravu metu i ulaze/izlaze li neprijatelji u korektnom redosledu
     float shootTimer;
     private GameObject projectileParent;//ovdje se cuvaju svi projektili koji se spawnuju
-    public AudioSource audioSource;
+    private AudioSource audioSource;
     public AudioClip spawnAudio;
     public AudioClip enemySpottedAudio;
     public static int heroPrice = 50;
