@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 //Osnovni:
 //Start() - Inicijalizazija parametara potrebnih za Enemy-a
 //Update() - definisanje ponasanja Enemy-a za svaki frame
@@ -38,8 +39,11 @@ public class Enemy : MonoBehaviour
     bool isSlowedDown;//da li je Enemy usporen
     bool canSteal; //da li Enemy moze da pokupi kamen
 
+    public List<Hero> heroes;//lista heroja koje vidi neprijatelj
+    private bool detectedEnemy;
     void Start()
     {
+        heroes = new List<Hero>();
         //U zavisnosti od GameLevela biram index puta !
         path = FindObjectOfType<GameLevel>().paths[pathIndex];
         SetEnemyParams();
@@ -81,19 +85,24 @@ public class Enemy : MonoBehaviour
     //u slucaju umiranja neprijatelja
     void Death()
     {
-        gameObject.tag = "Untagged";
         ScoreManager.AddCoins(type.reward);//pri umiranju neprijatelja treba povecati coins
         alive = false;
         canSteal = false;
         //anim.SetTrigger("Die");//za animaciju triger
         PlayAudio(dyingAudio);
-        foreach (Transform child in gameObject.transform)//ovo sam morao da dodam zbog mozgonje
+        foreach (Transform child in gameObject.transform)
         {
             Destroy(child.gameObject);
         }
         gameObject.GetComponent<Renderer>().enabled = false;
+        foreach (Hero hero in heroes)
+        {
+            this.SetDetected(false);
+            hero.enemies.Remove(this);
+        }
         Destroy(gameObject,2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
         //odlozeno unistenje da bi se animacija i zvuk izvrsili do kraja
+        
         
     }
     //Rotacija ka waypoint-u
@@ -187,5 +196,28 @@ public class Enemy : MonoBehaviour
         health = type.initialHealth;
         speed = type.defaultSpeed;
         speedFactor = type.slowdownFactor;
+    }
+
+    void OnTriggerEnter2D(Collider2D other) 
+    {
+        if (other.CompareTag("Heroes"))
+        {
+            heroes.Add(other.gameObject.GetComponent<Hero>());
+        }
+
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        heroes.Remove(other.gameObject.GetComponent<Hero>());
+    }
+
+    public void SetDetected(bool isDetected) {
+        detectedEnemy = isDetected;
+    }
+
+    public bool GetDetected()
+    {
+        return detectedEnemy;
     }
 }

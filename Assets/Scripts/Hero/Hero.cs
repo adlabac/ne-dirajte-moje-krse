@@ -44,17 +44,14 @@ public class Hero : MonoBehaviour
     public static int heroPrice = 50;
     public float radius;//u inspektoru podesimo radijus
     public Color radiusColor;//inicijalna boja radijusa
-
     //Inicijalizacija
     void Start()
     {
-        
         enemies = new List<Enemy>();//u pocetku nema neprijatelja koje enemy moze da dohvati
         //levels = new Level[levels.Length-1];
         //Kasnije ce biti azurirano
         audioSource = GetComponent<AudioSource>();
         PlayAudio(spawnAudio);
-        
 		//podesavamo radius collidera
         if (Mathf.Max(transform.lossyScale.x, transform.lossyScale.y) != 0)
         {
@@ -114,7 +111,7 @@ public class Hero : MonoBehaviour
 		float minDistance = Mathf.Infinity;
 		foreach (Enemy enemy in enemies)
 		{
-            if (enemy.tag == "Enemies") {
+            if (enemy.tag == "Enemies") { 
                 float dist = enemy.GetDistanceFromRocks();
                 if (dist < minDistance)
                 {
@@ -122,7 +119,6 @@ public class Hero : MonoBehaviour
                     minDistance = dist;
                 }
             }
-			
 		}
 		return nearestEnemy;
 	}
@@ -155,21 +151,18 @@ public class Hero : MonoBehaviour
 			{
 				PlayAudio(enemySpottedAudio);
 			}
+            
             enemies.Add(other.gameObject.GetComponent<Enemy>());//dodamo u listu enemies neprijatelja koji je usao u domet heroja
+            enemies[enemies.Count - 1].SetDetected(true);
         }
 		
 	}
 
 	void OnTriggerExit2D(Collider2D other)
 	{
+        enemies[enemies.Count - 1].SetDetected(false);
         enemies.Remove(other.gameObject.GetComponent<Enemy>());//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
 	}
-
-    void OnTriggerStay2D(Collider2D other) {
-        if (other.gameObject.tag != "Enemies") {
-            enemies.Remove(other.gameObject.GetComponent<Enemy>());
-        }
-    }
 
 	void PlayAudio(AudioClip clip)
 	{
