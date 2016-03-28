@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 //Osnovni:
 //Start() - Inicijalizazija parametara potrebnih za Enemy-a
 //Update() - definisanje ponasanja Enemy-a za svaki frame
@@ -95,15 +96,13 @@ public class Enemy : MonoBehaviour
             Destroy(child.gameObject);
         }
         gameObject.GetComponent<Renderer>().enabled = false;
-        foreach (Hero hero in heroes)
+        foreach (Hero hero in heroes.ToList()) //bez ovog dijela .ToList() javlja gresku
         {
-            this.SetDetected(false);
             hero.enemies.Remove(this);
+            UnsetDetected(hero);
         }
         Destroy(gameObject,2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
         //odlozeno unistenje da bi se animacija i zvuk izvrsili do kraja
-        
-        
     }
     //Rotacija ka waypoint-u
     void RotationToWaypoint()
@@ -119,10 +118,6 @@ public class Enemy : MonoBehaviour
                 }
             }
         }
-        
-        
-        
-        
     }
 
     void UpdatePosition(float distance)
@@ -220,12 +215,12 @@ public class Enemy : MonoBehaviour
         heroes.Remove(other.gameObject.GetComponent<Hero>());
     }
 
-    public void SetDetected(bool isDetected) {
-        detectedEnemy = isDetected;
+    public void SetDetected(Hero hero) {
+        heroes.Add(hero);
     }
 
-    public bool GetDetected()
-    {
-        return detectedEnemy;
+    public void UnsetDetected(Hero hero) {
+        heroes.Remove(hero);
     }
+
 }

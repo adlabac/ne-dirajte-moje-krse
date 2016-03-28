@@ -153,14 +153,14 @@ public class Hero : MonoBehaviour
 			}
             
             enemies.Add(other.gameObject.GetComponent<Enemy>());//dodamo u listu enemies neprijatelja koji je usao u domet heroja
-            enemies[enemies.Count - 1].SetDetected(true);
+            enemies[enemies.Count - 1].SetDetected(this);
         }
 		
 	}
 
 	void OnTriggerExit2D(Collider2D other)
 	{
-        enemies[enemies.Count - 1].SetDetected(false);
+        enemies[enemies.Count - 1].UnsetDetected(this);
         enemies.Remove(other.gameObject.GetComponent<Enemy>());//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
 	}
 
