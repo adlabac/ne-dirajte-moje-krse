@@ -108,13 +108,21 @@ public class Enemy : MonoBehaviour
     //Rotacija ka waypoint-u
     void RotationToWaypoint()
     {
-        Vector3 moveDirection = gameObject.transform.position - path.wayPoints[waypoint];
-        if (moveDirection != Vector3.zero)
-        {
-            float angle;
-            angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg +90f;
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        foreach (Transform child in transform) {
+            if (child.tag == "Rigid") {
+                Vector3 moveDirection = child.position - path.wayPoints[waypoint];
+                if (moveDirection != Vector3.zero)
+                {
+                    float angle;
+                    angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + 90f;
+                    child.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                }
+            }
         }
+        
+        
+        
+        
     }
 
     void UpdatePosition(float distance)
