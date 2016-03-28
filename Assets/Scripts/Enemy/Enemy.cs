@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour
     bool canSteal; //da li Enemy moze da pokupi kamen
 
     public List<Hero> heroes;//lista heroja koje vidi neprijatelj
-    private bool detectedEnemy;
+
     void Start()
     {
         heroes = new List<Hero>();
@@ -96,10 +96,12 @@ public class Enemy : MonoBehaviour
             Destroy(child.gameObject);
         }
         gameObject.GetComponent<Renderer>().enabled = false;
+        gameObject.GetComponent<CircleCollider2D>().enabled = false;//i ovo sam morao da dodam jer kad postavim heroja onamo gdje je enemy stradao,
+        //a nije proslo dvije sekunde, kako je ostao kolider, heroj ce ga detektovat
         foreach (Hero hero in heroes.ToList()) //bez ovog dijela .ToList() javlja gresku
         {
-            hero.enemies.Remove(this);
             UnsetDetected(hero);
+            hero.enemies.Remove(this);
         }
         Destroy(gameObject,2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
         //odlozeno unistenje da bi se animacija i zvuk izvrsili do kraja
@@ -200,21 +202,9 @@ public class Enemy : MonoBehaviour
         speed = type.defaultSpeed;
         speedFactor = type.slowdownFactor;
     }
-
-    void OnTriggerEnter2D(Collider2D other) 
-    {
-        if (other.CompareTag("Heroes"))
-        {
-            heroes.Add(other.gameObject.GetComponent<Hero>());
-        }
-
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
+    void OnTriggerExit2D(Collider2D other) {
         heroes.Remove(other.gameObject.GetComponent<Hero>());
     }
-
     public void SetDetected(Hero hero) {
         heroes.Add(hero);
     }
