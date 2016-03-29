@@ -100,7 +100,6 @@ public class Enemy : MonoBehaviour
         //a nije proslo dvije sekunde, kako je ostao kolider, heroj ce ga detektovat
         foreach (Hero hero in heroes.ToList()) //bez ovog dijela .ToList() javlja gresku
         {
-            UnsetDetected(hero);
             hero.enemies.Remove(this);
         }
         Destroy(gameObject,2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
@@ -110,7 +109,7 @@ public class Enemy : MonoBehaviour
     void RotationToWaypoint()
     {
         foreach (Transform child in transform) {
-            if (child.tag == "Rigid") {
+            if (child.tag == "EnemyModel") {
                 Vector3 moveDirection = child.position - path.wayPoints[waypoint];
                 if (moveDirection != Vector3.zero)
                 {
@@ -202,9 +201,7 @@ public class Enemy : MonoBehaviour
         speed = type.defaultSpeed;
         speedFactor = type.slowdownFactor;
     }
-    void OnTriggerExit2D(Collider2D other) {
-        heroes.Remove(other.gameObject.GetComponent<Hero>());
-    }
+
     public void SetDetected(Hero hero) {
         heroes.Add(hero);
     }

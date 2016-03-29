@@ -159,7 +159,10 @@ public class Hero : MonoBehaviour
 
 	void OnTriggerExit2D(Collider2D other)
 	{
-        enemies.Remove(other.gameObject.GetComponent<Enemy>());//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
+        Enemy enemyLeftRadius = other.gameObject.GetComponent<Enemy>();
+        enemyLeftRadius.UnsetDetected(this);
+        enemies.Remove(enemyLeftRadius);//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
+        
 	}
 
 	void PlayAudio(AudioClip clip)
