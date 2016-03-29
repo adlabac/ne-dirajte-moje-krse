@@ -101,7 +101,7 @@ public class Enemy : MonoBehaviour
         //a nije proslo dvije sekunde, kako je ostao kolider, heroj ce ga detektovat
         foreach (Hero hero in heroes.ToList()) //bez ovog dijela .ToList() javlja gresku
         {
-            hero.GetEnemies().Remove(this);
+            hero.RemoveEnemy(this);
         }
         Destroy(gameObject,2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
         //odlozeno unistenje da bi se animacija i zvuk izvrsili do kraja

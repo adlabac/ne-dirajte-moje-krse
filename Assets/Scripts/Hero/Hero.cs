@@ -221,4 +221,8 @@ public class Hero : MonoBehaviour
     public List<Enemy> GetEnemies() {
         return enemies;
     }
+
+    public void RemoveEnemy(Enemy enemy) {
+        enemies.Remove(enemy);
+    }
 }
