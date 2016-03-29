@@ -32,18 +32,20 @@ public class Level : MonoBehaviour
 
 public class Hero : MonoBehaviour
 {
-    public Projectile projectile;
     int currentLevel = 1;//trenutni level heroja
     Level[] levels;//niz levela za heroja
-    public List<Enemy> enemies; //Svi neprijatelji u dometu,neka je za sa public da bi vidjeli bira li heroj pravu metu i ulaze/izlaze li neprijatelji u korektnom redosledu
+    List<Enemy> enemies; //Svi neprijatelji u dometu
     float shootTimer;
-    private GameObject projectileParent;//ovdje se cuvaju svi projektili koji se spawnuju
-    private AudioSource audioSource;
+    GameObject projectileParent;//ovdje se cuvaju svi projektili koji se spawnuju
+    AudioSource audioSource;
+
+    public Projectile projectile;
     public AudioClip spawnAudio;
     public AudioClip enemySpottedAudio;
     public static int heroPrice = 50;
     public float radius;//u inspektoru podesimo radijus
     public Color radiusColor;//inicijalna boja radijusa
+
     //Inicijalizacija
     void Start()
     {
@@ -162,7 +164,6 @@ public class Hero : MonoBehaviour
         Enemy enemyLeftRadius = other.gameObject.GetComponent<Enemy>();
         enemyLeftRadius.UnsetDetected(this);
         enemies.Remove(enemyLeftRadius);//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
-        
 	}
 
 	void PlayAudio(AudioClip clip)
@@ -217,4 +218,7 @@ public class Hero : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position , radius);
     }
 
+    public List<Enemy> GetEnemies() {
+        return enemies;
+    }
 }

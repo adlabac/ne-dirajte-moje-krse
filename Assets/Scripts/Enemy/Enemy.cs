@@ -19,13 +19,13 @@ using System.Linq;
 public class Enemy : MonoBehaviour
 {
     EnemyType type;//tip neprijatelja
-    public float health = 100f;//HP neprijatelja, ovo treba dodatno razmotriti, postoji i klasa EnemyHealth, ovaj atribut u ovom obliku vjerovatno treba maci
     Vector3 position;//trenutna pozicija neprijatelja
-    public float speed;//brzina kretanja neprijatelja na osnovu tipa
     float speedFactor;//faktor koji utice na usporenje
     int pathIndex = 0;//pathIndex je indeks Patha iz klase GameLevel
     int waypoint = 1;//tacka na pathu do koje se Enemy krece pravolinijski
 
+    public float health;//HP neprijatelja
+    public float speed;//brzina kretanja neprijatelja na osnovu tipa
     public AudioClip hitAudio;
     public AudioClip stealAudio;//zvuk kad Enemy dodje do kamena
     public AudioClip dyingAudio;
@@ -34,13 +34,14 @@ public class Enemy : MonoBehaviour
     float slowdownTime;//vrijeme koliko traje usporenje
     Path path;//ovo sam dodao radi testiranja, tj. da bi uzeo niz waypoint-a za put, za sad posmatramo kao da imamo samo jedan tip puta
     bool alive;//da li je neprijatelj umro, ovo mora postojati zbog odlozenog unistenja objekta - ovim sprecavama da se Update() izvsava i nakon umiranja Enemy-a
-    private AudioSource audioSourceEnemy;//tu se mijenjaju AudioClip-ovi(pomocu metoda PlayAudio(AudioClip clip) u zavisnosti od situacije
-    private Animator anim;//za Die animaciju
-    public GameObject model;//izgled neprijatelja
+    AudioSource audioSourceEnemy;//tu se mijenjaju AudioClip-ovi(pomocu metoda PlayAudio(AudioClip clip) u zavisnosti od situacije
+    Animator anim;//za Die animaciju
     bool isSlowedDown;//da li je Enemy usporen
     bool canSteal; //da li Enemy moze da pokupi kamen
+    List<Hero> heroes;//lista heroja koje vidi neprijatelj
 
-    public List<Hero> heroes;//lista heroja koje vidi neprijatelj
+    public GameObject model;//izgled neprijatelja
+    
 
     void Start()
     {
@@ -100,7 +101,7 @@ public class Enemy : MonoBehaviour
         //a nije proslo dvije sekunde, kako je ostao kolider, heroj ce ga detektovat
         foreach (Hero hero in heroes.ToList()) //bez ovog dijela .ToList() javlja gresku
         {
-            hero.enemies.Remove(this);
+            hero.GetEnemies().Remove(this);
         }
         Destroy(gameObject,2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
         //odlozeno unistenje da bi se animacija i zvuk izvrsili do kraja
@@ -209,5 +210,6 @@ public class Enemy : MonoBehaviour
     public void UnsetDetected(Hero hero) {
         heroes.Remove(hero);
     }
+
 
 }
