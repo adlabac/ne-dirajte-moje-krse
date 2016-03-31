@@ -3,21 +3,11 @@ using System.Collections;
 
 public class HeroRadius : MonoBehaviour {
 
+	GameObject projectileParent;//ovdje se cuvaju svi projektili koji se spawnuju
+
 	// Use this for initialization
 	void Start () {
 
-		float radius;
-
-		//racunamo poluprecnik na osnovu nacrtanog prefaba (sprite za domet towera)
-		radius = GetComponent<SpriteRenderer> ().bounds.size.x / 2; 
-		//podesavamo radius collidera u zavisnosti od skaliranja
-		if (Mathf.Abs(Mathf.Max(transform.lossyScale.x, transform.lossyScale.y)) != 0){
-			GetComponent<CircleCollider2D> ().radius = radius / Mathf.Abs (Mathf.Max (transform.lossyScale.x, transform.lossyScale.y));
-		}
-		else {
-			GetComponent<CircleCollider2D>().radius = radius;
-		}
-			
 	}
 	
 	// Update is called once per frame
@@ -26,7 +16,7 @@ public class HeroRadius : MonoBehaviour {
 	}
     
 	void OnMouseUp (){
-		//transform.gameObject.active = false;
+
 	}
     
     /*

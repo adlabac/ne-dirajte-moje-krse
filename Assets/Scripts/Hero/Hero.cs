@@ -54,15 +54,18 @@ public class Hero : MonoBehaviour
         //Kasnije ce biti azurirano
         audioSource = GetComponent<AudioSource>();
         PlayAudio(spawnAudio);
+
+		//racunamo poluprecnik na osnovu nacrtanog prefaba (sprite za hero) i takav nam postaje circle collider
+		radius = transform.Find ("HeroRadius").GetComponent<SpriteRenderer> ().bounds.size.x / 2;
 		//podesavamo radius collidera
-        if (Mathf.Max(transform.lossyScale.x, transform.lossyScale.y) != 0)
-        {
-            GetComponent<CircleCollider2D>().radius = radius / Mathf.Abs(Mathf.Max(transform.lossyScale.x, transform.lossyScale.y));
+		if (Mathf.Abs(Mathf.Max(transform.lossyScale.x, transform.lossyScale.y)) != 0){
+			GetComponent<CircleCollider2D>().radius = radius / Mathf.Abs(Mathf.Max(transform.lossyScale.x, transform.lossyScale.y));
         }
         else {
-            GetComponent<CircleCollider2D>().radius = radius;
+			GetComponent<CircleCollider2D>().radius = radius;
         }
 
+		//pravimo objekat zbog hijerarhije
         projectileParent = GameObject.Find("Projectiles");
         if (projectileParent == null)//ako u hijerarhiji nema GameObject-a Projectiles, kreiraj ga
         {
@@ -72,6 +75,7 @@ public class Hero : MonoBehaviour
         //Na osnovu trenutnog upgrade levela heroja, odredjujemo fireRate i pozivamo na svakih fireRate sekundi metod za ispaljivanje projektila
         //InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
         InvokeRepeating("Shoot", 0.0F, 0.2f);
+
     }
 
     //Update se vrsi jednom po frejmu
