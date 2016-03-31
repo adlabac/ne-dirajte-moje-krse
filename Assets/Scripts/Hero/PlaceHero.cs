@@ -63,7 +63,7 @@ public class PlaceHero : MonoBehaviour {
 				placePoint -= coord; //oduzimamo vektor da bi dobili prave koordinate
 				//postavljamo tower na mjestu unutar odgovoarajuceg kvadratica
 				hero = (GameObject)Instantiate(heroPrefab, placePoint , Quaternion.identity);
-				//hero.transform.Find ("HeroRadius").gameObject.active = false;
+				hero.transform.Find ("HeroRadius").gameObject.active = false;
 				//cijena heroja
 				int heroPrice = hero.GetComponent<Hero> ().GetPrice ();
 				//ako je cijena manja od preostalih novcica

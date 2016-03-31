@@ -30,6 +30,7 @@ public class Level : MonoBehaviour
     public float fireRate;
 }
 
+
 public class Hero : MonoBehaviour
 {
     int currentLevel = 1;//trenutni level heroja
@@ -75,8 +76,8 @@ public class Hero : MonoBehaviour
         //Na osnovu trenutnog upgrade levela heroja, odredjujemo fireRate i pozivamo na svakih fireRate sekundi metod za ispaljivanje projektila
         //InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
         InvokeRepeating("Shoot", 0.0F, 0.2f);
-
     }
+
 
     //Update se vrsi jednom po frejmu
     void Update()
@@ -91,8 +92,11 @@ public class Hero : MonoBehaviour
 			radiusColor = Color.green;
     }
 
-	//klik na heroja - moguce je vidjeti njegov radius	
+
+	//klik na cijeli collider - moguce je vidjeti njegov radius	
 	void OnMouseUp (){
+
+		/*
 		//trazimo child od kliknutog heroja
 		GameObject visibleRadius = transform.Find ("HeroRadius").gameObject;
 		GameObject[] heroes;
@@ -109,7 +113,9 @@ public class Hero : MonoBehaviour
 				hero.transform.Find ("HeroRadius").gameObject.active = false;
 			visibleRadius.active=true;
 		}
+		*/
 	}
+
 
 	Enemy ChooseTarget () { 
 		//izaberemo onog neprijatelja iz liste neprijatelja koji je najblize cilju (kamenju)
@@ -128,10 +134,13 @@ public class Hero : MonoBehaviour
 		}
 		return nearestEnemy;
 	}
+
+
 	public int GetPrice()
 	{
 		return heroPrice;
 	}
+
 
 	void Rotation()
 	{
@@ -175,6 +184,9 @@ public class Hero : MonoBehaviour
 		audioSource.clip = clip;
 		audioSource.Play();
 	}
+
+
+
 
     Level GetLevel()
     {
