@@ -95,25 +95,7 @@ public class Hero : MonoBehaviour
 
 	//klik na cijeli collider - moguce je vidjeti njegov radius	
 	void OnMouseUp (){
-
-		/*
-		//trazimo child od kliknutog heroja
-		GameObject visibleRadius = transform.Find ("HeroRadius").gameObject;
-		GameObject[] heroes;
-
-		//ako se vidi radijus, onda se samo ugasi
-		if (visibleRadius.active==true)
-				visibleRadius.active=false;
-		//ako se ne vidi, bitno je da se svim drugima ugasi i da se ovdje upali
-		else{
-			//nadji sve heroje
-			heroes = GameObject.FindGameObjectsWithTag ("Heroes");
-			//svakom ugasi radius - bice samo jedan ustvari
-			foreach (GameObject hero in heroes)
-				hero.transform.Find ("HeroRadius").gameObject.active = false;
-			visibleRadius.active=true;
-		}
-		*/
+		GameLevel.setHeroRadiusesInactive ();
 	}
 
 

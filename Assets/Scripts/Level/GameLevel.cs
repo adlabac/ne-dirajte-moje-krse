@@ -87,6 +87,20 @@ public class GameLevel : MonoBehaviour {
 			return false;
 		else return true;
 	}
+
+
+	public static void setHeroRadiusesInactive(){
+		GameObject[] heroes;
+		heroes = GameObject.FindGameObjectsWithTag ("Heroes");
+		//svakom ugasi radius - bice samo jedan ustvari
+		foreach (GameObject hero in heroes) {
+			GameObject heroRad = hero.transform.Find ("HeroRadius").gameObject;
+			heroRad.SetActive (false);
+			//heroRad.transform.position += new Vector3 (0, 0, 1);
+		}
+	}
+
+
 }
 
 

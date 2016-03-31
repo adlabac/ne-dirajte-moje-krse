@@ -44,26 +44,31 @@ public class PlaceHero : MonoBehaviour {
 		RaycastHit2D hit = Physics2D.Raycast (ray.origin, ray.direction, Mathf.Infinity);
 
 
+		Debug.Log ("Click bckg");
+
 		//ako je doslo do hita sa backgroundom
 		if (hit) {
 			//sad cemo da napravimo vektor kojim postavljamo koordinate sistema 
 			//u donji lijevi ugao, a ne u centru ekrana
-			Vector2 coord = new Vector2 (levelWidth/2, levelHeight/2); //vektor za dodavanje
-			Vector2 hitPoint = hit.point + coord; //tacka dodira u novom koordinatnom sistemu
+			Vector3 coord = new Vector3 (levelWidth/2, levelHeight/2,0); //vektor za dodavanje
+			Vector3 hitPoint = new Vector3(hit.point.x, hit.point.y,0) + coord; //tacka dodira u novom koordinatnom sistemu
 
 			//sada racunamo vrstu i kolonu (da bi radili sa matricom)
 			//sada imamo poziciju polja u matrici
 			int rowClicked = Mathf.FloorToInt(hitPoint.y / levelHeight * row); //broj vrste - klik
 			int colClicked = Mathf.FloorToInt(hitPoint.x / levelWidth * col); //broj kolone - klik
 
-			//prvo ispitujemo je li polje available
+			GameLevel.setHeroRadiusesInactive ();
+
+			//ispitujemo je li polje available
 			if (canPlaceTower (rowClicked, colClicked)) {
-				Vector2 placePoint = new Vector2 (colClicked * fieldHeight + fieldHeight/2,  
-					rowClicked * fieldWidth + fieldWidth/2); //pravimo pocetnu tacku u nasem koord sistemu
+				//stavljamo kao z=0.5f da bi radius bio u pozadini
+				Vector3 placePoint = new Vector3 (colClicked * fieldHeight + fieldHeight/2,  
+					rowClicked * fieldWidth + fieldWidth/2, 0.5f); //pravimo pocetnu tacku u nasem koord sistemu
 				placePoint -= coord; //oduzimamo vektor da bi dobili prave koordinate
 				//postavljamo tower na mjestu unutar odgovoarajuceg kvadratica
 				hero = (GameObject)Instantiate(heroPrefab, placePoint , Quaternion.identity);
-				hero.transform.Find ("HeroRadius").gameObject.active = false;
+				hero.transform.Find ("HeroRadius").gameObject.SetActive (false);
 				//cijena heroja
 				int heroPrice = hero.GetComponent<Hero> ().GetPrice ();
 				//ako je cijena manja od preostalih novcica
