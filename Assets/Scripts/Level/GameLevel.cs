@@ -91,6 +91,8 @@ public class GameLevel : MonoBehaviour {
 
 	public static void setHeroRadiusesInactive(){
 		GameObject[] heroes;
+		GameObject[] menus;
+
 		heroes = GameObject.FindGameObjectsWithTag ("Heroes");
 		//svakom ugasi radius - bice samo jedan ustvari
 		foreach (GameObject hero in heroes) {
@@ -98,6 +100,14 @@ public class GameLevel : MonoBehaviour {
 			heroRad.SetActive (false);
 			//heroRad.transform.position += new Vector3 (0, 0, 1);
 		}
+
+		menus = GameObject.FindGameObjectsWithTag ("HeroMenus");
+		foreach (GameObject menu in menus) {
+			Destroy (menu);
+		}
+
+
+
 	}
 
 

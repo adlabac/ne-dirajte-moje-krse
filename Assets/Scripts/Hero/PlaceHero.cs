@@ -6,6 +6,9 @@ public class PlaceHero : MonoBehaviour {
 
 	public GameObject heroPrefab;
 	private GameObject hero;
+
+	public GameObject fieldMenuPrefab;
+	private GameObject fieldMenu;
 	//private Hero heroScript;
 
 	public float levelWidth;
@@ -67,6 +70,19 @@ public class PlaceHero : MonoBehaviour {
 					rowClicked * fieldWidth + fieldWidth/2, 0.5f); //pravimo pocetnu tacku u nasem koord sistemu
 				placePoint -= coord; //oduzimamo vektor da bi dobili prave koordinate
 				//postavljamo tower na mjestu unutar odgovoarajuceg kvadratica
+
+				//otvaranje menija sa herojima
+				GameObject menuParent = GameObject.Find("HeroMenus");
+				//ako u hijerarhiji nema GameObject-a HeroMenus, kreiraj ga
+				if (menuParent == null){
+					//ovdje kreiramo GameObject sa nazivom HeroMenus
+					menuParent = new GameObject("HeroMenus");
+				}
+				Vector3 placePointMenu = placePoint + new Vector3 (0, 0, -1);
+				fieldMenu = (GameObject)Instantiate (fieldMenuPrefab, placePointMenu, Quaternion.identity);
+				fieldMenu.transform.parent = menuParent.transform;
+
+
 				hero = (GameObject)Instantiate(heroPrefab, placePoint , Quaternion.identity);
 				hero.transform.Find ("HeroRadius").gameObject.SetActive (false);
 				//cijena heroja
