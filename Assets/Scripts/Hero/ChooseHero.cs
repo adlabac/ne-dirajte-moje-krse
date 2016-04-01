@@ -16,6 +16,8 @@ public class ChooseHero : MonoBehaviour {
 	public int row;
 	public int col; 
 
+	private Vector3 placePoint;
+
 	// Use this for initialization
 	void Start () {
 		//trazimo sirinu i visinu pozadinske slike
@@ -45,8 +47,6 @@ public class ChooseHero : MonoBehaviour {
 		RaycastHit2D hit = Physics2D.Raycast (ray.origin, ray.direction, Mathf.Infinity);
 
 
-		Debug.Log ("Click bckg");
-
 		//ako je doslo do hita sa backgroundom
 		if (hit) {
 			//sad cemo da napravimo vektor kojim postavljamo koordinate sistema 
@@ -64,7 +64,7 @@ public class ChooseHero : MonoBehaviour {
 			//ispitujemo je li polje available
 			if (canPlaceTower (rowClicked, colClicked)) {
 				//stavljamo kao z=0.5f da bi radius bio u pozadini
-				Vector3 placePoint = new Vector3 (colClicked * fieldHeight + fieldHeight/2,  
+				placePoint = new Vector3 (colClicked * fieldHeight + fieldHeight/2,  
 					rowClicked * fieldWidth + fieldWidth/2, 0.5f); //pravimo pocetnu tacku u nasem koord sistemu
 				placePoint -= coord; //oduzimamo vektor da bi dobili prave koordinate
 				//postavljamo tower na mjestu unutar odgovoarajuceg kvadratica
@@ -110,7 +110,6 @@ public class ChooseHero : MonoBehaviour {
 	private bool canPlaceTower(int i, int j) {
 		return GameLevel.IsAvailable (i, j);
 	}
-
 
 
 }
