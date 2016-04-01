@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlaceHero : MonoBehaviour {
+public class ChooseHero : MonoBehaviour {
 
 
-	public GameObject heroPrefab;
-	private GameObject hero;
 
 	public GameObject fieldMenuPrefab;
 	private GameObject fieldMenu;
@@ -31,13 +29,13 @@ public class PlaceHero : MonoBehaviour {
 		//racunamo sirinu i visinu polja - ne mora biti uvijek sirina=visina (sada jeste)
 		fieldHeight = levelHeight / row;
 		fieldWidth = levelWidth / col;
-	
+
 	}
 
 
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
 
@@ -100,22 +98,18 @@ public class PlaceHero : MonoBehaviour {
 
 				*/
 
-
-
-
-
 			}
 
 		}
 
 	}
-		
 
 
-		//funkcija koja provjerava da li na polju vec postoji tower
-		private bool canPlaceTower(int i, int j) {
-			return GameLevel.IsAvailable (i, j);
-		}
+
+	//funkcija koja provjerava da li na polju vec postoji tower
+	private bool canPlaceTower(int i, int j) {
+		return GameLevel.IsAvailable (i, j);
+	}
 
 
 
