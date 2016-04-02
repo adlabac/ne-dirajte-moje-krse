@@ -3,6 +3,9 @@ using System.Collections;
 
 public class HeroRadius : MonoBehaviour {
 
+
+	private Quaternion rotRadius;
+
 	GameObject projectileParent;//ovdje se cuvaju svi projektili koji se spawnuju
 
 	// Use this for initialization
@@ -18,6 +21,20 @@ public class HeroRadius : MonoBehaviour {
 	void OnMouseUp (){
 
 	}
+
+
+
+	void Awake()
+	{
+		rotRadius = transform.rotation;
+	}
+
+
+	void LateUpdate()
+	{
+		transform.rotation = rotRadius;
+	}
+
     
     /*
 	void OnTriggerEnter2D(Collider2D other){

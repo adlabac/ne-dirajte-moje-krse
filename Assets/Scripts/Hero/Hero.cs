@@ -47,6 +47,7 @@ public class Hero : MonoBehaviour
     public float radius;//u inspektoru podesimo radijus
     public Color radiusColor;//inicijalna boja radijusa
 
+
     //Inicijalizacija
     void Start()
     {
@@ -82,6 +83,7 @@ public class Hero : MonoBehaviour
     //Update se vrsi jednom po frejmu
     void Update()
     {
+			
         //Kasnije ce biti azurirano
         if (enemies.Count != 0)
         {
@@ -91,7 +93,7 @@ public class Hero : MonoBehaviour
 		if(enemies.Count == 0)
 			radiusColor = Color.green;
     }
-
+		
 
 	//klik na cijeli collider - moguce je vidjeti njegov radius	
 	void OnMouseUp (){
