@@ -29,7 +29,7 @@ public class PlaceHero : MonoBehaviour {
 
 	void OnMouseUp (){
 
-		Vector3 placePoint = new Vector3 (transform.parent.position.x, transform.parent.position.y, 0f);
+		Vector3 placePoint = new Vector3 (transform.parent.position.x, transform.parent.position.y, 0.5f);
 
 
 			//postavljamo tower na mjestu unutar odgovoarajuceg kvadratica
