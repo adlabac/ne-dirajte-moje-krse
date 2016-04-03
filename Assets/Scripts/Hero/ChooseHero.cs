@@ -106,6 +106,8 @@ public class ChooseHero : MonoBehaviour {
 
 
 
+
+
 	//funkcija koja provjerava da li na polju vec postoji tower
 	private bool canPlaceTower(int i, int j) {
 		return GameLevel.IsAvailable (i, j);
