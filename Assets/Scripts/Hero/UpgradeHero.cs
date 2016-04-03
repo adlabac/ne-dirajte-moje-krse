@@ -10,16 +10,14 @@ public class UpgradeHero : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
 	void OnMouseUp(){
-
-		Debug.Log ("Up click");
 		GameObject heroParent = transform.parent.parent.gameObject;
-		int heroUp1Price = heroParent.GetComponent<Hero> ().GetUp1Price();
-		if (heroUp1Price <= ScoreManager.GetCoins ()) {
-			ScoreManager.SetCoins(ScoreManager.GetCoins()-heroUp1Price); //podesi broj coina
+		int heroUpgradePrice = heroParent.GetComponent<Hero> ().GetPrice();
+		if (heroUpgradePrice <= ScoreManager.GetCoins ()) {
+			ScoreManager.SetCoins(ScoreManager.GetCoins()-heroUpgradePrice); //podesi broj coina
 			heroParent.transform.Find("LevelNumber").GetComponent<TextMesh>().text=
 				heroParent.GetComponent<Hero>().GetNextLevel();
 			GameLevel.setHeroRadiusesInactive ();

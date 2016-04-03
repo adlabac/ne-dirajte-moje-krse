@@ -52,7 +52,7 @@ public class GameLevel : MonoBehaviour {
 
 
 		//u ovom dijelu bi trebalo inicijalizovati broj novcica u odnosu na pocetni startingCoins
-		startingCoins = 180; //citati iz fajla/baze
+		startingCoins = 1000; //citati iz fajla/baze
 		ScoreManager.SetCoins(startingCoins);
 
 

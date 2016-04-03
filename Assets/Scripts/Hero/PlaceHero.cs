@@ -38,6 +38,7 @@ public class PlaceHero : MonoBehaviour {
 				hero.transform.Find ("HeroRadius").gameObject.SetActive (false);
 				//cijena heroja
 				int heroPrice = hero.GetComponent<Hero> ().GetPrice ();
+				hero.GetComponent<Hero> ().setLevel (1);
 				//ako je cijena manja od preostalih novcica
 				if (heroPrice <= ScoreManager.GetCoins ()) {
 					ScoreManager.SetCoins(ScoreManager.GetCoins()-heroPrice); //podesi broj coina
