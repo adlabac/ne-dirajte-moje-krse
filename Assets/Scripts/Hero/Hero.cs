@@ -111,7 +111,7 @@ public class Hero : MonoBehaviour
         }
         //Na osnovu trenutnog upgrade levela heroja, odredjujemo fireRate i pozivamo na svakih fireRate sekundi metod za ispaljivanje projektila
         //InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
-        InvokeRepeating("Shoot", 0.0F, 0.5f);
+		InvokeRepeating("Shoot", 0.0F, GetFireRate());
     }
 
 
@@ -165,6 +165,11 @@ public class Hero : MonoBehaviour
 		return levels[currentLevel].GetCostSell();
 	}
 
+	public float GetFireRate()
+	{
+		return levels [currentLevel].fireRate;
+	}
+
 	public void setLevel(int lev)
 	{
 		currentLevel = lev;
@@ -177,12 +182,15 @@ public class Hero : MonoBehaviour
 			return "max";
 		else if (currentLevel == 3) {
 			currentLevel += 1;
+			InvokeRepeating("Shoot", 0.0F, GetFireRate());
 			return "max";
 		}
 		else {
 			currentLevel += 1;
+			InvokeRepeating("Shoot", 0.0F, GetFireRate());
 			return currentLevel.ToString ();
 		}
+
 	}
 
 	void Rotation()
@@ -230,35 +238,6 @@ public class Hero : MonoBehaviour
 
 
 
-	/*
-    Level GetLevel()
-    {
-        return levels[currentLevel];
-    }
-
-    Level GetMaxLevel()
-    {
-        return levels[levels.Length - 1];
-    }
-    //Potrebna dodatna analiza ovog metoda
-    void SetLevel(int levelIndex)
-    {
-        for (int i = 0; i < levels.Length; i++)
-        {
-            if (levels[levelIndex].model != null)
-            {
-                if (i == levelIndex)
-                {
-                    levels[i].model.SetActive(true);//Aktivira objekat,tj. prikazuje njegov model
-                }
-                else
-                {
-                    levels[i].model.SetActive(false);
-                }
-            }
-        }
-    }
-    */
 
     void Shoot()
     {
