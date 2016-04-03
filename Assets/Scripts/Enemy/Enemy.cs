@@ -146,6 +146,10 @@ public class Enemy : MonoBehaviour
                     {
                         Destroy(child.gameObject);
                     }
+                    foreach (Hero hero in heroes.ToList())
+                    {
+                        hero.RemoveEnemy(this);
+                    }
                     gameObject.GetComponent<Renderer>().enabled = false;//Enemy mora da nestane 
                 }
                 if (alive) { //da izmjegnemo error
