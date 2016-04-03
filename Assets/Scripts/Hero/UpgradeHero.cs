@@ -14,8 +14,15 @@ public class UpgradeHero : MonoBehaviour {
 	}
 
 	void OnMouseUp(){
+
+		Debug.Log ("Up click");
 		GameObject heroParent = transform.parent.parent.gameObject;
 		int heroUp1Price = heroParent.GetComponent<Hero> ().GetUp1Price();
-		ScoreManager.SetCoins(ScoreManager.GetCoins()-heroUp1Price); //podesi broj coina
+		if (heroUp1Price <= ScoreManager.GetCoins ()) {
+			ScoreManager.SetCoins(ScoreManager.GetCoins()-heroUp1Price); //podesi broj coina
+			heroParent.transform.Find("LevelNumber").GetComponent<TextMesh>().text=
+				heroParent.GetComponent<Hero>().GetNextLevel();
+			GameLevel.setHeroRadiusesInactive ();
+		}
 	}
 }

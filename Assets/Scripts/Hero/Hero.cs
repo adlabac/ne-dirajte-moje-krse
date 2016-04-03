@@ -34,7 +34,7 @@ public class Level : MonoBehaviour
 public class Hero : MonoBehaviour
 {
     int currentLevel = 1;//trenutni level heroja
-    Level[] levels;//niz levela za heroja
+    //Level[] levels;//niz levela za heroja
     List<Enemy> enemies; //Svi neprijatelji u dometu
     float shootTimer;
     GameObject projectileParent;//ovdje se cuvaju svi projektili koji se spawnuju
@@ -45,9 +45,10 @@ public class Hero : MonoBehaviour
     public AudioClip enemySpottedAudio;
     public static int heroPrice = 50;
 	public static int heroSellPrice = 30;
-	public static int heroUp1Price = 60;
-	public static int heroUp2Price = 70;
-	public static int heroUp3Price = 80;
+	public static int heroUp1Price = 20;
+	public static int heroUp2Price = 30;
+	public static int heroUp3Price = 50;
+	public int level = 1;
     public float radius;//u inspektoru podesimo radijus
     public Color radiusColor;//inicijalna boja radijusa
 
@@ -150,6 +151,20 @@ public class Hero : MonoBehaviour
 		return heroUp3Price;
 	}
 
+	public string GetNextLevel()
+	{
+		if (level == 4)
+			return "max";
+		else if (level == 3) {
+			level += 1;
+			return "max";
+		}
+		else {
+			level += 1;
+			return level.ToString ();
+		}
+	}
+
 	void Rotation()
 	{
         if (ChooseTarget() != null) 
@@ -195,7 +210,7 @@ public class Hero : MonoBehaviour
 
 
 
-
+	/*
     Level GetLevel()
     {
         return levels[currentLevel];
@@ -223,6 +238,7 @@ public class Hero : MonoBehaviour
             }
         }
     }
+    */
 
     void Shoot()
     {
