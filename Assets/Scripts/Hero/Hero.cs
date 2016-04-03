@@ -178,19 +178,15 @@ public class Hero : MonoBehaviour
 
 	public string GetNextLevel()
 	{
-		if (currentLevel == 4)
-			return "max";
-		else if (currentLevel == 3) {
+		if (currentLevel < 4) {
 			currentLevel += 1;
-			InvokeRepeating("Shoot", 0.0F, GetFireRate());
-			return "max";
-		}
-		else {
-			currentLevel += 1;
-			InvokeRepeating("Shoot", 0.0F, GetFireRate());
-			return currentLevel.ToString ();
+			InvokeRepeating ("Shoot", 0.0F, GetFireRate ());
 		}
 
+		if (currentLevel==4)
+			return "max";
+		else
+			return currentLevel.ToString ();
 	}
 
 	void Rotation()
