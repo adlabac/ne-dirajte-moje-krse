@@ -45,6 +45,9 @@ public class Hero : MonoBehaviour
     public AudioClip enemySpottedAudio;
     public static int heroPrice = 50;
 	public static int heroSellPrice = 30;
+	public static int heroUp1Price = 60;
+	public static int heroUp2Price = 70;
+	public static int heroUp3Price = 80;
     public float radius;//u inspektoru podesimo radijus
     public Color radiusColor;//inicijalna boja radijusa
 
@@ -129,6 +132,22 @@ public class Hero : MonoBehaviour
 	public int GetSellPrice()
 	{
 		return heroSellPrice;
+	}
+
+
+	public int GetUp1Price()
+	{
+		return heroUp1Price;
+	}
+
+	public int GetUp2Price()
+	{
+		return heroUp2Price;
+	}
+
+	public int GetUp3Price()
+	{
+		return heroUp3Price;
 	}
 
 	void Rotation()
