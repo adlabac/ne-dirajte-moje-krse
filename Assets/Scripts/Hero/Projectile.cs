@@ -38,7 +38,7 @@ public class Projectile : MonoBehaviour {
     public float minSlowdownDuration;//procjena na osnovu radiusa
     public float maxSlowdownDuration;
 
-    public float speed = 4f;//brzina kretanja projektila
+    public float speed = 10f;//brzina kretanja projektila
     //za razliciti tipove oruzija ce biti razlicita brzina
     public float distanceFromHero;
     public AudioClip shotAudio;
@@ -51,18 +51,10 @@ public class Projectile : MonoBehaviour {
 	void Start () {
         audioSource = this.GetComponent<AudioSource>();
         notExplode = true;
-        target = FindObjectOfType<Enemy>();//za sad ovako radi testiranja, u Hero ce se birati target
-        targetPosition = target.transform.position;
 	}
 
 	void Update () {
-        //Prije ovog treba odabrati metu(target) koja je najbliza,a to se radi pomocu metode ChooseEnemy(lista_neprijatelja) u klasi Hero,
-        //a to ima smisla ako je neprijatelj u dometu projektila/heroja, tj. ako je distanca izmedju neprijatelja i heroja manja od maxRadius,
-        //onda se odredi rastojanje izmedju projektila i neprijatelja(mete), a nakon toga se se pozovu metode:
-        //GetDamage(float distance),GetSlowdown(float distance), GetSlowdownDuration(float distance) koje su public jer im se pristupa iz drugih klasa   
-        //Ove metode ce odrediti u ovom koraku vrijednosti parametara za metode koje su definisane u klasi Enemy:
-        //public TakeDamage(float value)
-        //public Slowdown(float factor, float time)
+
         if (notExplode) //provjera da li je projektil vec ekplodirao,jer ako jeste nema smisla raditi ista sa njim
         {
             if (Vector3.Distance(transform.position, targetPosition) < speed * Time.deltaTime)//uslov kojim se provjerava da li se desio sudar izmedju projektila i neprijatelja(target)
@@ -71,12 +63,12 @@ public class Projectile : MonoBehaviour {
             }
             else
             {
-                UpdatePosition();//azuriramo poziciju projektila u odnosu na metu(target)
                 if (target != null) //ako postoji meta onda je prati,ovo target je u stvari Enemy koji je odabran metodom ChooseEnemy u klasi Hero
                 {
-                    //Debug.Log(targetPosition);
+                    
                     targetPosition = target.transform.position;//pratimo poziciju neprijatelja,treba nam za UpdatePosition() metod
                     RotationToTarget();
+                    UpdatePosition();//azuriramo poziciju projektila u odnosu na metu(target)
                 }
             }
         }        
@@ -88,19 +80,16 @@ public class Projectile : MonoBehaviour {
     }
 
     //kad se sudare projektil i neprijatelj
+    //potrebne izmjene
     void Explode() {
-        //Bice izmijenjeno kad omogucimo da heroj ispaljuje projektile
-        /*Debug.Log("explode");
+        //Debug.Log("Explode");
         target.TakeDamage(GetDamage(distanceFromHero));//distanceFromHero podesili pri pozivu funkcije FireProjectile unutar klase Hero
-        target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));*/
-        target.TakeDamage(30f);
-        if (target != null) { //ovo samo privremeno ovdje stoji,bice uklonjeno kad pocne heroj da ispaljuje projektile
-            target.Slowdown(target.GetComponent<EnemyType>().slowdownFactor, 3f);
-        }
+        target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));
+
         PlayAudio(impactAudio);
         gameObject.GetComponent<Renderer>().enabled = false;//treba da sakrije prikaz projektila jer isti treba da nestane pri sudaru, ali ne i da bude unisten
         notExplode = false;//znaci projektil jeste eksplodirao, pa Update() vise nista ne radi
-        Destroy(gameObject,1.5f);//projektil bude unisten posle 1.5sec(ovo vrijeme podlozno modifikaciji), odlozeno unistenje projektila da bi se cuo zvuk pri udaru
+        Destroy(gameObject);//nece da mi radi trail ako projectile nije odmah unisten. projektil bude unisten posle 1.5sec(ovo vrijeme podlozno modifikaciji), odlozeno unistenje projektila da bi se cuo zvuk pri udaru
         //kada bi se gameObject(tekuci projektil) odmah pri sudaru unistio, unistio bi i komponentu za zvuk, pa bi se zvuk pri udaru projektila odmah prekinuo ! 
     }
 
@@ -111,8 +100,6 @@ public class Projectile : MonoBehaviour {
             audioSource.Play();
         }
     }
-
-    //Ove tri metode bi pripremile vrijednosti parametara za metode TakeDamage i Slowdown
 
     //definisanje damage-a
     public float GetDamage(float distance)
@@ -168,10 +155,10 @@ public class Projectile : MonoBehaviour {
     //Ovaj metod treba jos doradjivati
     public void FireProjectile(Enemy enemy, Vector3 enemyPosition) {
         PlayAudio(shotAudio);
-        //GameObject newProjectile = Instantiate(model) as GameObject;//u Unity hijerarhiji treba dodati projektil, ova linija problematicna
-        //Ovo instanciranje treba obaviti u trenutku ispaljivanja projektila od strane Heroja(znaci u klasi Hero), a ne u ovoj klasi
         target = enemy;
+        //Debug.Log(target.transform.position);
         targetPosition = enemyPosition;
+        //Debug.Log(targetPosition);
         distanceFromHero = Vector3.Distance(enemyPosition, transform.position);//kada se pozove ovaj metod, odredice rastojanje izmedju Heroja i Enemy-a
     }
     void RotationToTarget()

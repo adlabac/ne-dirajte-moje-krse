@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 //Osnovni:
 //Start() - Inicijalizazija parametara potrebnih za Enemy-a
 //Update() - definisanje ponasanja Enemy-a za svaki frame
@@ -17,13 +19,13 @@ using System.Collections;
 public class Enemy : MonoBehaviour
 {
     EnemyType type;//tip neprijatelja
-    public float health = 100f;//HP neprijatelja, ovo treba dodatno razmotriti, postoji i klasa EnemyHealth, ovaj atribut u ovom obliku vjerovatno treba maci
     Vector3 position;//trenutna pozicija neprijatelja
-    public float speed;//brzina kretanja neprijatelja na osnovu tipa
     float speedFactor;//faktor koji utice na usporenje
     int pathIndex = 0;//pathIndex je indeks Patha iz klase GameLevel
     int waypoint = 1;//tacka na pathu do koje se Enemy krece pravolinijski
 
+    public float health;//HP neprijatelja
+    public float speed;//brzina kretanja neprijatelja na osnovu tipa
     public AudioClip hitAudio;
     public AudioClip stealAudio;//zvuk kad Enemy dodje do kamena
     public AudioClip dyingAudio;
@@ -32,14 +34,18 @@ public class Enemy : MonoBehaviour
     float slowdownTime;//vrijeme koliko traje usporenje
     Path path;//ovo sam dodao radi testiranja, tj. da bi uzeo niz waypoint-a za put, za sad posmatramo kao da imamo samo jedan tip puta
     bool alive;//da li je neprijatelj umro, ovo mora postojati zbog odlozenog unistenja objekta - ovim sprecavama da se Update() izvsava i nakon umiranja Enemy-a
-    private AudioSource audioSourceEnemy;//tu se mijenjaju AudioClip-ovi(pomocu metoda PlayAudio(AudioClip clip) u zavisnosti od situacije
-    private Animator anim;//za Die animaciju
-    public GameObject model;//izgled neprijatelja
+    AudioSource audioSourceEnemy;//tu se mijenjaju AudioClip-ovi(pomocu metoda PlayAudio(AudioClip clip) u zavisnosti od situacije
+    Animator anim;//za Die animaciju
     bool isSlowedDown;//da li je Enemy usporen
     bool canSteal; //da li Enemy moze da pokupi kamen
+    List<Hero> heroes;//lista heroja koje vidi neprijatelj
+
+    public GameObject model;//izgled neprijatelja
+    
 
     void Start()
     {
+        heroes = new List<Hero>();
         //U zavisnosti od GameLevela biram index puta !
         path = FindObjectOfType<GameLevel>().paths[pathIndex];
         SetEnemyParams();
@@ -66,7 +72,6 @@ public class Enemy : MonoBehaviour
                     {
                         isSlowedDown = false;
                         speed = type.defaultSpeed;//ako nije usporen moramo mu vratiti default speed
-                        //speed = 3f;//vrati se na pocetnu brzinu
                     }
                     else
                     {
@@ -87,32 +92,33 @@ public class Enemy : MonoBehaviour
         canSteal = false;
         //anim.SetTrigger("Die");//za animaciju triger
         PlayAudio(dyingAudio);
-        foreach (Transform child in gameObject.transform)//ovo sam morao da dodam zbog mozgonje
+        foreach (Transform child in gameObject.transform)
         {
             Destroy(child.gameObject);
         }
         gameObject.GetComponent<Renderer>().enabled = false;
-        Destroy(gameObject, 2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
+        gameObject.GetComponent<CircleCollider2D>().enabled = false;//i ovo sam morao da dodam jer kad postavim heroja onamo gdje je enemy stradao,
+        //a nije proslo dvije sekunde, kako je ostao kolider, heroj ce ga detektovat
+        foreach (Hero hero in heroes.ToList()) //bez ovog dijela .ToList() javlja gresku
+        {
+            hero.RemoveEnemy(this);
+        }
+        Destroy(gameObject,2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
         //odlozeno unistenje da bi se animacija i zvuk izvrsili do kraja
     }
     //Rotacija ka waypoint-u
     void RotationToWaypoint()
     {
-        //Debug.Log("Rotacija");
-        Vector3 moveDirection = gameObject.transform.position - path.wayPoints[waypoint];
-        if (moveDirection != Vector3.zero)
-        {
-            float angle;
-            //Ovo if samo privremeno postoji
-            if (type.name == "Bot1")
-            {
-                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + 90f;//Zbog mozgonje sam ovo promijenio. Nikola
+        foreach (Transform child in transform) {
+            if (child.tag == "EnemyModel") {
+                Vector3 moveDirection = child.position - path.wayPoints[waypoint];
+                if (moveDirection != Vector3.zero)
+                {
+                    float angle;
+                    angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + 90f;
+                    child.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                }
             }
-            else {
-                angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg; 
-            }
-            
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
 
@@ -140,6 +146,10 @@ public class Enemy : MonoBehaviour
                     {
                         Destroy(child.gameObject);
                     }
+                    foreach (Hero hero in heroes.ToList())
+                    {
+                        hero.RemoveEnemy(this);
+                    }
                     gameObject.GetComponent<Renderer>().enabled = false;//Enemy mora da nestane 
                 }
                 if (alive) { //da izmjegnemo error
@@ -155,7 +165,14 @@ public class Enemy : MonoBehaviour
     public float GetDistanceFromRocks()
     {
         int lastWaypoint = path.wayPoints.Count - 1;
-        return Vector3.Distance(transform.position, path.wayPoints[lastWaypoint]);//rastojanje neprijatelja od zadnjeg waypointa koji predstavlja kamenje
+        float distanceFromRocks = Vector3.Distance(transform.position,path.wayPoints[waypoint]);//rastojanje od tekuce pozicije neprijatelja do waypointa
+        int waypointIndex = waypoint ;
+        while (waypointIndex < lastWaypoint) //sabereme rastojanja izmjedju svih preostalih waypointa
+        {
+            distanceFromRocks += Vector3.Distance(path.wayPoints[waypointIndex], path.wayPoints[waypointIndex + 1]);
+            waypointIndex++;
+        }
+        return distanceFromRocks;
     }
     //Odrediti float value pomocu metoda GetDamage(float distance) kada Hero izabere neprijatelja, a pozvati ovaj metod kada se sudare neprijatelj i projektil
     public void TakeDamage(float value)
@@ -189,5 +206,14 @@ public class Enemy : MonoBehaviour
         speed = type.defaultSpeed;
         speedFactor = type.slowdownFactor;
     }
+
+    public void SetDetected(Hero hero) {
+        heroes.Add(hero);
+    }
+
+    public void UnsetDetected(Hero hero) {
+        heroes.Remove(hero);
+    }
+
 
 }

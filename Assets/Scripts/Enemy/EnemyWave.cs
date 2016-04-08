@@ -74,7 +74,7 @@ public class EnemyWave : MonoBehaviour
 	}
 
 	/*	Na osnovu niza enemyTypeNames treba dodijeliti vrijednosti atributima enemyTypes upotrebom metode GetByName*/
-
+    /*
     public void AssignEnemyTypes(EnemyType[] enemyTypes, string[] enemyTypeNames)
 	{
         
@@ -89,11 +89,12 @@ public class EnemyWave : MonoBehaviour
             enemyTypes[i].reward = FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).reward;
             enemyTypes[i].minStones = FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).minStones;
             enemyTypes[i].maxStones = FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).maxStones;
-            //enemyTypes[i].model = Instantiate(FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).model) as GameObject;
+            enemyTypes[i].model = Instantiate(FindObjectOfType<EnemyTypes>().GetByName(enemyTypeNames[i]).model) as GameObject;
 
 		}
 	}
-	
+	*/ 
+
 	/*
 	 * Postavlja se Coroutine za Spawnovanje neprijatelja kojem se kao parametri predaju tip neprijatelja, broj koliko takvih neprijatelja
 	 * treba da se Spawnuje, koji je interval po kojima trebaju da se Spawnuju neprijatelji, kao i njihova putanja koja im je dodijeljena

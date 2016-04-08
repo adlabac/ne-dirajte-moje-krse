@@ -1,27 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using UnityEngine.UI;
 /*
 
 Osnovni metodi:
 Start() - Služi za inicijalizaciju health bara.
 Update() - Ažuriranje health bara.
+SetHealthBar(float myHealth) - metod kojim se modifikuje HealthBar
 
 **/
 
 public class EnemyHealth : MonoBehaviour {
 
-	public float maxHealth = 100; // Maksimalni HP neprijatelja
-	public float currentHealth = 100; // Trenutni HP neprijatelja
-	private float healthBar; //  Health bar
+	public float maxHealth = 100f; // Maksimalni HP neprijatelja
+	public float currentHealth = 100f; // Trenutni HP neprijatelja
+    public GameObject healthBar;
+    private float normalizedHealth;
 
 	void Start () {
-		healthBar = gameObject.transform.localScale.x; 	
+        maxHealth = transform.gameObject.GetComponent<EnemyType>().initialHealth;
+        currentHealth = transform.gameObject.GetComponent<Enemy>().health;
 	}
 	
 	void Update () {
-		Vector3 tmpHealthBar = gameObject.transform.localScale; // ovo ce nam trebati da bi iznad svakog neprijatelja vizuelno mogli da vidimo trenutni HP
-		tmpHealthBar.x = currentHealth / maxHealth * healthBar;
-		gameObject.transform.localScale = tmpHealthBar;	
+        if (currentHealth > 0) {
+            currentHealth = transform.gameObject.GetComponent<Enemy>().health;
+            normalizedHealth = currentHealth / maxHealth;
+            SetHealthBar(normalizedHealth);
+        }
+        
 	}
+
+    void SetHealthBar(float myHealth)
+    {
+        if (healthBar != null) {
+            healthBar.transform.localScale = new Vector3(Mathf.Clamp(myHealth, 0f, 1f), healthBar.transform.localScale.y, healthBar.transform.localScale.z);
+        }
+    }
 }
