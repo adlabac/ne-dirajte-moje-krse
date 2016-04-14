@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine.UI;
 public class EnemyWave : MonoBehaviour 
 {
 	public string[] enemyTypeNames;
@@ -16,7 +16,8 @@ public class EnemyWave : MonoBehaviour
 	private int[] cnt; 
 
     private GameObject enemyParent;
-
+    int waveNum;//redni broj wave-a
+    Text waveText;
 	/*
 	 * Postavljamo niz koji sadrzi sve 0 koje predstavljaju da EnemyType na toj poziciji u svom nizu nije krenuo sa Spawnovanjem
 	 * Kada dodje njegovo vrijeme, pokrece se Coroutine, koji Spawnuje neprijatelje na pocetak svog puta, u odredjenim intervalima,
@@ -33,6 +34,9 @@ public class EnemyWave : MonoBehaviour
             //ovdje kreiramo GameObject sa nazivom Enemies i to je enemyParent
             enemyParent = new GameObject("Enemies");
         } */
+        waveText = GameObject.Find("WavesText").GetComponent<Text>();
+        waveNum = 0;
+        waveText.text = waveNum.ToString();
 
         cnt = new int[spawnDelay.Length];
         spawnTime = new float[spawnDelay.Length];
@@ -46,7 +50,9 @@ public class EnemyWave : MonoBehaviour
 			else if (i > 0)
 				spawnTime [i] = spawnTime [i - 1] + spawnDelay [i];
 		}
-
+        
+       
+        
 		//AssignEnemyTypes(enemyTypes, enemyTypeNames); //ne znam da li je trebalo u startu da se dodijele atributi nizu enemyTypes preko imena
 	}
 	/*
@@ -71,6 +77,8 @@ public class EnemyWave : MonoBehaviour
 				cnt[j] = 1;
 			}
 		}
+        
+        waveText.text = waveNum.ToString() + " | " + count.Length.ToString();//prikaz broja wave-a
 	}
 
 	/*	Na osnovu niza enemyTypeNames treba dodijeliti vrijednosti atributima enemyTypes upotrebom metode GetByName*/
@@ -103,6 +111,7 @@ public class EnemyWave : MonoBehaviour
     
 	IEnumerator SpawnEnemy(EnemyType enemyType, int count, float spawnInterval, Path path)
 	{
+        waveNum++;
         int cnt = 0;
 		while(cnt < count)
 		{
@@ -111,6 +120,7 @@ public class EnemyWave : MonoBehaviour
 			cnt++;
 			yield return new WaitForSeconds(spawnInterval);
 		}
+        
 	}
 
 }

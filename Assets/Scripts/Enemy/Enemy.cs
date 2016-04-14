@@ -39,7 +39,6 @@ public class Enemy : MonoBehaviour
     bool isSlowedDown;//da li je Enemy usporen
     bool canSteal; //da li Enemy moze da pokupi kamen
     List<Hero> heroes;//lista heroja koje vidi neprijatelj
-
     public GameObject model;//izgled neprijatelja
     
 
