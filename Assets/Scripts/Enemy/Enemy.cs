@@ -40,7 +40,9 @@ public class Enemy : MonoBehaviour
     bool canSteal; //da li Enemy moze da pokupi kamen
     List<Hero> heroes;//lista heroja koje vidi neprijatelj
     public GameObject model;//izgled neprijatelja
-    
+    Vector3 offset;
+    List<Vector3> newPath;
+    bool targetable = true;//da li heroj moze da puca ka neprijatelju
 
     void Start()
     {
@@ -54,6 +56,12 @@ public class Enemy : MonoBehaviour
         canSteal = true;
         isSlowedDown = false;
         RotationToWaypoint();
+        //Potrebno za offset path
+        offset = new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), 0);
+        newPath = new List<Vector3>();
+        for (int i = 0; i < path.wayPoints.Count; i++) {
+            newPath.Add(path.wayPoints[i] + offset);
+        }
     }
     void Update()
     {
@@ -77,7 +85,7 @@ public class Enemy : MonoBehaviour
                         slowdownTime -= Time.deltaTime;//ovdje podesavamo koliko ce dugo biti usporavan
                     }
                 }
-                float distanceFromWayPoint = Vector3.Distance(transform.position, path.wayPoints[waypoint]);//rastojanje neprijatelja od waypoint-a ka kom se krece
+                float distanceFromWayPoint = Vector3.Distance(transform.position, newPath[waypoint]);//rastojanje neprijatelja od waypoint-a ka kom se krece
                 UpdatePosition(distanceFromWayPoint);
             }
         }
@@ -127,7 +135,7 @@ public class Enemy : MonoBehaviour
         float presao;
         if (distance > 0)
         {
-            newPosition = Vector3.MoveTowards(transform.position, path.wayPoints[waypoint], speed*Time.deltaTime);//koliko se Enemy pomjeri od trenutne do sledece pozicije ka waypointu
+            newPosition = Vector3.MoveTowards(transform.position, newPath[waypoint], speed * Time.deltaTime);//koliko se Enemy pomjeri od trenutne do sledece pozicije ka waypointu
             presao = Vector3.Distance(transform.position, newPosition);//koliko je presao od pocetne pozicije pa do nove pozicije
             distance -= presao;//distanca do waypointa se smanjuje
             transform.position = newPosition;//tek onda pomjerimo Enemy-a
@@ -154,7 +162,6 @@ public class Enemy : MonoBehaviour
                 if (alive) { //da izmjegnemo error
                     waypoint++;//neprijatelj se krece ka novom waypoint-u
                     RotationToWaypoint();//rotiramo neprijatelja ka tom novom waypointu
-                    
                 }
             }
         }
