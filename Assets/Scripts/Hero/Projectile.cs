@@ -84,7 +84,8 @@ public class Projectile : MonoBehaviour {
     void Explode() {
         //Debug.Log("Explode");
         target.TakeDamage(GetDamage(distanceFromHero));//distanceFromHero podesili pri pozivu funkcije FireProjectile unutar klase Hero
-        target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));
+        //target.Slowdown(GetSlowdown(distanceFromHero), GetSlowdownDuration(distanceFromHero));
+
 
         PlayAudio(impactAudio);
         gameObject.GetComponent<Renderer>().enabled = false;//treba da sakrije prikaz projektila jer isti treba da nestane pri sudaru, ali ne i da bude unisten

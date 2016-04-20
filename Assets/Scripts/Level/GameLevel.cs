@@ -106,7 +106,25 @@ public class GameLevel : MonoBehaviour {
 			Destroy (menu);
 		}
 
+	}
 
+	public static void setFemaleHeroRadiusesInactive()
+	{
+		GameObject[] heroes;
+		GameObject[] menus;
+
+		heroes = GameObject.FindGameObjectsWithTag ("FemaleHeroes");
+		//svakom ugasi radius - bice samo jedan ustvari
+		foreach (GameObject hero in heroes) {
+			GameObject heroRad = hero.transform.Find("FemaleHeroRadius").gameObject;
+			heroRad.SetActive (false);
+			//heroRad.transform.position += new Vector3 (0, 0, 1);
+		}
+
+		menus = GameObject.FindGameObjectsWithTag ("HeroMenus");
+		foreach (GameObject menu in menus) {
+			Destroy (menu);
+		}
 
 	}
 
