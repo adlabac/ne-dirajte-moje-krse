@@ -59,7 +59,14 @@ public class ChooseHero : MonoBehaviour {
 			int rowClicked = Mathf.FloorToInt(hitPoint.y / levelHeight * row); //broj vrste - klik
 			int colClicked = Mathf.FloorToInt(hitPoint.x / levelWidth * col); //broj kolone - klik
 
-			GameLevel.setHeroRadiusesInactive ();
+
+			//if (gameObject.tag == "Heroes") {
+			GameLevel.setHeroRadiusesInactive ("Heroes", "HeroRadius", "HeroMenus");
+			//}
+			//else if (gameObject.tag == "FemaleHeroes") {
+			//	GameLevel.setHeroRadiusesInactive ("FemaleHeroes", "FemaleHeroRadius", "HeroMenus");
+			//}
+
 
 			//ispitujemo je li polje available
 			if (canPlaceTower (rowClicked, colClicked)) {

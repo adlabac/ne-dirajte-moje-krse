@@ -39,9 +39,7 @@ public class Enemy : MonoBehaviour
     public bool isSlowedDown;//da li je Enemy usporen
     bool canSteal; //da li Enemy moze da pokupi kamen
     List<Hero> heroes;//lista heroja koje vidi neprijatelj
-	//-----
-	List<FemaleHero> femaleHeroes;
-	//-----
+
     public GameObject model;//izgled neprijatelja
     Vector3 offset;
     List<Vector3> newPath;
@@ -50,7 +48,6 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         heroes = new List<Hero>();
-		femaleHeroes = new List<FemaleHero>();
         //U zavisnosti od GameLevela biram index puta !
         path = FindObjectOfType<GameLevel>().paths[pathIndex];
         SetEnemyParams();
@@ -114,10 +111,7 @@ public class Enemy : MonoBehaviour
         {
             hero.RemoveEnemy(this);
         }
-		foreach (FemaleHero hero in femaleHeroes.ToList()) //bez ovog dijela .ToList() javlja gresku
-		{
-			hero.RemoveEnemy(this);
-		}
+
         Destroy(gameObject,2f);//iz slicnog razloga kao i kod klase Projectile, odlozeno unistenje objekta 
         //odlozeno unistenje da bi se animacija i zvuk izvrsili do kraja
     }
@@ -165,10 +159,7 @@ public class Enemy : MonoBehaviour
                     {
                         hero.RemoveEnemy(this);
                     }
-					foreach (FemaleHero hero in femaleHeroes.ToList())
-					{
-						hero.RemoveEnemy(this);
-					}
+
                     gameObject.GetComponent<Renderer>().enabled = false;//Enemy mora da nestane 
                 }
                 if (alive) { //da izmjegnemo error
@@ -232,14 +223,5 @@ public class Enemy : MonoBehaviour
     public void UnsetDetected(Hero hero) {
         heroes.Remove(hero);
     }
-
-	public void SetDetectedF(FemaleHero hero) {
-		femaleHeroes.Add(hero);
-	}
-
-	public void UnsetDetectedF(FemaleHero hero) {
-		femaleHeroes.Remove(hero);
-	}
-
 
 }

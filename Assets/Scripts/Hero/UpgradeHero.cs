@@ -20,7 +20,7 @@ public class UpgradeHero : MonoBehaviour {
 			ScoreManager.SetCoins(ScoreManager.GetCoins()-heroUpgradePrice); //podesi broj coina
 			heroParent.transform.Find("LevelNumber").GetComponent<TextMesh>().text=
 				heroParent.GetComponent<Hero>().GetNextLevel();
-			GameLevel.setHeroRadiusesInactive ();
+			GameLevel.setHeroRadiusesInactive ("Heroes","HeroRadius","HeroMenus");
 		}
 	}
 }

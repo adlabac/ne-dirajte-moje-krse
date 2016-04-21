@@ -89,25 +89,25 @@ public class GameLevel : MonoBehaviour {
 	}
 
 
-	public static void setHeroRadiusesInactive(){
+	public static void setHeroRadiusesInactive(string tagHero, string radius, string menuHero){
 		GameObject[] heroes;
 		GameObject[] menus;
 
-		heroes = GameObject.FindGameObjectsWithTag ("Heroes");
+		heroes = GameObject.FindGameObjectsWithTag (tagHero);
 		//svakom ugasi radius - bice samo jedan ustvari
 		foreach (GameObject hero in heroes) {
-			GameObject heroRad = hero.transform.Find ("HeroRadius").gameObject;
+			GameObject heroRad = hero.transform.Find (radius).gameObject;
 			heroRad.SetActive (false);
 			//heroRad.transform.position += new Vector3 (0, 0, 1);
 		}
 
-		menus = GameObject.FindGameObjectsWithTag ("HeroMenus");
+		menus = GameObject.FindGameObjectsWithTag (menuHero);
 		foreach (GameObject menu in menus) {
 			Destroy (menu);
 		}
 
 	}
-
+	/*
 	public static void setFemaleHeroRadiusesInactive()
 	{
 		GameObject[] heroes;
@@ -126,7 +126,7 @@ public class GameLevel : MonoBehaviour {
 			Destroy (menu);
 		}
 
-	}
+	}*/
 
 
 }

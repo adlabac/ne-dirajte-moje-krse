@@ -70,16 +70,22 @@ public class Hero : MonoBehaviour
     public float radius;//u inspektoru podesimo radijus
     public Color radiusColor;//inicijalna boja radijusa
 
+	//-------dodatne promjenjive za FemaleHero
+	int brojac;
 
-	public Level[] levels= {
+	private Animator anim;
+
+	public float slowDownFactor;
+	public float slowDownDuration;
+	//-----------------------------------
+
+	public Level[] levels = {
 		new Level (70, 0, 0, 0), //nulti nivo - cijena gradjenja
 		new Level (90, 90, 0.5f, 1f),
 		new Level (100, 150, 0.4f, 1f),
 		new Level (120, 200, 0.3f, 1f),
 		new Level (0, 200, 0.3f, 1f),
 	};
-
-
 
     //Inicijalizacija
     void Start()
@@ -88,12 +94,29 @@ public class Hero : MonoBehaviour
         //levels = new Level[levels.Length-1];
         //Kasnije ce biti azurirano
 
+		if (gameObject.tag == "Heroes") 
+		{
+			audioSource = GetComponent<AudioSource> ();
+			PlayAudio (spawnAudio);
+		
+			//racunamo poluprecnik na osnovu nacrtanog prefaba (sprite za hero) i takav nam postaje circle collider
+			radius = transform.Find ("HeroRadius").GetComponent<SpriteRenderer> ().bounds.size.x / 2;
+		}
+		if (gameObject.tag == "FemaleHeroes") 
+		{
+			/*float x = 3f;
+			for(int cnt = 0; cnt < levels.Length; cnt++){
+				levels [cnt].fireRate = x;
+				x -= 0.1f;
+			}*/
 
-        audioSource = GetComponent<AudioSource>();
-        PlayAudio(spawnAudio);
+			brojac = 0;
+			radius = transform.Find ("FemaleHeroRadius").GetComponent<SpriteRenderer> ().bounds.size.x / 2;
 
-		//racunamo poluprecnik na osnovu nacrtanog prefaba (sprite za hero) i takav nam postaje circle collider
-		radius = transform.Find ("HeroRadius").GetComponent<SpriteRenderer> ().bounds.size.x / 2;
+			anim = GetComponent<Animator> ();
+			anim.SetBool ("lelekanje", false);
+		}
+
 		//podesavamo radius collidera
 		if (Mathf.Abs(Mathf.Max(transform.lossyScale.x, transform.lossyScale.y)) != 0){
 			GetComponent<CircleCollider2D>().radius = radius / Mathf.Abs(Mathf.Max(transform.lossyScale.x, transform.lossyScale.y));
@@ -102,16 +125,18 @@ public class Hero : MonoBehaviour
 			GetComponent<CircleCollider2D>().radius = radius;
         }
 
-		//pravimo objekat zbog hijerarhije
-        projectileParent = GameObject.Find("Projectiles");
-        if (projectileParent == null)//ako u hijerarhiji nema GameObject-a Projectiles, kreiraj ga
-        {
-            //ovdje kreiramo GameObject sa nazivom Projectiles i to je projectileParent
-            projectileParent = new GameObject("Projectiles");
-        }
-        //Na osnovu trenutnog upgrade levela heroja, odredjujemo fireRate i pozivamo na svakih fireRate sekundi metod za ispaljivanje projektila
-        //InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
-		InvokeRepeating("Shoot", 0.0F, GetFireRate());
+		if (gameObject.tag == "Heroes") 
+		{
+			//pravimo objekat zbog hijerarhije
+			projectileParent = GameObject.Find ("Projectiles");
+			if (projectileParent == null) {//ako u hijerarhiji nema GameObject-a Projectiles, kreiraj ga
+				//ovdje kreiramo GameObject sa nazivom Projectiles i to je projectileParent
+				projectileParent = new GameObject ("Projectiles");
+			}
+			//Na osnovu trenutnog upgrade levela heroja, odredjujemo fireRate i pozivamo na svakih fireRate sekundi metod za ispaljivanje projektila
+			//InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
+			InvokeRepeating ("Shoot", 0.0F, GetFireRate ());
+		}
     }
 
 
@@ -124,15 +149,38 @@ public class Hero : MonoBehaviour
         {
             Rotation();
             //Shoot();
+			if(gameObject.tag == "FemaleHeroes")
+			{
+				if (brojac == 0) {		//ako prije nismo pozivali Invoke brojac je na 0
+					InvokeRepeating ("Shout", 0.3f, 3.0f);	//ako su u blizini neprijatelji pozivaj na 3 sekunde Shout, sa malim zakasnjenjem od 0.3sek
+					brojac++;			//postavljamo brojac na 1 dok svi protivnici ne izadju iz kruga zene(da ne bi vise puta pozivali InvokeRepeating)
+				} else {
+					anim.SetBool ("lelekanje", false);		//ako smo vec pozvali InvokeRepeating a protivnici su i dalje u blizini, postavi brojac na 1 da ne bi opet pozvali InvokeRepeating
+				}
+			}
         }
-		if(enemies.Count == 0)
+		if (enemies.Count == 0) 
+		{
 			radiusColor = Color.green;
+			if (gameObject.tag == "FemaleHeroes") 
+			{
+				anim.SetBool ("lelekanje", false);
+				CancelInvoke ();	//kada citav wave neprijatelja izadje iz kruga zene, zaustavi InvokeRepeating
+				brojac = 0;			//postavljamo brojac na 0 kako bi opet prilikom upada neprijatelja novog u krug zene, pozvali InvokeRepeating
+			}	
+		}
     }
 		
 
 	//klik na cijeli collider - moguce je vidjeti njegov radius	
-	void OnMouseUp (){
-		GameLevel.setHeroRadiusesInactive ();
+	void OnMouseUp ()
+	{
+		if (gameObject.tag == "Heroes") {
+			GameLevel.setHeroRadiusesInactive ("Heroes", "HeroRadius", "HeroMenus");
+		} 
+		else if (gameObject.tag == "FemaleHeroes") {
+			GameLevel.setHeroRadiusesInactive ("FemaleHeroes", "FemaleHeroRadius", "HeroMenus");
+		}
 	}
 
 
@@ -180,7 +228,10 @@ public class Hero : MonoBehaviour
 	{
 		if (currentLevel < 4) {
 			currentLevel += 1;
-			InvokeRepeating ("Shoot", 0.0F, GetFireRate ());
+			if(gameObject.tag == "Heroes")
+				InvokeRepeating ("Shoot", 0.0F, GetFireRate ());
+			else if(gameObject.tag == "FemaleHeroes")
+				InvokeRepeating ("Shout", 0.3F, GetFireRate ());
 		}
 
 		if (currentLevel==4)
@@ -211,7 +262,7 @@ public class Hero : MonoBehaviour
             radiusColor = Color.red;
 			if (enemies.Count == 0) //Pustamo zvuk ako je lista neprijatelja prazna, tj. ulazi prvi neprijatelj u domet
 			{
-				PlayAudio(enemySpottedAudio);
+				//PlayAudio(enemySpottedAudio);
 			}
             
             enemies.Add(other.gameObject.GetComponent<Enemy>());//dodamo u listu enemies neprijatelja koji je usao u domet heroja
@@ -247,6 +298,16 @@ public class Hero : MonoBehaviour
 			}
 		}
     }
+		
+	void Shout() //lelekanje zene
+	{
+		if (enemies.Count > 0) { //ako ima neprijatelja u dometu Heroja
+			anim.SetBool ("lelekanje", true);
+			for (int i = 0; i < enemies.Count; i++) {
+				enemies [i].Slowdown (slowDownFactor, slowDownDuration); //usporavanje neprijatelja svih u dometu sa slowDownFactor za vrijeme od slowDownDuration
+			}
+		} 
+	}
 
     void OnDrawGizmos() {
         Gizmos.color = radiusColor;
