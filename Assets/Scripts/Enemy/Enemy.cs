@@ -151,7 +151,7 @@ public class Enemy : MonoBehaviour
                     Destroy(gameObject,2f);//drugi arg. podesavamo u zavisno od trajanja zvuka stealAudio
                     canSteal = false;
                     alive = false;
-                    foreach (Transform child in gameObject.transform)//ovo sam morao da dodam zbog mozgonje
+                    foreach (Transform child in gameObject.transform)
                     {
                         Destroy(child.gameObject);
                     }
@@ -191,7 +191,6 @@ public class Enemy : MonoBehaviour
             PlayAudio(hitAudio);
 		} 
     }
-    //slicno kao i za prethodni metod
     public void Slowdown(float factor, float time)
     {
         speedFactor = factor;

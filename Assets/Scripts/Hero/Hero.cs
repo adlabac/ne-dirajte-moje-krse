@@ -159,7 +159,7 @@ public class Hero : MonoBehaviour
 		if (enemies.Count == 0) 
 		{
 			radiusColor = Color.green;
-			if (gameObject.name == "FemaleHero") 
+            if (gameObject.name.Contains("FemaleHero")) 
 			{
 				anim.SetBool ("lelekanje", false);
 				CancelInvoke ();	//kada citav wave neprijatelja izadje iz kruga zene, zaustavi InvokeRepeating
@@ -259,6 +259,9 @@ public class Hero : MonoBehaviour
             
             enemies.Add(other.gameObject.GetComponent<Enemy>());//dodamo u listu enemies neprijatelja koji je usao u domet heroja
             enemies[enemies.Count - 1].SetDetected(this);
+            if (this.gameObject.name.Contains("FemaleHero")) {
+                enemies[enemies.Count - 1].Slowdown(slowDownFactor, slowDownDuration);
+            }
         }
 	}
 
