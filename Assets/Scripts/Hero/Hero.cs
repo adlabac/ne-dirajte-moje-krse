@@ -74,7 +74,7 @@ public class Hero : MonoBehaviour
 	int brojac;
 
 	private Animator anim;
-
+    float wailingTimer;
 	public float slowDownFactor;
 	public float slowDownDuration;
 	//-----------------------------------
@@ -148,11 +148,20 @@ public class Hero : MonoBehaviour
         {
             Rotation();
             //Shoot();
-			if(gameObject.name.Contains("FemaleHero"))
+            if (wailingTimer <= 3)//3 zbog InvokeRepeating ("Shout", 0.3f, 3.0f);
+            {
+                wailingTimer += Time.deltaTime;
+            }
+            else {
+                wailingTimer = 0;
+            }
+            
+            if (gameObject.name.Contains("FemaleHero"))
 			{
-				if (brojac == 0) {		//ako prije nismo pozivali Invoke brojac je na 0
+                if (brojac == 0) {		//ako prije nismo pozivali Invoke brojac je na 0
 					InvokeRepeating ("Shout", 0.3f, 3.0f);	//ako su u blizini neprijatelji pozivaj na 3 sekunde Shout, sa malim zakasnjenjem od 0.3sek
 					brojac++;			//postavljamo brojac na 1 dok svi protivnici ne izadju iz kruga zene(da ne bi vise puta pozivali InvokeRepeating)
+                    
 				} else {
 					anim.SetBool ("lelekanje", false);		//ako smo vec pozvali InvokeRepeating a protivnici su i dalje u blizini, postavi brojac na 1 da ne bi opet pozvali InvokeRepeating
 				}
@@ -160,12 +169,14 @@ public class Hero : MonoBehaviour
         }
 		if (enemies.Count == 0) 
 		{
-			radiusColor = Color.green;
+            wailingTimer = 0;
+            radiusColor = Color.green;
             if (gameObject.name.Contains("FemaleHero")) 
 			{
 				anim.SetBool ("lelekanje", false);
 				CancelInvoke ();	//kada citav wave neprijatelja izadje iz kruga zene, zaustavi InvokeRepeating
 				brojac = 0;			//postavljamo brojac na 0 kako bi opet prilikom upada neprijatelja novog u krug zene, pozvali InvokeRepeating
+                wailingTimer = 0;
 			}	
 		}
     }
@@ -224,8 +235,8 @@ public class Hero : MonoBehaviour
 			currentLevel += 1;
 			if(gameObject.tag == "Heroes" && !gameObject.name.Contains("FemaleHero"))
 				InvokeRepeating ("Shoot", 0.0F, GetFireRate ());
-            else if (gameObject.name.Contains("FemaleHero"))
-				InvokeRepeating ("Shout", 0.3F, GetFireRate ());
+            /*else if (gameObject.name.Contains("FemaleHero")) //za sad deaktivirano
+				InvokeRepeating ("Shout", 0.3F, GetFireRate ());*/
 		}
 
 		if (currentLevel==4)
@@ -262,7 +273,10 @@ public class Hero : MonoBehaviour
             enemies.Add(other.gameObject.GetComponent<Enemy>());//dodamo u listu enemies neprijatelja koji je usao u domet heroja
             enemies[enemies.Count - 1].SetDetected(this);
             if (this.gameObject.name.Contains("FemaleHero")) {
-                enemies[enemies.Count - 1].Slowdown(slowDownFactor, slowDownDuration);
+                if (wailingTimer <= slowDownDuration) {
+                    enemies[enemies.Count - 1].Slowdown(slowDownFactor, slowDownDuration - wailingTimer);
+                }
+                
             }
         }
 	}
@@ -296,7 +310,7 @@ public class Hero : MonoBehaviour
 	void Shout() //lelekanje zene
 	{
 		if (enemies.Count > 0) { //ako ima neprijatelja u dometu Heroja
-			anim.SetBool ("lelekanje", true);
+            anim.SetBool ("lelekanje", true);
 			for (int i = 0; i < enemies.Count; i++) {
 				enemies [i].Slowdown (slowDownFactor, slowDownDuration); //usporavanje neprijatelja svih u dometu sa slowDownFactor za vrijeme od slowDownDuration
 			}
