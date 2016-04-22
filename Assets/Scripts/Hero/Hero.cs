@@ -37,12 +37,10 @@ public class Hero : MonoBehaviour
     public Color radiusColor;//inicijalna boja radijusa
     public List<Level> levels;
     //-------dodatne promjenjive za FemaleHero
-    int brojac;
-
+    bool isWailing;
 	private Animator anim;
     float wailingTimer;
-	public float slowDownFactor;
-	public float slowDownDuration;
+
     //-----------------------------------
 
     //Inicijalizacija
@@ -62,13 +60,12 @@ public class Hero : MonoBehaviour
 
         if (gameObject.name.Contains("FemaleHero")) 
 		{
-			/*float x = 3f;
+            /*float x = 3f;
 			for(int cnt = 0; cnt < levels.Length; cnt++){
 				levels [cnt].fireRate = x;
 				x -= 0.1f;
 			}*/
-			brojac = 0;
-			
+            isWailing = false;
 			anim.SetBool ("lelekanje", false);
 		}
 
@@ -115,9 +112,9 @@ public class Hero : MonoBehaviour
                 else {
                     wailingTimer = 0;
                 }
-                if (brojac == 0) {		//ako prije nismo pozivali Invoke brojac je na 0
-					InvokeRepeating ("Shout", 0, GetWailingRate());	//ako su u blizini neprijatelji pozivaj na 3 sekunde Shout, sa malim zakasnjenjem od 0.3sek
-					brojac++;			//postavljamo brojac na 1 dok svi protivnici ne izadju iz kruga zene(da ne bi vise puta pozivali InvokeRepeating)
+                if (!isWailing) {		//ako prije nismo pozivali Invoke brojac je na 0
+					InvokeRepeating ("Shout", 0, GetWailingRate()); //ako su u blizini neprijatelji pozivaj na 3 sekunde Shout, sa malim zakasnjenjem od 0.3sek
+                    isWailing = true;			//postavljamo brojac na 1 dok svi protivnici ne izadju iz kruga zene(da ne bi vise puta pozivali InvokeRepeating)
                     
 				} else {
 					anim.SetBool ("lelekanje", false);		//ako smo vec pozvali InvokeRepeating a protivnici su i dalje u blizini, postavi brojac na 1 da ne bi opet pozvali InvokeRepeating
@@ -130,8 +127,8 @@ public class Hero : MonoBehaviour
             if (gameObject.name.Contains("FemaleHero")) 
 			{
 				anim.SetBool ("lelekanje", false);
-				CancelInvoke ();	//kada citav wave neprijatelja izadje iz kruga zene, zaustavi InvokeRepeating
-				brojac = 0;			//postavljamo brojac na 0 kako bi opet prilikom upada neprijatelja novog u krug zene, pozvali InvokeRepeating
+				CancelInvoke ();    //kada citav wave neprijatelja izadje iz kruga zene, zaustavi InvokeRepeating
+                isWailing = false;			//postavljamo brojac na 0 kako bi opet prilikom upada neprijatelja novog u krug zene, pozvali InvokeRepeating
                 wailingTimer = 0;
 			}	
 		}
@@ -164,47 +161,6 @@ public class Hero : MonoBehaviour
 		}
 		return nearestEnemy;
 	}
-	public int GetPrice()
-	{
-		return levels[currentLevel].GetCost();
-	}
-
-	public int GetSellPrice()
-	{
-		return levels[currentLevel].GetCostSell();
-	}
-
-	public float GetFireRate()
-	{
-		return levels [currentLevel].fireRate;
-	}
-
-    public float GetWailingRate()
-    {
-        return levels[currentLevel].wailingRate;
-    }
-
-    public void setLevel(int lev)
-	{
-		currentLevel = lev;
-	}
-
-
-	public string GetNextLevel()
-	{
-		if (currentLevel < 4) {
-			currentLevel += 1;
-			if(gameObject.tag == "Heroes" && !gameObject.name.Contains("FemaleHero"))
-				InvokeRepeating ("Shoot", 0.0F, GetFireRate ());
-            else if (gameObject.name.Contains("FemaleHero")) //za sad deaktivirano
-				InvokeRepeating ("Shout", 0, GetWailingRate());
-		}
-
-		if (currentLevel==4)
-			return "max";
-		else
-			return currentLevel.ToString ();
-	}
 
 	void Rotation()
 	{
@@ -234,8 +190,8 @@ public class Hero : MonoBehaviour
             enemies.Add(other.gameObject.GetComponent<Enemy>());//dodamo u listu enemies neprijatelja koji je usao u domet heroja
             enemies[enemies.Count - 1].SetDetected(this);
             if (this.gameObject.name.Contains("FemaleHero")) {
-                if (wailingTimer <= slowDownDuration) {
-                    enemies[enemies.Count - 1].Slowdown(slowDownFactor, slowDownDuration - wailingTimer);
+                if (wailingTimer <= GetSlowDownDuration()) {
+                    enemies[enemies.Count - 1].Slowdown(GetSlowDownFactor(), GetSlowDownDuration() - wailingTimer);
                 }
                 
             }
@@ -273,7 +229,7 @@ public class Hero : MonoBehaviour
 		if (enemies.Count > 0) { //ako ima neprijatelja u dometu Heroja
             anim.SetBool ("lelekanje", true);
 			for (int i = 0; i < enemies.Count; i++) {
-				enemies [i].Slowdown (slowDownFactor, slowDownDuration); //usporavanje neprijatelja svih u dometu sa slowDownFactor za vrijeme od slowDownDuration
+				enemies [i].Slowdown (GetSlowDownFactor(), GetSlowDownDuration()); //usporavanje neprijatelja svih u dometu sa slowDownFactor za vrijeme od slowDownDuration
 			}
 		} 
 	}
@@ -289,5 +245,60 @@ public class Hero : MonoBehaviour
 
     public void RemoveEnemy(Enemy enemy) {
         enemies.Remove(enemy);
+    }
+
+    //Geteri i seteri
+
+    public int GetPrice()
+    {
+        return levels[currentLevel].GetCost();
+    }
+
+    public int GetSellPrice()
+    {
+        return levels[currentLevel].GetCostSell();
+    }
+
+    public float GetFireRate()
+    {
+        return levels[currentLevel].fireRate;
+    }
+
+    public float GetWailingRate()
+    {
+        return levels[currentLevel].wailingRate;
+    }
+
+    public float GetSlowDownFactor()
+    {
+        return levels[currentLevel].slowDownFactor;
+    }
+
+    public float GetSlowDownDuration()
+    {
+        return levels[currentLevel].slowDownDuration;
+    }
+
+    public void setLevel(int lev)
+    {
+        currentLevel = lev;
+    }
+
+
+    public string GetNextLevel()
+    {
+        if (currentLevel < 4)
+        {
+            currentLevel += 1;
+            if (gameObject.tag == "Heroes" && !gameObject.name.Contains("FemaleHero"))
+                InvokeRepeating("Shoot", 0.0F, GetFireRate());
+            else if (gameObject.name.Contains("FemaleHero")) //za sad deaktivirano
+                InvokeRepeating("Shout", 0, GetWailingRate());
+        }
+
+        if (currentLevel == 4)
+            return "max";
+        else
+            return currentLevel.ToString();
     }
 }

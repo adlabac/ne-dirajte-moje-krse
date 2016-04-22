@@ -11,9 +11,10 @@ public class Level : MonoBehaviour
         public float fireRate;
         public float range;
         public float wailingRate;
+        public float slowDownFactor;
+        public float slowDownDuration;
 
-
-        public Level(int c, int cs, float fr, float r,float w)
+    public Level(int c, int cs, float fr, float r,float w)
         {
             cost = c;
             costSell = cs;
