@@ -63,6 +63,8 @@ public class Enemy : MonoBehaviour
         for (int i = 0; i < path.wayPoints.Count; i++) {
             newPath.Add(path.wayPoints[i] + offset);
         }
+        GameObject enemiesGameObject = GameObject.Find("Enemies");
+        this.transform.parent = enemiesGameObject.transform;
     }
     void Update()
     {

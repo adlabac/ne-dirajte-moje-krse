@@ -134,6 +134,8 @@ public class Hero : MonoBehaviour
 			//InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
 			InvokeRepeating ("Shoot", 0.0F, GetFireRate ());
 		}
+
+        
     }
 
 
