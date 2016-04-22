@@ -22,34 +22,6 @@ using System.Collections.Generic;
 //Metod SetLevel() - potrebna analiza
 //Kreirati u Unity hijerarhiji objekat koji sadrzi sve Heroje koji se nalaze na mapi
 
-public class Level
-{
-    public int cost; //promjenljiva u kojoj se cuva cijena heroja ili upgradea
-	public int costSell; //prodaja towera
-    public GameObject model;
-    public Projectile projectile;
-    public float fireRate;
-	public float range;
-
-
-	public Level(int c, int cs, float fr, float r){
-		cost = c;
-		costSell = cs;
-		fireRate = fr;
-		range = r;
-	}
-
-
-	public int GetCost(){
-		return cost;
-	}
-
-	public int GetCostSell(){
-		return costSell;
-	}
-}
-
-
 public class Hero : MonoBehaviour
 {
     int currentLevel = 0;//trenutni level heroja
@@ -61,31 +33,17 @@ public class Hero : MonoBehaviour
     public Projectile projectile;
     public AudioClip spawnAudio;
     public AudioClip enemySpottedAudio;
-    //public static int heroPrice = 50;
-	//public static int heroSellPrice = 30;
-	//public static int heroUp1Price = 20;
-	//public static int heroUp2Price = 30;
-	//public static int heroUp3Price = 50;
-	//public int level = 1;
     public float radius;//u inspektoru podesimo radijus
     public Color radiusColor;//inicijalna boja radijusa
-
-	//-------dodatne promjenjive za FemaleHero
-	int brojac;
+    public List<Level> levels;
+    //-------dodatne promjenjive za FemaleHero
+    int brojac;
 
 	private Animator anim;
     float wailingTimer;
 	public float slowDownFactor;
 	public float slowDownDuration;
-	//-----------------------------------
-
-	public Level[] levels = {
-		new Level (70, 0, 0, 0), //nulti nivo - cijena gradjenja
-		new Level (90, 90, 0.5f, 1f),
-		new Level (100, 150, 0.4f, 1f),
-		new Level (120, 200, 0.3f, 1f),
-		new Level (0, 200, 0.3f, 1f),
-	};
+    //-----------------------------------
 
     //Inicijalizacija
     void Start()
@@ -93,15 +51,15 @@ public class Hero : MonoBehaviour
         enemies = new List<Enemy>();//u pocetku nema neprijatelja koje enemy moze da dohvati
         //levels = new Level[levels.Length-1];
         //Kasnije ce biti azurirano
-
 		if (gameObject.tag == "Heroes" ) 
 		{
 			audioSource = GetComponent<AudioSource> ();
 			PlayAudio (spawnAudio);
-		
 			//racunamo poluprecnik na osnovu nacrtanog prefaba (sprite za hero) i takav nam postaje circle collider
 			radius = transform.Find ("HeroRadius").GetComponent<SpriteRenderer> ().bounds.size.x / 2;
-		}
+            anim = GetComponent<Animator>();
+        }
+
         if (gameObject.name.Contains("FemaleHero")) 
 		{
 			/*float x = 3f;
@@ -110,7 +68,7 @@ public class Hero : MonoBehaviour
 				x -= 0.1f;
 			}*/
 			brojac = 0;
-			anim = GetComponent<Animator> ();
+			
 			anim.SetBool ("lelekanje", false);
 		}
 
@@ -131,7 +89,6 @@ public class Hero : MonoBehaviour
 				projectileParent = new GameObject ("Projectiles");
 			}
 			//Na osnovu trenutnog upgrade levela heroja, odredjujemo fireRate i pozivamo na svakih fireRate sekundi metod za ispaljivanje projektila
-			//InvokeRepeating("Shoot", 0.0F, GetLevel().fireRate);
 			InvokeRepeating ("Shoot", 0.0F, GetFireRate ());
 		}
 
@@ -148,18 +105,18 @@ public class Hero : MonoBehaviour
         {
             Rotation();
             //Shoot();
-            if (wailingTimer <= 3)//3 zbog InvokeRepeating ("Shout", 0.3f, 3.0f);
-            {
-                wailingTimer += Time.deltaTime;
-            }
-            else {
-                wailingTimer = 0;
-            }
-            
+
             if (gameObject.name.Contains("FemaleHero"))
 			{
+                if (wailingTimer <= GetWailingRate())
+                {
+                    wailingTimer += Time.deltaTime;
+                }
+                else {
+                    wailingTimer = 0;
+                }
                 if (brojac == 0) {		//ako prije nismo pozivali Invoke brojac je na 0
-					InvokeRepeating ("Shout", 0.3f, 3.0f);	//ako su u blizini neprijatelji pozivaj na 3 sekunde Shout, sa malim zakasnjenjem od 0.3sek
+					InvokeRepeating ("Shout", 0, GetWailingRate());	//ako su u blizini neprijatelji pozivaj na 3 sekunde Shout, sa malim zakasnjenjem od 0.3sek
 					brojac++;			//postavljamo brojac na 1 dok svi protivnici ne izadju iz kruga zene(da ne bi vise puta pozivali InvokeRepeating)
                     
 				} else {
@@ -169,7 +126,6 @@ public class Hero : MonoBehaviour
         }
 		if (enemies.Count == 0) 
 		{
-            wailingTimer = 0;
             radiusColor = Color.green;
             if (gameObject.name.Contains("FemaleHero")) 
 			{
@@ -223,7 +179,12 @@ public class Hero : MonoBehaviour
 		return levels [currentLevel].fireRate;
 	}
 
-	public void setLevel(int lev)
+    public float GetWailingRate()
+    {
+        return levels[currentLevel].wailingRate;
+    }
+
+    public void setLevel(int lev)
 	{
 		currentLevel = lev;
 	}
@@ -235,8 +196,8 @@ public class Hero : MonoBehaviour
 			currentLevel += 1;
 			if(gameObject.tag == "Heroes" && !gameObject.name.Contains("FemaleHero"))
 				InvokeRepeating ("Shoot", 0.0F, GetFireRate ());
-            /*else if (gameObject.name.Contains("FemaleHero")) //za sad deaktivirano
-				InvokeRepeating ("Shout", 0.3F, GetFireRate ());*/
+            else if (gameObject.name.Contains("FemaleHero")) //za sad deaktivirano
+				InvokeRepeating ("Shout", 0, GetWailingRate());
 		}
 
 		if (currentLevel==4)
