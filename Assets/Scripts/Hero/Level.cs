@@ -13,24 +13,4 @@ public class Level : MonoBehaviour
         public float wailingRate;
         public float slowDownFactor;
         public float slowDownDuration;
-
-    public Level(int c, int cs, float fr, float r,float w)
-        {
-            cost = c;
-            costSell = cs;
-            fireRate = fr;
-            range = r;
-            wailingRate = w;
-        }
-
-        public int GetCost()
-        {
-            return cost;
-        }
-
-        public int GetCostSell()
-        {
-            return costSell;
-        }
-
 }

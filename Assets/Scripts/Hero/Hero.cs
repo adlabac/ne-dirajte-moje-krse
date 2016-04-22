@@ -40,7 +40,6 @@ public class Hero : MonoBehaviour
     bool isWailing;
 	private Animator anim;
     float wailingTimer;
-
     //-----------------------------------
 
     //Inicijalizacija
@@ -101,8 +100,6 @@ public class Hero : MonoBehaviour
         if (enemies.Count != 0)
         {
             Rotation();
-            //Shoot();
-
             if (gameObject.name.Contains("FemaleHero"))
 			{
                 if (wailingTimer <= GetWailingRate())
@@ -251,12 +248,12 @@ public class Hero : MonoBehaviour
 
     public int GetPrice()
     {
-        return levels[currentLevel].GetCost();
+        return levels[currentLevel].cost;
     }
 
     public int GetSellPrice()
     {
-        return levels[currentLevel].GetCostSell();
+        return levels[currentLevel].costSell;
     }
 
     public float GetFireRate()

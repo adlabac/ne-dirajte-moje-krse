@@ -58,7 +58,7 @@ public class Enemy : MonoBehaviour
         isSlowedDown = false;
         RotationToWaypoint();
         //Potrebno za offset path
-        offset = new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), 0);
+        offset = new Vector3(Random.Range(-0.35f, 0.35f), Random.Range(-0.35f, 0.35f), 0);
         newPath = new List<Vector3>();
         for (int i = 0; i < path.wayPoints.Count; i++) {
             newPath.Add(path.wayPoints[i] + offset);
@@ -77,7 +77,6 @@ public class Enemy : MonoBehaviour
             else {
                 if (isSlowedDown)
                 {
-                    //Debug.Log(slowdownTime);
                     if (slowdownTime <= 0) //ako vise nije usporen
                     {
                         isSlowedDown = false;
