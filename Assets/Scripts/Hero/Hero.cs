@@ -94,7 +94,7 @@ public class Hero : MonoBehaviour
         //levels = new Level[levels.Length-1];
         //Kasnije ce biti azurirano
 
-		if (gameObject.tag == "Heroes") 
+		if (gameObject.tag == "Heroes" ) 
 		{
 			audioSource = GetComponent<AudioSource> ();
 			PlayAudio (spawnAudio);
@@ -102,17 +102,14 @@ public class Hero : MonoBehaviour
 			//racunamo poluprecnik na osnovu nacrtanog prefaba (sprite za hero) i takav nam postaje circle collider
 			radius = transform.Find ("HeroRadius").GetComponent<SpriteRenderer> ().bounds.size.x / 2;
 		}
-		if (gameObject.tag == "FemaleHeroes") 
+        if (gameObject.name.Contains("FemaleHero")) 
 		{
 			/*float x = 3f;
 			for(int cnt = 0; cnt < levels.Length; cnt++){
 				levels [cnt].fireRate = x;
 				x -= 0.1f;
 			}*/
-
 			brojac = 0;
-			radius = transform.Find ("FemaleHeroRadius").GetComponent<SpriteRenderer> ().bounds.size.x / 2;
-
 			anim = GetComponent<Animator> ();
 			anim.SetBool ("lelekanje", false);
 		}
@@ -125,7 +122,7 @@ public class Hero : MonoBehaviour
 			GetComponent<CircleCollider2D>().radius = radius;
         }
 
-		if (gameObject.tag == "Heroes") 
+		if (gameObject.tag == "Heroes" && !gameObject.name.Contains("FemaleHero"))
 		{
 			//pravimo objekat zbog hijerarhije
 			projectileParent = GameObject.Find ("Projectiles");
@@ -149,7 +146,7 @@ public class Hero : MonoBehaviour
         {
             Rotation();
             //Shoot();
-			if(gameObject.tag == "FemaleHeroes")
+			if(gameObject.name.Contains("FemaleHero"))
 			{
 				if (brojac == 0) {		//ako prije nismo pozivali Invoke brojac je na 0
 					InvokeRepeating ("Shout", 0.3f, 3.0f);	//ako su u blizini neprijatelji pozivaj na 3 sekunde Shout, sa malim zakasnjenjem od 0.3sek
@@ -162,7 +159,7 @@ public class Hero : MonoBehaviour
 		if (enemies.Count == 0) 
 		{
 			radiusColor = Color.green;
-			if (gameObject.tag == "FemaleHeroes") 
+			if (gameObject.name == "FemaleHero") 
 			{
 				anim.SetBool ("lelekanje", false);
 				CancelInvoke ();	//kada citav wave neprijatelja izadje iz kruga zene, zaustavi InvokeRepeating
@@ -178,9 +175,6 @@ public class Hero : MonoBehaviour
 		if (gameObject.tag == "Heroes") {
 			GameLevel.setHeroRadiusesInactive ("Heroes", "HeroRadius", "HeroMenus");
 		} 
-		else if (gameObject.tag == "FemaleHeroes") {
-			GameLevel.setHeroRadiusesInactive ("FemaleHeroes", "FemaleHeroRadius", "HeroMenus");
-		}
 	}
 
 
@@ -201,8 +195,6 @@ public class Hero : MonoBehaviour
 		}
 		return nearestEnemy;
 	}
-
-
 	public int GetPrice()
 	{
 		return levels[currentLevel].GetCost();
@@ -228,9 +220,9 @@ public class Hero : MonoBehaviour
 	{
 		if (currentLevel < 4) {
 			currentLevel += 1;
-			if(gameObject.tag == "Heroes")
+			if(gameObject.tag == "Heroes" && !gameObject.name.Contains("FemaleHero"))
 				InvokeRepeating ("Shoot", 0.0F, GetFireRate ());
-			else if(gameObject.tag == "FemaleHeroes")
+            else if (gameObject.name.Contains("FemaleHero"))
 				InvokeRepeating ("Shout", 0.3F, GetFireRate ());
 		}
 
@@ -282,9 +274,6 @@ public class Hero : MonoBehaviour
 		audioSource.clip = clip;
 		audioSource.Play();
 	}
-
-
-
 
     void Shoot()
     {

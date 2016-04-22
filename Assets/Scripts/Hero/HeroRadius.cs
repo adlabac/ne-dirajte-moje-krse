@@ -35,11 +35,4 @@ public class HeroRadius : MonoBehaviour {
 		transform.rotation = rotRadius;
 	}
 
-    
-    /*
-	void OnTriggerEnter2D(Collider2D other){
-		Debug.Log("Collide");
-	}*/
-
-
 }

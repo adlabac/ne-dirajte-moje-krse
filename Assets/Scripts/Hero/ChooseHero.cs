@@ -3,8 +3,6 @@ using System.Collections;
 
 public class ChooseHero : MonoBehaviour {
 
-
-
 	public GameObject fieldMenuPrefab;
 	private GameObject fieldMenu;
 	//private Hero heroScript;
@@ -34,12 +32,10 @@ public class ChooseHero : MonoBehaviour {
 
 	}
 
-
 	// Update is called once per frame
 	void Update () {
 
 	}
-
 
 	void OnMouseUp (){
 		//trazimo poziciju klika na slici
@@ -58,15 +54,7 @@ public class ChooseHero : MonoBehaviour {
 			//sada imamo poziciju polja u matrici
 			int rowClicked = Mathf.FloorToInt(hitPoint.y / levelHeight * row); //broj vrste - klik
 			int colClicked = Mathf.FloorToInt(hitPoint.x / levelWidth * col); //broj kolone - klik
-
-
-			//if (gameObject.tag == "Heroes") {
-			GameLevel.setHeroRadiusesInactive ("Heroes", "HeroRadius", "HeroMenus");
-			//}
-			//else if (gameObject.tag == "FemaleHeroes") {
-			//	GameLevel.setHeroRadiusesInactive ("FemaleHeroes", "FemaleHeroRadius", "HeroMenus");
-			//}
-
+            GameLevel.setHeroRadiusesInactive ("Heroes", "HeroRadius", "HeroMenus");
 
 			//ispitujemo je li polje available
 			if (canPlaceTower (rowClicked, colClicked)) {
@@ -86,34 +74,11 @@ public class ChooseHero : MonoBehaviour {
 				Vector3 placePointMenu = placePoint + new Vector3 (0, 0, -1);
 				fieldMenu = (GameObject)Instantiate (fieldMenuPrefab, placePointMenu, Quaternion.identity);
 				fieldMenu.transform.parent = menuParent.transform;
-
-
-				/*
-				hero = (GameObject)Instantiate(heroPrefab, placePoint , Quaternion.identity);
-				hero.transform.Find ("HeroRadius").gameObject.SetActive (false);
-				//cijena heroja
-				int heroPrice = hero.GetComponent<Hero> ().GetPrice ();
-				//ako je cijena manja od preostalih novcica
-				if (heroPrice <= ScoreManager.GetCoins ()) {
-					ScoreManager.SetCoins(ScoreManager.GetCoins()-heroPrice); //podesi broj coina
-					GameObject fieldManager = GameObject.Find ("Field Manager");
-					hero.transform.parent = fieldManager.transform;
-					GameLevel.SetField (rowClicked, colClicked, 0); //update matrice - zauzeto polje					
-				}
-				else //inace unisti objekat
-					Destroy(hero);
-
-				*/
-
 			}
 
 		}
 
 	}
-
-
-
-
 
 	//funkcija koja provjerava da li na polju vec postoji tower
 	private bool canPlaceTower(int i, int j) {
