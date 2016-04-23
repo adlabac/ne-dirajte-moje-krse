@@ -41,6 +41,7 @@ public class Hero : MonoBehaviour
 	private Animator anim;
     float wailingTimer;
     //-----------------------------------
+	Transform heroRadius;
 
     //Inicijalizacija
     void Start()
@@ -48,22 +49,20 @@ public class Hero : MonoBehaviour
         enemies = new List<Enemy>();//u pocetku nema neprijatelja koje enemy moze da dohvati
         //levels = new Level[levels.Length-1];
         //Kasnije ce biti azurirano
+		heroRadius = transform.Find("HeroRadius");	//stavili smo da bismo povecavali sliku sivog okolo heroja prilikom povecavanja range
+
+
 		if (gameObject.tag == "Heroes" ) 
 		{
 			audioSource = GetComponent<AudioSource> ();
 			PlayAudio (spawnAudio);
 			//racunamo poluprecnik na osnovu nacrtanog prefaba (sprite za hero) i takav nam postaje circle collider
-			radius = transform.Find ("HeroRadius").GetComponent<SpriteRenderer> ().bounds.size.x / 2;
+			radius = heroRadius.GetComponent<SpriteRenderer> ().bounds.size.x / 2;
             anim = GetComponent<Animator>();
         }
 
         if (gameObject.name.Contains("FemaleHero")) 
 		{
-            /*float x = 3f;
-			for(int cnt = 0; cnt < levels.Length; cnt++){
-				levels [cnt].fireRate = x;
-				x -= 0.1f;
-			}*/
             isWailing = false;
 			anim.SetBool ("lelekanje", false);
 		}
@@ -280,12 +279,19 @@ public class Hero : MonoBehaviour
     {
         currentLevel = lev;
     }
-
+	//---------------
+	public float GetRange()
+	{
+		return levels [currentLevel].range;
+	}
+	//---------------
 
     public string GetNextLevel()
     {
         if (currentLevel < 4)
-        {
+		{							
+			heroRadius.localScale += new Vector3 (GetRange(), GetRange(), 0);		//uvecavamo sliku sivog oko heroja sa svakim levelom 
+			radius = heroRadius.GetComponent<SpriteRenderer> ().bounds.size.x / 2;	//pa cemo prema njoj radius heroja povecavat(kontrolisat)
             currentLevel += 1;
             if (gameObject.tag == "Heroes" && !gameObject.name.Contains("FemaleHero"))
                 InvokeRepeating("Shoot", 0.0F, GetFireRate());
