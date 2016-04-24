@@ -12,7 +12,6 @@ public class GameLevel : MonoBehaviour {
 	EnemyWave[] enemyWaves; //niz enemyWaveova - svaki sledeci bi trebalo da bude jaci
     public List<Path> paths; //niz mogucih putanja kuda se mogu kretati enemyji
 
-
 	//promjenljiva u kojoj je ucitana matrica 10 x 18 sa nulama i jedinicama koje oznacavaju da li se na polju
 	//moze postaviti tower - detaljnije objasnjenje u Start()
 	public static int[,] fieldAvailable = {
@@ -60,7 +59,6 @@ public class GameLevel : MonoBehaviour {
 		//totalWaves = enemyWaves.Length;
 		waveNumber = 1;
 		//nakon ovoga - u score manageru prikazati i broj talasa ("Waves - 1/6")
-
 	}
 
 
@@ -105,7 +103,7 @@ public class GameLevel : MonoBehaviour {
 		foreach (GameObject menu in menus) {
 			Destroy (menu);
 		}
-
+			
 	}
 
 }
