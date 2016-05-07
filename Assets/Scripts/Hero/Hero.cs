@@ -75,7 +75,7 @@ public class Hero : MonoBehaviour
 			GetComponent<CircleCollider2D>().radius = radius;
         }
 
-		if (gameObject.tag == "Heroes" && !gameObject.name.Contains("FemaleHero"))
+		if (gameObject.tag == "Heroes" && !gameObject.name.Contains("FemaleHero") )
 		{
 			//pravimo objekat zbog hijerarhije
 			projectileParent = GameObject.Find ("Projectiles");
