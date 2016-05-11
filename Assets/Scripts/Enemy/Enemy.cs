@@ -45,19 +45,21 @@ public class Enemy : MonoBehaviour
     List<Vector3> newPath;
 
     //Promjenljive za skakavca
-    public bool targetable = true;//da li heroj moze da puca ka neprijatelju
+    public bool targetable;//da li heroj moze da puca ka neprijatelju
     public float distanceToJump;//predjeni put do skoka
     List<int> jumpsBetweenWaypoints;
     Vector3 startJumpPosition;
     public float jumpDistance;//ako je jumpDistance = 0 onda Enemy ne moze da skoci
     //Pomocne promjenljive za UpdatePosition
     int numJumpsBetweenWaypoints;//broj mogucih skokova izmedju 2 waypointa
-    bool isFirstCallJump;
+    bool isFirstCallJump;//ovim se regulise kad ce funckija jump biti pozvana
+    public bool canJump;
 
     void Start()
     {
-        isFirstCallJump = false;
-        
+        isFirstCallJump = true;
+        targetable = true;
+        canJump = true;
         jumpsBetweenWaypoints = new List<int>();
         heroes = new List<Hero>();
         //U zavisnosti od GameLevela biram index puta !
@@ -154,32 +156,32 @@ public class Enemy : MonoBehaviour
     {
         
         Vector3 newPosition;
-        float presao;
-        Vector3 pom = newPath[waypoint - 1];
+        float traveledDistance;
+        Vector3 endJumpPosition = newPath[waypoint - 1];//treba nam da izracunamo na koju poziciju enemy doskoci
         if (distance > 0)
         {
 
             newPosition = Vector3.MoveTowards(transform.position, newPath[waypoint], speed * Time.deltaTime);//koliko se Enemy pomjeri od trenutne do sledece pozicije ka waypointu
-            presao = Vector3.Distance(transform.position, newPosition);//koliko je presao od pocetne pozicije pa do nove pozicije
-            distance -= presao;//distanca do waypointa se smanjuje
+            traveledDistance = Vector3.Distance(transform.position, newPosition);//koliko je presao od pocetne pozicije pa do nove pozicije
+            distance -= traveledDistance;//distanca do waypointa se smanjuje
             transform.position = newPosition;//tek onda pomjerimo Enemy-a
 
 
             if(this.jumpDistance != 0)//da li enemy moze da skoci
             {
-                if((Vector3.Distance(transform.position,pom)) > distanceToJump && numJumpsBetweenWaypoints > 0 && isFirstCallJump == false)//pocetak skoka
+                if((Vector3.Distance(transform.position, endJumpPosition)) > distanceToJump && numJumpsBetweenWaypoints > 0 && isFirstCallJump && canJump )//pocetak skoka
                 {
                     Jump();
-                    isFirstCallJump = true;
+                    isFirstCallJump = false;
                 }
 
                 if(this.jumpDistance < Vector3.Distance(transform.position, startJumpPosition) && !targetable) //uslov za kraj skoka
                 {
                     Debug.Log("Kraj skoka");
-                    pom = transform.position;
+                    endJumpPosition = transform.position;
                     targetable = true;
                     numJumpsBetweenWaypoints--;
-                    isFirstCallJump = false;
+                    isFirstCallJump = true;
                 }
             }
 
