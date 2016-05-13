@@ -75,7 +75,7 @@ public class Hero : MonoBehaviour
 			GetComponent<CircleCollider2D>().radius = radius;
         }
 
-		if (gameObject.tag == "Heroes" && !gameObject.name.Contains("FemaleHero"))
+		if (gameObject.tag == "Heroes" && !gameObject.name.Contains("FemaleHero") )
 		{
 			//pravimo objekat zbog hijerarhije
 			projectileParent = GameObject.Find ("Projectiles");
@@ -188,6 +188,7 @@ public class Hero : MonoBehaviour
             if (this.gameObject.name.Contains("FemaleHero")) {
                 if (wailingTimer <= GetSlowDownDuration()) {
                     enemies[enemies.Count - 1].Slowdown(GetSlowDownFactor(), GetSlowDownDuration() - wailingTimer);
+                    enemies[enemies.Count - 1].canJump = false;
                 }
                 
             }
@@ -198,6 +199,9 @@ public class Hero : MonoBehaviour
 	{
         Enemy enemyLeftRadius = other.gameObject.GetComponent<Enemy>();
         enemyLeftRadius.UnsetDetected(this);
+        if (this.gameObject.name.Contains("FemaleHero")) { //ako skakavac izadje iz dometa 
+            enemies[enemies.Count - 1].canJump = true;
+        }
         enemies.Remove(enemyLeftRadius);//brisemo iz liste enemies neprijatelja koji je izasao iz dometa heroja
 	}
 

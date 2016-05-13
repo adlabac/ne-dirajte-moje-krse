@@ -35,7 +35,7 @@ public class Enemy : MonoBehaviour
     Path path;//ovo sam dodao radi testiranja, tj. da bi uzeo niz waypoint-a za put, za sad posmatramo kao da imamo samo jedan tip puta
     bool alive;//da li je neprijatelj umro, ovo mora postojati zbog odlozenog unistenja objekta - ovim sprecavama da se Update() izvsava i nakon umiranja Enemy-a
     AudioSource audioSourceEnemy;//tu se mijenjaju AudioClip-ovi(pomocu metoda PlayAudio(AudioClip clip) u zavisnosti od situacije
-    Animator anim;//za Die animaciju
+    Animator anim;//za Die i Jump animaciju
     public bool isSlowedDown;//da li je Enemy usporen
     bool canSteal; //da li Enemy moze da pokupi kamen
     List<Hero> heroes;//lista heroja koje vidi neprijatelj
@@ -43,10 +43,24 @@ public class Enemy : MonoBehaviour
     public GameObject model;//izgled neprijatelja
     Vector3 offset;
     List<Vector3> newPath;
-    bool targetable = true;//da li heroj moze da puca ka neprijatelju
+
+    //Promjenljive za skakavca
+    public bool targetable;//da li heroj moze da puca ka neprijatelju
+    public float distanceToJump;//predjeni put do skoka
+    List<int> jumpsBetweenWaypoints;
+    Vector3 startJumpPosition;
+    public float jumpDistance;//ako je jumpDistance = 0 onda Enemy ne moze da skoci
+    //Pomocne promjenljive za UpdatePosition
+    int numJumpsBetweenWaypoints;//broj mogucih skokova izmedju 2 waypointa
+    bool isFirstCallJump;//ovim se regulise kad ce funckija jump biti pozvana
+    public bool canJump;
 
     void Start()
     {
+        isFirstCallJump = true;
+        targetable = true;
+        canJump = true;
+        jumpsBetweenWaypoints = new List<int>();
         heroes = new List<Hero>();
         //U zavisnosti od GameLevela biram index puta !
         path = FindObjectOfType<GameLevel>().paths[pathIndex];
@@ -62,7 +76,13 @@ public class Enemy : MonoBehaviour
         newPath = new List<Vector3>();
         for (int i = 0; i < path.wayPoints.Count; i++) {
             newPath.Add(path.wayPoints[i] + offset);
+            if (i > 0)
+            {
+                float dis = Vector3.Distance(path.wayPoints[i] ,path.wayPoints[i - 1]);//distana izmedju 2 waypointa
+                jumpsBetweenWaypoints.Add((int)Mathf.Floor(dis / (jumpDistance + distanceToJump))); 
+            }
         }
+        numJumpsBetweenWaypoints = jumpsBetweenWaypoints[waypoint - 1];
         GameObject enemiesGameObject = GameObject.Find("Enemies");
         this.transform.parent = enemiesGameObject.transform;
     }
@@ -134,16 +154,41 @@ public class Enemy : MonoBehaviour
 
     void UpdatePosition(float distance)
     {
+        
         Vector3 newPosition;
-        float presao;
+        float traveledDistance;
+        Vector3 endJumpPosition = newPath[waypoint - 1];//treba nam da izracunamo na koju poziciju enemy doskoci
         if (distance > 0)
         {
+
             newPosition = Vector3.MoveTowards(transform.position, newPath[waypoint], speed * Time.deltaTime);//koliko se Enemy pomjeri od trenutne do sledece pozicije ka waypointu
-            presao = Vector3.Distance(transform.position, newPosition);//koliko je presao od pocetne pozicije pa do nove pozicije
-            distance -= presao;//distanca do waypointa se smanjuje
+            traveledDistance = Vector3.Distance(transform.position, newPosition);//koliko je presao od pocetne pozicije pa do nove pozicije
+            distance -= traveledDistance;//distanca do waypointa se smanjuje
             transform.position = newPosition;//tek onda pomjerimo Enemy-a
+
+
+            if(this.jumpDistance != 0)//da li enemy moze da skoci
+            {
+                if((Vector3.Distance(transform.position, endJumpPosition)) > distanceToJump && numJumpsBetweenWaypoints > 0 && isFirstCallJump && canJump )//pocetak skoka
+                {
+                    Jump();
+                    isFirstCallJump = false;
+                }
+
+                if(this.jumpDistance < Vector3.Distance(transform.position, startJumpPosition) && !targetable) //uslov za kraj skoka
+                {
+                    Debug.Log("Kraj skoka");
+                    endJumpPosition = transform.position;
+                    targetable = true;
+                    numJumpsBetweenWaypoints--;
+                    isFirstCallJump = true;
+                }
+            }
+
+
             if (distance <= 0)//provjerimo da li je stigao do waypointa
             {
+
                 if (waypoint == path.wayPoints.Count - 1) //ako Enemy stigne do zadnjeg waypoint-a(to je kamenje)
                 {
                     //od ukupnog broja kamenja oduzmemo onoliko kamenja koliko neprijatelj moze da ponese,a onda unistimo neprijatelja
@@ -165,6 +210,7 @@ public class Enemy : MonoBehaviour
                 }
                 if (alive) { //da izmjegnemo error
                     waypoint++;//neprijatelj se krece ka novom waypoint-u
+                    numJumpsBetweenWaypoints = jumpsBetweenWaypoints[waypoint - 1];
                     RotationToWaypoint();//rotiramo neprijatelja ka tom novom waypointu
                 }
             }
@@ -222,6 +268,14 @@ public class Enemy : MonoBehaviour
 
     public void UnsetDetected(Hero hero) {
         heroes.Remove(hero);
+    }
+
+    void Jump()
+    {
+        startJumpPosition = transform.position;
+        //anim.SetTrigger("Jump");//za animaciju triger
+        targetable = false;
+        Debug.Log("Jump");
     }
 
 }
