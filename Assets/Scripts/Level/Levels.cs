@@ -4,8 +4,26 @@ using System.Collections;
 public class Levels : MonoBehaviour {
 
 
-	//LEVEL1
+	public static int[,] fieldAvailableEmpty = {
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	};
 
+
+
+
+
+	//***************************************************************************
+	//****************************** LEVEL 1 ************************************
+	//***************************************************************************
 	public static int[,] fieldAvailable01 = {
 		{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
@@ -20,7 +38,10 @@ public class Levels : MonoBehaviour {
 	};
 
 	private static int totalStones01= 20; //ukupni broj kamenja na nivou
-	private static int startingCoins01 = 270; //ukupan broj coina na pocetku
+	private static int startingCoins01 = 5000; //ukupan broj coina na pocetku
+	//***************************************************************************
+	//*************************** END LEVEL 1 ***********************************
+	//***************************************************************************
 
 
 	public static int GetStartingCoins(int level)
@@ -41,20 +62,14 @@ public class Levels : MonoBehaviour {
 	}
 
 
+	public static int[,] GetMatrix(int level)
+	{
+		if (level == 1)
+			return fieldAvailable01;
+		else
+			return fieldAvailableEmpty;
 
-
-	// Use this for initialization
-	void Start () {
-	
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-
-
 
 
 
