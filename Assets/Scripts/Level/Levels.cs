@@ -24,7 +24,7 @@ public class Levels : MonoBehaviour {
 	//***************************************************************************
 	//****************************** LEVEL 1 ************************************
 	//***************************************************************************
-	public static int[,] fieldAvailable01 = {
+	private static int[,] fieldAvailable01 = {
 		{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
 		{1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1},
@@ -38,7 +38,12 @@ public class Levels : MonoBehaviour {
 	};
 
 	private static int totalStones01= 20; //ukupni broj kamenja na nivou
-	private static int startingCoins01 = 5000; //ukupan broj coina na pocetku
+	private static int startingCoins01 = 270; //ukupan broj coina na pocetku
+
+	private static EnemyWave[] waves01 = {
+	};
+
+
 	//***************************************************************************
 	//*************************** END LEVEL 1 ***********************************
 	//***************************************************************************

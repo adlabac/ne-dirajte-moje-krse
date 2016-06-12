@@ -9,8 +9,9 @@ public class EnemyWave : MonoBehaviour
 	public int[] count;
 	public float[] spawnDelay;
 	public float[] spawnInterval;
-
 	public EnemyType[] enemyTypes;
+
+
 	private float[] spawnTime;  //niz koji sadrzi posle kog vremena treba da se spawnuju neprijatelji
 	private float timer;		//broji vrijeme
 	private int[] cnt; 
@@ -121,6 +122,18 @@ public class EnemyWave : MonoBehaviour
 			yield return new WaitForSeconds(spawnInterval);
 		}
         
+	}
+
+
+	public EnemyWave (string[] v_names, Path[] v_path, int[] v_count, float[] v_delay,
+		float[] v_spawn, EnemyType[] v_enemies)
+	{
+		enemyTypeNames = v_names;	
+		path = v_path;
+		count = v_count;
+		spawnDelay = v_delay;
+		spawnInterval = v_spawn;
+		enemyTypes = v_enemies;
 	}
 
 }

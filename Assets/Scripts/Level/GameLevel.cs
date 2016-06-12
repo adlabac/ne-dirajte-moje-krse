@@ -8,11 +8,10 @@ public class GameLevel : MonoBehaviour {
 
 	public static int totalStones; //ukupni broj kamenja na nivou
 	public static int startingCoins; //ukupan broj coina na pocetku
-	public static int[,] fieldAvailable;
-
-
-
+	public static int[,] fieldAvailable; //matrica nivoa
 	public static int waveNumber; //promjenljiva u koju ucitavamo redni broj talasa neprijatelja
+
+
 
 	EnemyWave[] enemyWaves; //niz enemyWaveova - svaki sledeci bi trebalo da bude jaci
     public List<Path> paths; //niz mogucih putanja kuda se mogu kretati enemyji
@@ -28,6 +27,7 @@ public class GameLevel : MonoBehaviour {
 		totalStones = Levels.GetTotalCoins(levelNo); 
 		startingCoins = Levels.GetStartingCoins(levelNo);
 		fieldAvailable = Levels.GetMatrix (levelNo);
+		waveNumber = 1; //pocinje od prvog talasa
 
 
 		//score manager
@@ -35,11 +35,6 @@ public class GameLevel : MonoBehaviour {
 		ScoreManager.SetCoins(startingCoins);
 
 
-
-		//prvi naredni red je zakomentarisan, jer nemamo niz
-		//totalWaves = enemyWaves.Length;
-		waveNumber = 1;
-		//nakon ovoga - u score manageru prikazati i broj talasa ("Waves - 1/6")
 	}
 
 
