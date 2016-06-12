@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class GameLevel : MonoBehaviour {
 
+	public static int levelNo = 1;
 
 	public static int totalStones; //ukupni broj kamenja na nivou
 	public static int startingCoins; //ukupan broj coina na pocetku
@@ -46,12 +47,12 @@ public class GameLevel : MonoBehaviour {
 		//oba ova dijela idu preko ScoreManagera
 
 		//u ovom dijelu bi trebalo inicijalizovati broj kamenja u odnosu na pocetni totalStones
-		totalStones = 20; //citati iz fajla/baze
+		totalStones = Levels.GetTotalCoins(levelNo); //citati iz fajla/baze
 		ScoreManager.SetStones(totalStones);
 
 
 		//u ovom dijelu bi trebalo inicijalizovati broj novcica u odnosu na pocetni startingCoins
-		startingCoins = 1000; //citati iz fajla/baze
+		startingCoins = Levels.GetStartingCoins(levelNo); //citati iz fajla/baze
 		ScoreManager.SetCoins(startingCoins);
 
 
