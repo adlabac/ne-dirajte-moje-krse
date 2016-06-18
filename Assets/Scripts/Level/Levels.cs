@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Levels : MonoBehaviour {
+public class Levels {
 
 
 	public static int[,] fieldAvailableEmpty = {
@@ -16,6 +16,10 @@ public class Levels : MonoBehaviour {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	};
+
+
+	private static EnemyType e01;
+	private static EnemyType e02;
 
 
 
@@ -39,14 +43,43 @@ public class Levels : MonoBehaviour {
 
 	private static int totalStones01= 20; //ukupni broj kamenja na nivou
 	private static int startingCoins01 = 270; //ukupan broj coina na pocetku
+	 
+	//wave 1
+	private static string[] names = { "tefds", "tesr3"};
+	private static Path[] paths = { };
+	private static int[] cnt = { 2, 1 };
+	private static float[] del = { 0.4f, 0.5f };
+	private static float[] inter = { 1, 1 };
+	private static EnemyType[] et = {};
 
-	private static EnemyWave[] waves01 = {
-	};
+	//private static EnemyWave w01 = new EnemyWave (names, paths, cnt, del, inter, et);
+
+	//private static EnemyWave[] waves01 = {w01};
+
+
+
+
+	/*
+
+	public EnemyWave (string[] v_names, Path[] v_path, int[] v_count, float[] v_delay,
+		float[] v_spawn, EnemyType[] v_enemies)
+	{
+		enemyTypeNames = v_names;	
+		path = v_path;
+		count = v_count;
+		spawnDelay = v_delay;
+		spawnInterval = v_spawn;
+		enemyTypes = v_enemies;
+	}
+
+	*/
 
 
 	//***************************************************************************
 	//*************************** END LEVEL 1 ***********************************
 	//***************************************************************************
+
+
 
 
 	public static int GetStartingCoins(int level)
