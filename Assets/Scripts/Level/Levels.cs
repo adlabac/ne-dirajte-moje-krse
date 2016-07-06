@@ -80,8 +80,7 @@ public class Levels {
 	//***************************************************************************
 
 
-
-
+	//funkcija koja vraca broj pocetnih novcica - argument je broj nivoa
 	public static int GetStartingCoins(int level)
 	{
 		if (level == 1)
@@ -90,7 +89,7 @@ public class Levels {
 			return 0;
 	}
 
-
+	//funkcija koja vraca brojstartnih kamenja - argument je broj nivoa
 	public static int GetTotalCoins(int level)
 	{
 		if (level == 1)
@@ -100,6 +99,7 @@ public class Levels {
 	}
 
 
+	//funkcija koja vraca matricu nivoa - argument je broj nivoa
 	public static int[,] GetMatrix(int level)
 	{
 		if (level == 1)
@@ -109,6 +109,24 @@ public class Levels {
 
 	}
 
+
+
+	public static int GetMatrixRows(int level)
+	{
+		if (level == 1)
+			return fieldAvailable01.GetLength(0);
+		else
+			return 0;
+	}
+
+
+	public static int GetMatrixCols(int level)
+	{
+		if (level == 1)
+			return fieldAvailable01.GetLength(1);
+		else
+			return 0;
+	}
 
 
 }

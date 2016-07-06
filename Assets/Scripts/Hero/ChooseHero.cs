@@ -20,6 +20,7 @@ public class ChooseHero : MonoBehaviour {
 	void Start () {
 		//trazimo sirinu i visinu pozadinske slike
 		GameObject bckgImage = GameObject.Find ("Level Background");
+
 		levelWidth = bckgImage.GetComponent<SpriteRenderer> ().bounds.size.x;
 		levelHeight = bckgImage.GetComponent<SpriteRenderer> ().bounds.size.y;
 
