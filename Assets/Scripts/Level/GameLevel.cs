@@ -9,10 +9,12 @@ public class GameLevel : MonoBehaviour {
 	public static int totalStones; //ukupni broj kamenja na nivou
 	public static int startingCoins; //ukupan broj coina na pocetku
 	public static int[,] fieldAvailable; //matrica nivoa
+	public static int[,] fieldBackground; //matrica pozadine
 	public static int waveNumber; //promjenljiva u koju ucitavamo redni broj talasa neprijatelja
 
-	public GameObject fieldMenuPrefab;
+	public GameObject fieldMenuPrefab1;
 	public GameObject fieldMenuPrefab2;
+
 	private GameObject spriteBckg;
 	private Vector3 placePoint;
 
@@ -38,6 +40,7 @@ public class GameLevel : MonoBehaviour {
 		totalStones = Levels.GetTotalCoins(levelNo); 
 		startingCoins = Levels.GetStartingCoins(levelNo);
 		fieldAvailable = Levels.GetMatrix (levelNo);
+		fieldBackground = Levels.GetMatrixBckg (levelNo);
 		waveNumber = 1; //pocinje od prvog talasa
 
 		//score manager
@@ -101,8 +104,8 @@ public class GameLevel : MonoBehaviour {
 		levelWidth = bckgImage.GetComponent<SpriteRenderer> ().bounds.size.x;
 		levelHeight = bckgImage.GetComponent<SpriteRenderer> ().bounds.size.y;
 
-		row = fieldAvailable.GetLength (0); //broj vrsta
-		col = fieldAvailable.GetLength (1); //broj kolona
+		row = fieldBackground.GetLength (0); //broj vrsta
+		col = fieldBackground.GetLength (1); //broj kolona
 
 		//racunamo sirinu i visinu polja - ne mora biti uvijek sirina=visina (sada jeste)
 		fieldHeight = levelHeight / row;
@@ -110,11 +113,7 @@ public class GameLevel : MonoBehaviour {
 
 		Vector3 coord = new Vector3 (levelWidth / 2, levelHeight / 2, 0); //vektor za dodavanje
 
-
 		for (int i = 0; i < row; i++) {
-
-
-
 			for (int j = 0; j < col; j++) {
 
 				placePoint = new Vector3 (j * fieldHeight + fieldHeight / 2,  
@@ -130,12 +129,13 @@ public class GameLevel : MonoBehaviour {
 					menuParent = new GameObject ("Background");
 				}
 					
-				Vector3 placePointMenu = placePoint + new Vector3 (0, 0, -1);
+				Vector3 placePointMenu = placePoint + new Vector3 (0, 0, -0.1f);
 
-				if (fieldAvailable [i, j] == 1) {
-					spriteBckg = (GameObject)Instantiate (fieldMenuPrefab, placePointMenu, Quaternion.identity);
+				if (fieldBackground [i, j] == 1) {
+					spriteBckg = (GameObject)Instantiate (fieldMenuPrefab1, placePointMenu, Quaternion.identity);
 					spriteBckg.transform.parent = menuParent.transform;
-				} else if (fieldAvailable [i, j] == 0) {
+				} 
+				else if (fieldBackground [i, j] == 2) {
 					spriteBckg = (GameObject)Instantiate (fieldMenuPrefab2, placePointMenu, Quaternion.identity);
 					spriteBckg.transform.parent = menuParent.transform;
 				}
