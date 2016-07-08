@@ -12,19 +12,6 @@ public class GameLevel : MonoBehaviour {
 	public static int[,] fieldBackground; //matrica pozadine
 	public static int waveNumber; //promjenljiva u koju ucitavamo redni broj talasa neprijatelja
 
-	public GameObject fieldMenuPrefab1;
-	public GameObject fieldMenuPrefab2;
-
-	private GameObject spriteBckg;
-	private Vector3 placePoint;
-
-	public float levelWidth;
-	public float levelHeight;
-	public float fieldHeight;
-	public float fieldWidth;
-	public int row;
-	public int col;
-
 
 	EnemyWave[] enemyWaves; //niz enemyWaveova - svaki sledeci bi trebalo da bude jaci
     public List<Path> paths; //niz mogucih putanja kuda se mogu kretati enemyji
@@ -40,15 +27,11 @@ public class GameLevel : MonoBehaviour {
 		totalStones = Levels.GetTotalCoins(levelNo); 
 		startingCoins = Levels.GetStartingCoins(levelNo);
 		fieldAvailable = Levels.GetMatrix (levelNo);
-		fieldBackground = Levels.GetMatrixBckg (levelNo);
 		waveNumber = 1; //pocinje od prvog talasa
 
 		//score manager
 		ScoreManager.SetStones(totalStones);
 		ScoreManager.SetCoins(startingCoins);
-
-		//crtanje pozadine
-		DrawBackground ();
 
 	}
 
@@ -97,6 +80,7 @@ public class GameLevel : MonoBehaviour {
 	}
 
 
+	/*
 	public void DrawBackground(){
 		GameObject bckgImage = GameObject.Find ("Level Background");
 
@@ -131,17 +115,19 @@ public class GameLevel : MonoBehaviour {
 					
 				Vector3 placePointMenu = placePoint + new Vector3 (0, 0, -0.1f);
 
+
 				if (fieldBackground [i, j] == 1) {
-					spriteBckg = (GameObject)Instantiate (fieldMenuPrefab1, placePointMenu, Quaternion.identity);
+					spriteBckg = (GameObject)Instantiate (fieldBackPrefab1, placePointMenu, Quaternion.identity);
 					spriteBckg.transform.parent = menuParent.transform;
-				} 
-				else if (fieldBackground [i, j] == 2) {
-					spriteBckg = (GameObject)Instantiate (fieldMenuPrefab2, placePointMenu, Quaternion.identity);
+				} else if (fieldBackground [i, j] == 2) {
+					spriteBckg = (GameObject)Instantiate (fieldBackPrefab2, placePointMenu, Quaternion.identity);
 					spriteBckg.transform.parent = menuParent.transform;
 				}
+
 			}			
 		}
 	}
+	*/
 		
 
 }
