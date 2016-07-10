@@ -42,10 +42,9 @@ public class ChooseHero : MonoBehaviour {
 		//trazimo poziciju klika na slici
 		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 		RaycastHit2D hit = Physics2D.Raycast (ray.origin, ray.direction, Mathf.Infinity);
-
-
 		//ako je doslo do hita sa backgroundom
 		if (hit) {
+			
 			//sad cemo da napravimo vektor kojim postavljamo koordinate sistema 
 			//u donji lijevi ugao, a ne u centru ekrana
 			Vector3 coord = new Vector3 (levelWidth/2, levelHeight/2,0); //vektor za dodavanje
@@ -59,9 +58,9 @@ public class ChooseHero : MonoBehaviour {
 
 			//ispitujemo je li polje available
 			if (canPlaceTower (rowClicked, colClicked)) {
-				//stavljamo kao z=0.5f da bi radius bio u pozadini
+				//stavljamo kao z=-1f da bi radius bio u pozadini
 				placePoint = new Vector3 (colClicked * fieldHeight + fieldHeight/2,  
-					rowClicked * fieldWidth + fieldWidth/2, 0.5f); //pravimo pocetnu tacku u nasem koord sistemu
+					rowClicked * fieldWidth + fieldWidth/2, 0f); //pravimo pocetnu tacku u nasem koord sistemu
 				placePoint -= coord; //oduzimamo vektor da bi dobili prave koordinate
 				//postavljamo tower na mjestu unutar odgovoarajuceg kvadratica
 
@@ -72,7 +71,7 @@ public class ChooseHero : MonoBehaviour {
 					//ovdje kreiramo GameObject sa nazivom HeroMenus
 					menuParent = new GameObject("HeroMenus");
 				}
-				Vector3 placePointMenu = placePoint + new Vector3 (0, 0, -1);
+				Vector3 placePointMenu = placePoint + new Vector3 (0, 0, -1f);
 				fieldMenu = (GameObject)Instantiate (fieldMenuPrefab, placePointMenu, Quaternion.identity);
 				fieldMenu.transform.parent = menuParent.transform;
 			}
