@@ -22,7 +22,7 @@ public class PlaceHero : MonoBehaviour {
 	
 	}
 	void OnMouseUp (){
-		Vector3 placePoint = new Vector3 (transform.parent.position.x, transform.parent.position.y, 0.5f);
+		Vector3 placePoint = new Vector3 (transform.parent.position.x, transform.parent.position.y, -1f);
 		//postavljamo tower na mjestu unutar odgovarajuceg kvadratica
 		hero = (GameObject)Instantiate (heroPrefab, placePoint, Quaternion.identity);
         if (heroPrefab.tag == "Heroes")

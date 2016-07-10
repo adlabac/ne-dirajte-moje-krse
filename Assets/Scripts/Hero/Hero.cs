@@ -29,7 +29,7 @@ public class Hero : MonoBehaviour
     float shootTimer;
     GameObject projectileParent;//ovdje se cuvaju svi projektili koji se spawnuju
     AudioSource audioSource;
-
+	public GameObject gun;
     public Projectile projectile;
     public AudioClip spawnAudio;
     public AudioClip enemySpottedAudio;
@@ -217,7 +217,7 @@ public class Hero : MonoBehaviour
         {
 			if (ChooseTarget() != null)
 			{
-            	GameObject newProjectile = Instantiate(projectile.model, transform.position, Quaternion.identity) as GameObject;
+            	GameObject newProjectile = Instantiate(projectile.model, gun.transform.position, Quaternion.identity) as GameObject;
             	newProjectile.transform.parent = projectileParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije
 				newProjectile.GetComponent<Projectile>().FireProjectile(ChooseTarget(), ChooseTarget().transform.position);//kako je newProjectile GameObject, moram da mu dodam komponentu Projectile da bi mogla da se pozove metoda FireProjectile
 			}

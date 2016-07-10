@@ -243,7 +243,7 @@ public class Enemy : MonoBehaviour
         speedFactor = factor;
         slowdownTime = time; 
         if (!isSlowedDown) { //mislim da ako je neprijatelj usporen, a ako ga pogodi projektil koji usporava, nema potrebe da ga dodatno usporimo jer bi rizikovali da speed dodje na 0
-            speed -= speedFactor;
+            speed -= speed * (speedFactor / 100);
         }
         isSlowedDown = true;
     }
