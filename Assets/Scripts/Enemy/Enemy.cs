@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour
     List<Hero> heroes;//lista heroja koje vidi neprijatelj
 
     public GameObject model;//izgled neprijatelja
-    Vector3 offset;
+    public Vector3 offset;
     List<Vector3> newPath;
 
     //Promjenljive za skakavca
@@ -54,7 +54,7 @@ public class Enemy : MonoBehaviour
     int numJumpsBetweenWaypoints;//broj mogucih skokova izmedju 2 waypointa
     bool isFirstCallJump;//ovim se regulise kad ce funckija jump biti pozvana
     public bool canJump;
-
+    
     void Start()
     {
         isFirstCallJump = true;
@@ -72,7 +72,8 @@ public class Enemy : MonoBehaviour
         isSlowedDown = false;
         RotationToWaypoint();
         //Potrebno za offset path
-        offset = new Vector3(Random.Range(-0.35f, 0.35f), Random.Range(-0.35f, 0.35f), 0);
+        offset = new Vector3(Random.Range(this.GetComponent<Enemy>().offset.x, -this.GetComponent<Enemy>().offset.x), Random.Range(this.GetComponent<Enemy>().offset.y, -this.GetComponent<Enemy>().offset.y), 0);
+        //offset = new Vector3(Random.Range(-0.35f, 0.35f), Random.Range(-0.35f, 0.35f), 0);
         newPath = new List<Vector3>();
         for (int i = 0; i < path.wayPoints.Count; i++) {
             newPath.Add(path.wayPoints[i] + offset);
