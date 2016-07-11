@@ -42,8 +42,15 @@ public class ChooseHero : MonoBehaviour {
 		//trazimo poziciju klika na slici
 		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 		RaycastHit2D hit = Physics2D.Raycast (ray.origin, ray.direction, Mathf.Infinity);
+
+
+		Debug.Log("Click pre");
+
+
 		//ako je doslo do hita sa backgroundom
 		if (hit) {
+
+			Debug.Log("Click");
 			
 			//sad cemo da napravimo vektor kojim postavljamo koordinate sistema 
 			//u donji lijevi ugao, a ne u centru ekrana
