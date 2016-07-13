@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class GameLevel : MonoBehaviour {
 
-	public static int levelNo = 1;
+	public int levelNo;
 
 	public static int totalStones; //ukupni broj kamenja na nivou
 	public static int startingCoins; //ukupan broj coina na pocetku
@@ -80,55 +80,6 @@ public class GameLevel : MonoBehaviour {
 	}
 
 
-	/*
-	public void DrawBackground(){
-		GameObject bckgImage = GameObject.Find ("Level Background");
-
-		//duzina i sirina pozadine
-		levelWidth = bckgImage.GetComponent<SpriteRenderer> ().bounds.size.x;
-		levelHeight = bckgImage.GetComponent<SpriteRenderer> ().bounds.size.y;
-
-		row = fieldBackground.GetLength (0); //broj vrsta
-		col = fieldBackground.GetLength (1); //broj kolona
-
-		//racunamo sirinu i visinu polja - ne mora biti uvijek sirina=visina (sada jeste)
-		fieldHeight = levelHeight / row;
-		fieldWidth = levelWidth / col;
-
-		Vector3 coord = new Vector3 (levelWidth / 2, levelHeight / 2, 0); //vektor za dodavanje
-
-		for (int i = 0; i < row; i++) {
-			for (int j = 0; j < col; j++) {
-
-				placePoint = new Vector3 (j * fieldHeight + fieldHeight / 2,  
-					i * fieldWidth + fieldWidth / 2, 0.5f); //pravimo pocetnu tacku u nasem koord sistemu
-				placePoint -= coord; //oduzimamo vektor da bi dobili prave koordinate
-				//postavljamo tower na mjestu unutar odgovoarajuceg kvadratica
-
-				//otvaranje menija sa herojima
-				GameObject menuParent = GameObject.Find ("Background");
-				//ako u hijerarhiji nema GameObject-a HeroMenus, kreiraj ga
-				if (menuParent == null) {
-					//ovdje kreiramo GameObject sa nazivom HeroMenus
-					menuParent = new GameObject ("Background");
-				}
-					
-				Vector3 placePointMenu = placePoint + new Vector3 (0, 0, -0.1f);
-
-
-				if (fieldBackground [i, j] == 1) {
-					spriteBckg = (GameObject)Instantiate (fieldBackPrefab1, placePointMenu, Quaternion.identity);
-					spriteBckg.transform.parent = menuParent.transform;
-				} else if (fieldBackground [i, j] == 2) {
-					spriteBckg = (GameObject)Instantiate (fieldBackPrefab2, placePointMenu, Quaternion.identity);
-					spriteBckg.transform.parent = menuParent.transform;
-				}
-
-			}			
-		}
-	}
-	*/
-		
 
 }
 
