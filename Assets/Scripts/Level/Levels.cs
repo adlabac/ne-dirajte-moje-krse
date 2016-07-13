@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Levels {
-
+public class Levels : MonoBehaviour {
 
 	public static int[,] fieldAvailableEmpty = {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -16,11 +15,6 @@ public class Levels {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	};
-
-
-	private static EnemyType e01;
-	private static EnemyType e02;
-
 
 
 
@@ -39,47 +33,20 @@ public class Levels {
 		{1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0},
 		{1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0}
 	};
-
-
-
+		
 	private static int totalStones01= 20; //ukupni broj kamenja na nivou
 	private static int startingCoins01 = 5000; //ukupan broj coina na pocetku
-	 
-	//wave 1
-	private static string[] names = { "tefds", "tesr3"};
-	private static Path[] paths = { };
-	private static int[] cnt = { 2, 1 };
-	private static float[] del = { 0.4f, 0.5f };
-	private static float[] inter = { 1, 1 };
-	private static EnemyType[] et = {};
-
-	//private static EnemyWave w01 = new EnemyWave (names, paths, cnt, del, inter, et);
-
-	//private static EnemyWave[] waves01 = {w01};
 
 
+	public static EnemyWave wave01;
 
-
-	/*
-
-	public EnemyWave (string[] v_names, Path[] v_path, int[] v_count, float[] v_delay,
-		float[] v_spawn, EnemyType[] v_enemies)
-	{
-		enemyTypeNames = v_names;	
-		path = v_path;
-		count = v_count;
-		spawnDelay = v_delay;
-		spawnInterval = v_spawn;
-		enemyTypes = v_enemies;
-	}
-
-	*/
-
+	private static EnemyWave[] waves01 = {new EnemyWave()};
 
 	//***************************************************************************
 	//*************************** END LEVEL 1 ***********************************
 	//***************************************************************************
 
+		
 
 	//funkcija koja vraca broj pocetnih novcica - argument je broj nivoa
 	public static int GetStartingCoins(int level)
@@ -90,7 +57,7 @@ public class Levels {
 			return 0;
 	}
 
-	//funkcija koja vraca brojstartnih kamenja - argument je broj nivoa
+	//funkcija koja vraca broj startnih kamenja - argument je broj nivoa
 	public static int GetTotalCoins(int level)
 	{
 		if (level == 1)
@@ -98,8 +65,7 @@ public class Levels {
 		else
 			return 0;
 	}
-
-
+		
 	//funkcija koja vraca matricu nivoa - argument je broj nivoa
 	public static int[,] GetMatrix(int level)
 	{
@@ -111,7 +77,6 @@ public class Levels {
 	}
 		
 
-
 	public static int GetMatrixRows(int level)
 	{
 		if (level == 1)
@@ -119,8 +84,7 @@ public class Levels {
 		else
 			return 0;
 	}
-
-
+		
 	public static int GetMatrixCols(int level)
 	{
 		if (level == 1)
@@ -128,6 +92,29 @@ public class Levels {
 		else
 			return 0;
 	}
+
+
+	public static EnemyWave[] GetWaves(int level){
+
+		wave01 = new EnemyWave ();
+		wave01.enemyTypeNames = new string[] {"test","asdasd"};
+		wave01.pathNo = new int[] {0,0};
+		wave01.count = new int[] {6,2};
+		wave01.spawnDelay = new float[] {1,1};
+		wave01.spawnInterval = new float[] {1,1};
+		wave01.enemyTypesNo = new int[] {0,1};
+
+		waves01 = new EnemyWave[] { wave01};
+
+
+
+
+		if (level == 1)
+			return waves01;
+		else
+			return waves01;
+	}
+
 
 
 }

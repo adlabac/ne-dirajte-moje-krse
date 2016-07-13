@@ -1,24 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameLevel : MonoBehaviour {
 
-	public int levelNo;
+	//ZA PODESAVANJE KROZ INSPEKTOR
+	public int levelNo; //redni broj nivoa
+	public GameObject[] enemies; //niz u kojem cuvamo neprijatelje
+	public List<Path> paths; //niz mogucih putanja kuda se mogu kretati enemyji
 
+	//PODACI KOJE IZVLACIMO IZ KLASE "Levels"
 	public static int totalStones; //ukupni broj kamenja na nivou
 	public static int startingCoins; //ukupan broj coina na pocetku
 	public static int[,] fieldAvailable; //matrica nivoa
 	public static int[,] fieldBackground; //matrica pozadine
 	public static int waveNumber; //promjenljiva u koju ucitavamo redni broj talasa neprijatelja
+	public static int waveCount;
 
+
+	public EnemyWave wave01;
+	public EnemyWave wave02;
 
 	EnemyWave[] enemyWaves; //niz enemyWaveova - svaki sledeci bi trebalo da bude jaci
-    public List<Path> paths; //niz mogucih putanja kuda se mogu kretati enemyji
 
-	//promjenljiva u kojoj je ucitana matrica 10 x 18 sa nulama i jedinicama koje oznacavaju da li se na polju
-	//moze postaviti tower - detaljnije objasnjenje u Start()
 
+	private float[] spawnTime;  //niz koji sadrzi posle kog vremena treba da se spawnuju neprijatelji
+	private float timer;		//broji vrijeme
+	private int[] cnt; 
+    
 
 	// Inicijalizacija nivoa
 	void Start () {
@@ -27,19 +37,76 @@ public class GameLevel : MonoBehaviour {
 		totalStones = Levels.GetTotalCoins(levelNo); 
 		startingCoins = Levels.GetStartingCoins(levelNo);
 		fieldAvailable = Levels.GetMatrix (levelNo);
+
+
+		enemyWaves = Levels.GetWaves (levelNo);
 		waveNumber = 1; //pocinje od prvog talasa
+		waveCount = enemyWaves.GetLength(0);
 
 		//score manager
 		ScoreManager.SetStones(totalStones);
 		ScoreManager.SetCoins(startingCoins);
 
+		//!!!!!!!
+		Text waveText;
+		waveText = GameObject.Find("WavesText").GetComponent<Text>();
+		waveText.text = waveCount.ToString();
+
+		EnemyWave w = enemyWaves[0];
+
+		cnt = new int[w.spawnDelay.Length];
+		spawnTime = new float[w.spawnDelay.Length];
+		timer = 0;
+
+		for (int i = 0; i < w.spawnDelay.Length; i++) 
+		{
+			cnt [i] = 0;
+			if (i == 0) 
+				spawnTime [0] = w.spawnDelay [0];
+			else if (i > 0)
+				spawnTime [i] = spawnTime [i - 1] + w.spawnDelay [i];
+		}
+
+	
 	}
 
 
 	// Update is called once per frame
 	void Update () {
-	
+		timer += Time.deltaTime;
+
+		Debug.Log ("Dujo" + enemies [0].name);
+
+		for (int j = 0; j < spawnTime.Length; j++) 
+		{
+			if (timer >= spawnTime [j] && cnt[j]==0) 
+			{
+				StartCoroutine (SpawnEnemy(enemies[0], 3, spawnTime[j], paths[0]));
+				cnt[j] = 1;
+			}
+		}
+
+		//waveText.text = waveNum.ToString() + " | " + count.Length.ToString();//prikaz broja wave-a	
 	}
+
+
+
+
+	IEnumerator SpawnEnemy(GameObject enemyType, int count, float spawnInterval, Path path)
+	{
+		//waveNum++;
+		int cnt = 0;
+		while(cnt < count)
+		{
+			GameObject enemy = Instantiate(enemyType, path.wayPoints[0], Quaternion.identity) as GameObject;
+			//enemy.transform.parent = enemyParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije,smjestamo sve neprijatelje u Enemies GameObject
+			cnt++;
+			yield return new WaitForSeconds(spawnInterval);
+		}
+
+	}
+
+
 
 
 	public static int GetMatrixRows(){

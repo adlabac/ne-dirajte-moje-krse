@@ -6,10 +6,12 @@ public class EnemyWave : MonoBehaviour
 {
 	public string[] enemyTypeNames;
 	public Path[] path;
+	public int[] pathNo;
 	public int[] count;
 	public float[] spawnDelay;
 	public float[] spawnInterval;
 	public EnemyType[] enemyTypes;
+	public int[] enemyTypesNo;
 
 
 	private float[] spawnTime;  //niz koji sadrzi posle kog vremena treba da se spawnuju neprijatelji
@@ -125,6 +127,7 @@ public class EnemyWave : MonoBehaviour
 	}
 
 
+	/*
 	public EnemyWave (string[] v_names, Path[] v_path, int[] v_count, float[] v_delay,
 		float[] v_spawn, EnemyType[] v_enemies)
 	{
@@ -135,5 +138,7 @@ public class EnemyWave : MonoBehaviour
 		spawnInterval = v_spawn;
 		enemyTypes = v_enemies;
 	}
+
+*/
 
 }
