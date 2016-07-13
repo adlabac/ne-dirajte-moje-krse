@@ -10,19 +10,23 @@ public class ScoreManager : MonoBehaviour
 	private ScoreManager() {}
 	private static int coins=0;
 	private static int stonesRemaining=0;
-	private static int enemyWave=0;
+	private static int waveNo=0;
+	private static int waveCnt = 0;
 
 	public Text stonesText;
 	public Text coinsText;
+	public Text wavesText;
 
 	void Start(){
 		stonesText = GameObject.Find ("StonesText").GetComponent<Text>();
 		coinsText = GameObject.Find ("CoinsText").GetComponent<Text> ();
+		wavesText = GameObject.Find ("WavesText").GetComponent<Text> ();
 	}
 
 	void Update(){
 		stonesText.text = stonesRemaining.ToString();
 		coinsText.text = coins.ToString ();
+		wavesText.text = waveNo.ToString() + "/" + waveCnt.ToString ();
 	}
 
 
@@ -49,6 +53,14 @@ public class ScoreManager : MonoBehaviour
 		//vraca trenutni broj novcica
 		return coins;
 	}
+
+
+	public static void SetWave(int waveNoToBeSet, int waveCntToBeSet)
+	{
+		//postavimo broj wave
+		waveNo = waveNoToBeSet;
+		waveCnt = waveCntToBeSet;
+	}
 	
 	public static void AddCoins(int coinsToBeAdded)
 	{
@@ -61,7 +73,9 @@ public class ScoreManager : MonoBehaviour
         //cini mi se da je bolje da se smanjuje broj kamenja kad Enemy stigne do cilja, jasnije je
 		stonesRemaining -= stonesToRemove;
 	}
-	
+
+
+	/*
 	public static void NextWave()
 	{
 		//uvecajmo vrijednost protivnickog talasa za jedan
@@ -73,6 +87,7 @@ public class ScoreManager : MonoBehaviour
 		//vraca vrijednost trenutnog talasa
 		return enemyWave;
 	}
+	*/
 	
 	public static ScoreManager Instance
 	{

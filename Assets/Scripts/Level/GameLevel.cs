@@ -33,27 +33,22 @@ public class GameLevel : MonoBehaviour {
 	// Inicijalizacija nivoa
 	void Start () {
 
-		//citamo podatke za nivo
-		totalStones = Levels.GetTotalCoins(levelNo); 
-		startingCoins = Levels.GetStartingCoins(levelNo);
-		fieldAvailable = Levels.GetMatrix (levelNo);
-
-
-		enemyWaves = Levels.GetWaves (levelNo);
-		waveNumber = 1; //pocinje od prvog talasa
-		waveCount = enemyWaves.GetLength(0);
+		//citamo podatke za nivo iz "Levels"
+		totalStones = Levels.GetTotalCoins(levelNo); //broj kamenja
+		startingCoins = Levels.GetStartingCoins(levelNo); //pocetni broj novcica
+		fieldAvailable = Levels.GetMatrix (levelNo); //matrica za postavljanje heroja
+		enemyWaves = Levels.GetWaves (levelNo); //niz talasa neprijatelja
+		waveNumber = 1; //pocinje od prvog talasa 
+		waveCount = enemyWaves.GetLength(0); //broj talasa
 
 		//score manager
 		ScoreManager.SetStones(totalStones);
 		ScoreManager.SetCoins(startingCoins);
+		ScoreManager.SetWave(waveNumber,waveCount);
 
-		//!!!!!!!
-		Text waveText;
-		waveText = GameObject.Find("WavesText").GetComponent<Text>();
-		waveText.text = waveCount.ToString();
+
 
 		EnemyWave w = enemyWaves[0];
-
 		cnt = new int[w.spawnDelay.Length];
 		spawnTime = new float[w.spawnDelay.Length];
 		timer = 0;
@@ -81,7 +76,7 @@ public class GameLevel : MonoBehaviour {
 		{
 			if (timer >= spawnTime [j] && cnt[j]==0) 
 			{
-				StartCoroutine (SpawnEnemy(enemies[0], 3, spawnTime[j], paths[0]));
+				StartCoroutine (SpawnEnemy(enemies[1], 3, spawnTime[j], paths[0]));
 				cnt[j] = 1;
 			}
 		}
