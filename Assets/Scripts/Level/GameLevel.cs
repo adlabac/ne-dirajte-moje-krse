@@ -105,9 +105,11 @@ public class GameLevel : MonoBehaviour {
 		{
 			if (timer >= spawnTime [j] && cnt[j]==0) 
 			{
-				Debug.Log ("j=" + j + " len=" + len + " st=" + spawnTime[j] + " podtalas=" + swNow);
+				//Debug.Log ("j=" + j + " len=" + len + " st=" + spawnTime[j] + " podtalas=" + swNow);
+				ScoreManager.SetWave(waveNumber,waveCount);
 
-				StartCoroutine (SpawnEnemy(enemies[enemyWaves[wNow].enemyTypesNo[swNow]], 1, spawnTime[j], paths[0]));
+				StartCoroutine (SpawnEnemy(enemies[enemyWaves[wNow].enemyTypesNo[swNow]], enemyWaves[wNow].count[swNow], 
+					spawnTime[j], paths[0]));
 				cnt[j] = 1;
 
 				if (swNow == subwaves [wNow]-1) {
@@ -116,7 +118,7 @@ public class GameLevel : MonoBehaviour {
 					waveNumber = wNow + 1;
 					if (waveNumber > waveCount)
 						waveNumber = waveCount;
-					ScoreManager.SetWave(waveNumber,waveCount);
+					
 				} else {
 					swNow += 1;
 				}
