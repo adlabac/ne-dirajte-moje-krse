@@ -72,7 +72,6 @@ public class GameLevel : MonoBehaviour {
 		spawnTime = new float[len]; //niz intervala izmedju
 		int z=0;	
 
-
 		for (int x = 0; x < enemyWaves.GetLength (0); x++) {
 			for (int y = 0; y < subwaves [x]; y++) {
 				cnt [z] = 0;
@@ -107,9 +106,9 @@ public class GameLevel : MonoBehaviour {
 			{
 				//Debug.Log ("j=" + j + " len=" + len + " st=" + spawnTime[j] + " podtalas=" + swNow);
 				ScoreManager.SetWave(waveNumber,waveCount);
-
+			
 				StartCoroutine (SpawnEnemy(enemies[enemyWaves[wNow].enemyTypesNo[swNow]], enemyWaves[wNow].count[swNow], 
-					spawnTime[j], paths[0]));
+					enemyWaves[wNow].spawnInterval[swNow], paths[0]));
 				cnt[j] = 1;
 
 				if (swNow == subwaves [wNow]-1) {
@@ -122,13 +121,9 @@ public class GameLevel : MonoBehaviour {
 				} else {
 					swNow += 1;
 				}
-					
-
 
 			}
 		}
-
-			
 			
 	}
 
@@ -137,12 +132,11 @@ public class GameLevel : MonoBehaviour {
 
 	IEnumerator SpawnEnemy(GameObject enemyType, int count, float spawnInterval, Path path)
 	{
-		//waveNum++;
 		int cnt = 0;
 		while(cnt < count)
 		{
+			Debug.Log (enemyType.name + " " + count);
 			GameObject enemy = Instantiate(enemyType, path.wayPoints[0], Quaternion.identity) as GameObject;
-			//enemy.transform.parent = enemyParent.transform;//ovo uveo zbog sredjivanja Unity hijerarhije,smjestamo sve neprijatelje u Enemies GameObject
 			cnt++;
 			yield return new WaitForSeconds(spawnInterval);
 		}

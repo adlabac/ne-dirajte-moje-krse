@@ -178,7 +178,7 @@ public class Enemy : MonoBehaviour
 
                 if(this.jumpDistance < Vector3.Distance(transform.position, startJumpPosition) && !targetable) //uslov za kraj skoka
                 {
-                    Debug.Log("Kraj skoka");
+                    //Debug.Log("Kraj skoka");
                     endJumpPosition = transform.position;
                     targetable = true;
                     numJumpsBetweenWaypoints--;
@@ -276,7 +276,7 @@ public class Enemy : MonoBehaviour
         startJumpPosition = transform.position;
         //anim.SetTrigger("Jump");//za animaciju triger
         targetable = false;
-        Debug.Log("Jump");
+        //Debug.Log("Jump");
     }
 
 }
