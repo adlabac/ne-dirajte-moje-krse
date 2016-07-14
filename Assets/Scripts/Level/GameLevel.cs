@@ -135,7 +135,6 @@ public class GameLevel : MonoBehaviour {
 		int cnt = 0;
 		while(cnt < count)
 		{
-			Debug.Log (enemyType.name + " " + count);
 			GameObject enemy = Instantiate(enemyType, path.wayPoints[0], Quaternion.identity) as GameObject;
 			cnt++;
 			yield return new WaitForSeconds(spawnInterval);
