@@ -39,8 +39,10 @@ public class Levels : MonoBehaviour {
 
 
 	public static EnemyWave wave01;
+	public static EnemyWave wave02;
+	public static EnemyWave wave03;
 
-	private static EnemyWave[] waves01 = {new EnemyWave()};
+	private static EnemyWave[] waves01; // = {new EnemyWave()};
 
 	//***************************************************************************
 	//*************************** END LEVEL 1 ***********************************
@@ -99,12 +101,30 @@ public class Levels : MonoBehaviour {
 		wave01 = new EnemyWave ();
 		wave01.enemyTypeNames = new string[] {"test","asdasd"};
 		wave01.pathNo = new int[] {0,0};
-		wave01.count = new int[] {6,2};
-		wave01.spawnDelay = new float[] {1,1};
+		wave01.count = new int[] {1,1};
+		wave01.spawnDelay = new float[] {1,2};
 		wave01.spawnInterval = new float[] {1,1};
 		wave01.enemyTypesNo = new int[] {0,1};
 
-		waves01 = new EnemyWave[] { wave01};
+
+		wave02 = new EnemyWave ();
+		wave02.enemyTypeNames = new string[] {"test","asdasd", "eeeee"};
+		wave02.pathNo = new int[] {0,0,0};
+		wave02.count = new int[] {2,2,2};
+		wave02.spawnDelay = new float[] {15,2,1.5f};
+		wave02.spawnInterval = new float[] {1,1,1};
+		wave02.enemyTypesNo = new int[] {0,1,0};
+
+
+		wave03 = new EnemyWave ();
+		wave03.enemyTypeNames = new string[] {"test","asdasd",};
+		wave03.pathNo = new int[] {0,0};
+		wave03.count = new int[] {2,2};
+		wave03.spawnDelay = new float[] {15,2};
+		wave03.spawnInterval = new float[] {1,1};
+		wave03.enemyTypesNo = new int[] {0,1};
+
+		waves01 = new EnemyWave[] { wave01, wave02, wave03};
 
 
 
