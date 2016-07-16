@@ -62,7 +62,7 @@ public class ChooseHero : MonoBehaviour {
 			if (canPlaceTower (rowClicked, colClicked)) {
 				//stavljamo kao z=-1f da bi radius bio u pozadini
 				placePoint = new Vector3 (colClicked * fieldHeight + fieldHeight/2,  
-					rowClicked * fieldWidth + fieldWidth/2, 0f); //pravimo pocetnu tacku u nasem koord sistemu
+					rowClicked * fieldWidth + fieldWidth/2, -0.3f); //pravimo pocetnu tacku u nasem koord sistemu
 				placePoint -= coord; //oduzimamo vektor da bi dobili prave koordinate
 				//postavljamo tower na mjestu unutar odgovoarajuceg kvadratica
 

@@ -127,9 +127,6 @@ public class GameLevel : MonoBehaviour {
 			
 	}
 
-
-
-
 	IEnumerator SpawnEnemy(GameObject enemyType, int count, float spawnInterval, Path path)
 	{
 		int cnt = 0;
@@ -141,9 +138,6 @@ public class GameLevel : MonoBehaviour {
 		}
 
 	}
-
-
-
 
 	public static int GetMatrixRows(){
 		return fieldAvailable.GetLength(0);
@@ -185,9 +179,3 @@ public class GameLevel : MonoBehaviour {
 
 
 }
-
-
-
-
-
-

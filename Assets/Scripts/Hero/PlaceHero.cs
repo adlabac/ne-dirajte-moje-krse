@@ -14,15 +14,16 @@ public class PlaceHero : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		//trazimo sirinu i visinu pozadinske slike
-	}
+        //trazimo sirinu i visinu pozadinske slike
+        
+    }
 	// Update is called once per frame
 	void Update () {
 	
 	}
 	void OnMouseUp (){
-		
-		Vector3 placePoint = new Vector3 (transform.parent.position.x, transform.parent.position.y, -1f);
+        
+		Vector3 placePoint = new Vector3 (transform.parent.position.x, transform.parent.position.y, -1.2f);
 		//postavljamo tower na mjestu unutar odgovarajuceg kvadratica
 		hero = (GameObject)Instantiate (heroPrefab, placePoint, Quaternion.identity);
         if (heroPrefab.tag == "Heroes")
